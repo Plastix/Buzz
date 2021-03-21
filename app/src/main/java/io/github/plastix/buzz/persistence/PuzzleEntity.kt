@@ -13,21 +13,10 @@ class PuzzleEntity(
     @PrimaryKey
     val date: String,
     val centerLetter: Char,
-    @Ignore // TODO Add real type adapters for these
     val outerLetters: Set<Char>,
-    @Ignore
     val pangrams: Set<String>,
-    @Ignore
     val answers: Set<String>,
-) {
-    constructor(date: String, centerLetter: Char) : this(
-        date,
-        centerLetter,
-        emptySet(),
-        emptySet(),
-        emptySet()
-    )
-}
+)
 
 fun PuzzleEntity.toPuzzle(): Puzzle {
     return Puzzle(

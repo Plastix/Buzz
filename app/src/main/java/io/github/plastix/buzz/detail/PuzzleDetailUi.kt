@@ -68,26 +68,26 @@ fun PuzzleKeypad(centerLetter: Char, outterLetters: List<Char>, onClick: (Char) 
         val placeables = measurables.map { measurable ->
             measurable.measure(constraints)
         }
-        val width = placeables.first().measuredWidth
 
-        val radius = width / 2
-        val centerToEdge = sqrt(radius.toDouble().pow(2.0) - (radius.toDouble() / 2.0).pow(2.0)).toInt()
+        val width = placeables.first().measuredWidth
+        val radius = (width / 2).toDouble()
+        val centerToEdge = sqrt(radius.pow(2.0) - (radius / 2.0).pow(2.0)).toInt()
         val height = centerToEdge * 2
         val gap = 20
         val offset = height + gap
-        val totalWidth = ((offset * cos(30.0 * (Math.PI/180)) * 2) + radius * 2).toInt()
+        val totalWidth = ((offset * cos(30.0 * (Math.PI / 180)) * 2) + width).toInt()
         val totalHeight = (height * 3) + (gap * 2)
-        val viewCx = totalWidth / 2 - width / 2
-        val viewCy = totalHeight / 2 - width / 2
+        val centerX = totalWidth / 2 - width / 2
+        val centerY = totalHeight / 2 - width / 2
 
         layout(totalWidth, totalHeight) {
             // Place center button
-            placeables.first().place(viewCx, viewCy)
+            placeables.first().place(centerX, centerY)
             // Place surrounding buttons
             placeables.drop(1).forEachIndexed { index, placeable ->
                 val angle = 30 + (index * 60)
-                val x = viewCx + cos(angle * (Math.PI / 180)) * offset
-                val y = viewCy + sin(angle * (Math.PI / 180)) * offset
+                val x = centerX + cos(angle * (Math.PI / 180)) * offset
+                val y = centerY + sin(angle * (Math.PI / 180)) * offset
                 placeable.place(x.toInt(), y.toInt())
             }
         }

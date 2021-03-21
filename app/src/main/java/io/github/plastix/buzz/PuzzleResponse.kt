@@ -2,6 +2,9 @@ package io.github.plastix.buzz
 
 import com.squareup.moshi.JsonClass
 
+/**
+ * Corresponds to the JSON blob returned by the NYTimes "API"
+ */
 @JsonClass(generateAdapter = true)
 data class PuzzleContainerResponse(
     val today: PuzzleResponse,

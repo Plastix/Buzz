@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Buzz">
-        <activity android:name=".MainActivity">
+
+        <activity android:name=".detail.PuzzleDetailActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

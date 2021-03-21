@@ -1,6 +1,5 @@
-package io.github.plastix.buzz
+package io.github.plastix.buzz.detail
 
-import android.graphics.Paint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.AbsoluteCutCornerShape
 import androidx.compose.material.*
@@ -9,28 +8,27 @@ import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import io.github.plastix.buzz.Puzzle
 
 @Composable
-fun PuzzleDetail(response: PuzzleResponse?) {
-    if (response == null) {
-        LoadingState()
-    } else {
-        PuzzleBoard(response)
+fun PuzzleDetail(viewState: PuzzleDetailViewState) {
+    when (viewState) {
+        is PuzzleDetailViewState.Loading -> LoadingState()
+        is PuzzleDetailViewState.Success -> PuzzleBoard(viewState.puzzle)
+        is PuzzleDetailViewState.Error -> error(viewState.error)
     }
 }
 
 @Composable
-fun PuzzleBoard(response: PuzzleResponse) {
+fun PuzzleBoard(response: Puzzle) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Column {
-            Text(response.printDate)
-            Text(response.editor)
-            PuzzleKeypad(response.centerLetter, response.outerLetters)
+            Text(response.date)
+            PuzzleKeypad(response.centerLetter, response.outerLetters.toList())
             Spacer(Modifier.height(32.dp))
             ActionBar()
         }
@@ -38,7 +36,7 @@ fun PuzzleBoard(response: PuzzleResponse) {
 }
 
 @Composable
-fun PuzzleKeypad(centerLetter: String, outterLetters: List<String>) {
+fun PuzzleKeypad(centerLetter: Char, outterLetters: List<Char>) {
     Box {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Row {
@@ -59,13 +57,13 @@ fun PuzzleKeypad(centerLetter: String, outterLetters: List<String>) {
 }
 
 @Composable
-fun KeypadButton(letter: String) {
+fun KeypadButton(letter: Char) {
     Button(
         modifier = Modifier.size(64.dp, 32.dp),
         shape = AbsoluteCutCornerShape(16.dp),
         onClick = {}
     ) {
-        Text(letter[0].toString())
+        Text(letter.toString())
     }
 }
 
@@ -91,11 +89,5 @@ fun LoadingState() {
     Box(contentAlignment = Alignment.Center) {
         Text("Puzzle loading")
     }
-}
-
-@Preview
-@Composable
-fun DefaultPreview() {
-    PuzzleDetail(null)
 }
 

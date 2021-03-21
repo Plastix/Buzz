@@ -1,6 +1,7 @@
 package io.github.plastix.buzz.list
 
 import androidx.lifecycle.*
+import io.github.plastix.buzz.Puzzle
 import io.github.plastix.buzz.network.PuzzleFetcher
 import io.github.plastix.buzz.Result
 import io.github.plastix.buzz.persistence.PuzzleRepository
@@ -22,8 +23,16 @@ class PuzzleListViewModel(
     private fun observePuzzlesFromDb() {
         puzzleData.value = PuzzleListViewState.Loading
         puzzleData.addSource(puzzleRepository.getPuzzles()) { puzzles ->
-            puzzleData.value = PuzzleListViewState.Success(puzzles)
+            val states = puzzles.map { it.toRowState() }
+            puzzleData.value = PuzzleListViewState.Success(states)
         }
+    }
+
+    private fun Puzzle.toRowState(): PuzzleRowState {
+        return PuzzleRowState(
+            puzzleId = date,
+            displayString = date
+        )
     }
 
     private fun refreshPuzzleData() {

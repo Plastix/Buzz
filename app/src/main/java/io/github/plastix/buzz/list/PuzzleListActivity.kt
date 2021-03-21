@@ -22,8 +22,7 @@ class PuzzleListActivity : AppCompatActivity() {
             object : ViewModelProvider.Factory {
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     val fetcher = PuzzleFetcher()
-                    val repo =
-                        PuzzleRepository(instantiateDatabase(context))
+                    val repo = PuzzleRepository(instantiateDatabase(context))
                     return modelClass.getConstructor(
                         PuzzleFetcher::class.java,
                         PuzzleRepository::class.java
@@ -37,7 +36,7 @@ class PuzzleListActivity : AppCompatActivity() {
         }
     }
 
-    private fun openPuzzleDetail(puzzle: Puzzle) {
-        startActivity(PuzzleDetailActivity.newIntent(this, puzzle.date))
+    private fun openPuzzleDetail(puzzleId: String) {
+        startActivity(PuzzleDetailActivity.newIntent(this, puzzleId))
     }
 }

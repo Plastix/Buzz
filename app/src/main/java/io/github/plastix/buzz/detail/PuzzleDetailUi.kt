@@ -18,7 +18,9 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import kotlin.math.cos
+import kotlin.math.pow
 import kotlin.math.sin
+import kotlin.math.sqrt
 
 @Composable
 fun PuzzleDetailUi(viewModel: PuzzleDetailViewModel) {
@@ -39,7 +41,7 @@ fun PuzzleBoard(response: BoardGameViewState, onShuffle: () -> Unit, onClick: (C
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Column {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(response.date)
             Text(response.currentWord)
             PuzzleKeypad(response.centerLetter, response.outerLetters.toList(), onClick)
@@ -66,18 +68,23 @@ fun PuzzleKeypad(centerLetter: Char, outterLetters: List<Char>, onClick: (Char) 
         val placeables = measurables.map { measurable ->
             measurable.measure(constraints)
         }
-        val spacing = 4.dp.roundToPx()
-        val buttonHeight = placeables.first().height
-        val totalHeight: Int = (buttonHeight * 3) + (spacing * 2)
+        val width = placeables.first().measuredWidth
 
-        layout(totalHeight, totalHeight) {
+        val radius = width / 2
+        val centerToEdge = sqrt(radius.toDouble().pow(2.0) - (radius.toDouble() / 2.0).pow(2.0)).toInt()
+        val height = centerToEdge * 2
+        val gap = 20
+        val offset = height + gap
+        val totalWidth = ((offset * cos(30.0 * (Math.PI/180)) * 2) + radius * 2).toInt()
+        val totalHeight = (height * 3) + (gap * 2)
+        val viewCx = totalWidth / 2 - width / 2
+        val viewCy = totalHeight / 2 - width / 2
+
+        layout(totalWidth, totalHeight) {
             // Place center button
-            val viewCx = totalHeight / 2
-            val viewCy = totalHeight / 2
             placeables.first().place(viewCx, viewCy)
             // Place surrounding buttons
             placeables.drop(1).forEachIndexed { index, placeable ->
-                val offset = buttonHeight + spacing
                 val angle = 30 + (index * 60)
                 val x = viewCx + cos(angle * (Math.PI / 180)) * offset
                 val y = viewCy + sin(angle * (Math.PI / 180)) * offset

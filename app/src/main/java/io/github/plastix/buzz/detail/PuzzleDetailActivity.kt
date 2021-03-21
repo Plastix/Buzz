@@ -43,8 +43,7 @@ class PuzzleDetailActivity : AppCompatActivity() {
             }
         }
         setContent {
-            val state = viewModel.viewStates.observeAsState(PuzzleDetailViewState.Loading)
-            PuzzleDetailUi(state.value)
+            PuzzleDetailUi(viewModel)
         }
     }
 }

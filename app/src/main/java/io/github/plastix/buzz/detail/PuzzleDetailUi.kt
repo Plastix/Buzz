@@ -5,6 +5,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
@@ -16,45 +17,49 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import io.github.plastix.buzz.Puzzle
 import kotlin.math.cos
 import kotlin.math.sin
 
 @Composable
-fun PuzzleDetailUi(viewState: PuzzleDetailViewState) {
-    when (viewState) {
+fun PuzzleDetailUi(viewModel: PuzzleDetailViewModel) {
+    when (val state = viewModel.viewStates.observeAsState(PuzzleDetailViewState.Loading).value) {
         is PuzzleDetailViewState.Loading -> LoadingState()
-        is PuzzleDetailViewState.Success -> PuzzleBoard(viewState.puzzle)
-        is PuzzleDetailViewState.Error -> error(viewState.error)
+        is PuzzleDetailViewState.Success -> PuzzleBoard(
+            state.boardGameState,
+            onShuffle = viewModel::shuffle,
+            onClick = viewModel::keyPress
+        )
+        is PuzzleDetailViewState.Error -> error(state.error)
     }
 }
 
 @Composable
-fun PuzzleBoard(response: Puzzle) {
+fun PuzzleBoard(response: BoardGameViewState, onShuffle: () -> Unit, onClick: (Char) -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Column {
             Text(response.date)
-            PuzzleKeypad(response.centerLetter, response.outerLetters.toList())
+            Text(response.currentWord)
+            PuzzleKeypad(response.centerLetter, response.outerLetters.toList(), onClick)
             Spacer(Modifier.height(32.dp))
-            ActionBar()
+            ActionBar(onShuffle = onShuffle)
         }
     }
 }
 
 @Composable
-fun PuzzleKeypad(centerLetter: Char, outterLetters: List<Char>) {
+fun PuzzleKeypad(centerLetter: Char, outterLetters: List<Char>, onClick: (Char) -> Unit) {
     Layout(
         content = {
-            KeypadButton(centerLetter)
-            KeypadButton(outterLetters.getOrElse(0) { ' ' })
-            KeypadButton(outterLetters.getOrElse(1) { ' ' })
-            KeypadButton(outterLetters.getOrElse(2) { ' ' })
-            KeypadButton(outterLetters.getOrElse(3) { ' ' })
-            KeypadButton(outterLetters.getOrElse(4) { ' ' })
-            KeypadButton(outterLetters.getOrElse(5) { ' ' })
+            KeypadButton(centerLetter, onClick)
+            KeypadButton(outterLetters.getOrElse(0) { ' ' }, onClick)
+            KeypadButton(outterLetters.getOrElse(1) { ' ' }, onClick)
+            KeypadButton(outterLetters.getOrElse(2) { ' ' }, onClick)
+            KeypadButton(outterLetters.getOrElse(3) { ' ' }, onClick)
+            KeypadButton(outterLetters.getOrElse(4) { ' ' }, onClick)
+            KeypadButton(outterLetters.getOrElse(5) { ' ' }, onClick)
         },
         modifier = Modifier
     ) { measurables, constraints ->
@@ -85,16 +90,16 @@ fun PuzzleKeypad(centerLetter: Char, outterLetters: List<Char>) {
 @Composable
 @Preview
 fun PreviewPuzzleKeypad() {
-    PuzzleKeypad(centerLetter = 'x', outterLetters = listOf('a', 'b', 'c', 'd', 'e', 'f'))
+    PuzzleKeypad(centerLetter = 'x', outterLetters = listOf('a', 'b', 'c', 'd', 'e', 'f'), onClick = {})
 }
 
 
 @Composable
-fun KeypadButton(letter: Char) {
+fun KeypadButton(letter: Char, onClick: (Char) -> Unit) {
     Button(
         modifier = Modifier.size(64.dp),
         shape = RegularHexagonalShape(),
-        onClick = {}
+        onClick = { onClick.invoke(letter) }
     ) {
         Text(letter.toString())
     }
@@ -128,17 +133,17 @@ class RegularHexagonalShape : Shape {
 @Composable
 @Preview
 fun PreviewKeypadButton() {
-    KeypadButton(letter = 'x')
+    KeypadButton(letter = 'x', onClick = {})
 }
 
 @Composable
-fun ActionBar() {
+fun ActionBar(onShuffle: () -> Unit) {
     Row {
         OutlinedButton(onClick = {}) {
             Text("Delete")
         }
         Spacer(Modifier.size(16.dp))
-        OutlinedButton(onClick = {}) {
+        OutlinedButton(onClick = onShuffle) {
             Icon(Icons.Filled.Autorenew, "refresh")
         }
         Spacer(Modifier.size(16.dp))

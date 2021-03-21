@@ -17,6 +17,10 @@ class PuzzleRepository(private val database: PuzzleDatabase) {
         return map(dao.getPuzzles(), List<PuzzleEntity>::toPuzzles)
     }
 
+    fun getPuzzle(puzzleId: String): LiveData<Puzzle> {
+        return map(dao.getPuzzleById(puzzleId), PuzzleEntity::toPuzzle)
+    }
+
     suspend fun insertPuzzles(puzzles: List<Puzzle>) {
         withContext(Dispatchers.IO) {
             dao.insertPuzzles(puzzles.map(Puzzle::toEntity))

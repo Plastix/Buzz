@@ -40,17 +40,17 @@ fun PuzzleKeypad(centerLetter: Char, outterLetters: List<Char>) {
     Box {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Row {
-                KeypadButton(outterLetters[0])
-                KeypadButton(outterLetters[1])
-                KeypadButton(outterLetters[2])
+                KeypadButton(outterLetters.getOrElse(0) { ' ' })
+                KeypadButton(outterLetters.getOrElse(1) { ' ' })
+                KeypadButton(outterLetters.getOrElse(2) { ' ' })
             }
             Spacer(Modifier.size(4.dp))
             KeypadButton(centerLetter)
             Spacer(Modifier.size(4.dp))
             Row {
-                KeypadButton(outterLetters[3])
-                KeypadButton(outterLetters[4])
-                KeypadButton(outterLetters[5])
+                KeypadButton(outterLetters.getOrElse(3) { ' ' })
+                KeypadButton(outterLetters.getOrElse(4) { ' ' })
+                KeypadButton(outterLetters.getOrElse(5) { ' ' })
             }
         }
     }

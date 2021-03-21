@@ -1,34 +1,26 @@
 package io.github.plastix.buzz.detail
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import io.github.plastix.buzz.network.PuzzleFetcher
-import io.github.plastix.buzz.Result
-import kotlinx.coroutines.launch
+import io.github.plastix.buzz.persistence.PuzzleRepository
 
 class PuzzleDetailViewModel(
-    private val fetcher: PuzzleFetcher
+    private val puzzleId: String,
+    private val repository: PuzzleRepository
 ) : ViewModel() {
 
-    private val puzzleData: MutableLiveData<PuzzleDetailViewState> = MutableLiveData()
-    val viewStates: LiveData<PuzzleDetailViewState> = puzzleData
+    private val data: MediatorLiveData<PuzzleDetailViewState> = MediatorLiveData()
+    val viewStates: LiveData<PuzzleDetailViewState> = data
 
     init {
         loadPuzzleData()
     }
 
     private fun loadPuzzleData() {
-        viewModelScope.launch {
-            puzzleData.value = PuzzleDetailViewState.Loading
-
-            val newState = when (val result = fetcher.fetchLatestPuzzles()) {
-                is Result.Success -> PuzzleDetailViewState.Success(result.data.first())
-                is Result.Error -> PuzzleDetailViewState.Error(result.exception)
-            }
-
-            puzzleData.value = newState
+        data.value = PuzzleDetailViewState.Loading
+        data.addSource(repository.getPuzzle(puzzleId)) { puzzle ->
+            data.value = PuzzleDetailViewState.Success(puzzle)
         }
     }
 }

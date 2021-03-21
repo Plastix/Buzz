@@ -1,6 +1,9 @@
-package io.github.plastix.buzz
+package io.github.plastix.buzz.network
 
 import com.squareup.moshi.Moshi
+import io.github.plastix.buzz.Puzzle
+import io.github.plastix.buzz.Result
+import io.github.plastix.buzz.serialization.Json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.*
@@ -20,7 +23,6 @@ class PuzzleFetcher {
     }
 
     private val client by lazy { OkHttpClient() }
-    private val serialization by lazy { Moshi.Builder().build() }
 
     /**
      * Fetches the latest two puzzles from the NYTimes "API". This operates on an I/O scheduler
@@ -42,7 +44,7 @@ class PuzzleFetcher {
                 val payload = parser.find(body)?.groupValues?.get(1) ?: return Result.Error(
                     IllegalArgumentException("Could not parse API response!")
                 )
-                val adapter = serialization.adapter(PuzzleContainerResponse::class.java)
+                val adapter = Json.instance.adapter(PuzzleContainerResponse::class.java)
                 val puzzle: PuzzleContainerResponse =
                     adapter.fromJson(payload) ?: return Result.Error(
                         IllegalArgumentException("Could not deserialize JSON blob! $payload")

@@ -10,16 +10,3 @@ data class Puzzle(
     val pangrams: Set<String>,
     val answers: Set<String>
 )
-
-/**
- * Converts a JSON response to an internal client model.
- */
-fun PuzzleResponse.toPuzzle(): Puzzle {
-    return Puzzle(
-        date = printDate,
-        centerLetter = centerLetter[0],
-        outerLetters = outerLetters.map { it[0] }.toSet(),
-        pangrams = pangrams.toSet(),
-        answers = answers.toSet()
-    )
-}

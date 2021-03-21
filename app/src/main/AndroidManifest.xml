@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Buzz">
 
-        <activity android:name=".detail.PuzzleDetailActivity">
+        <activity android:name=".list.PuzzleListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,6 +21,7 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".detail.PuzzleDetailActivity" />
     </application>
 
 </manifest>

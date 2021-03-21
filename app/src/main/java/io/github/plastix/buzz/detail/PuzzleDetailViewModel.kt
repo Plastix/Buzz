@@ -4,13 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.plastix.buzz.PuzzleFetcher
+import io.github.plastix.buzz.network.PuzzleFetcher
 import io.github.plastix.buzz.Result
 import kotlinx.coroutines.launch
 
-class PuzzleDetailViewModel : ViewModel() {
-
-    private val fetcher = PuzzleFetcher()
+class PuzzleDetailViewModel(
+    private val fetcher: PuzzleFetcher
+) : ViewModel() {
 
     private val puzzleData: MutableLiveData<PuzzleDetailViewState> = MutableLiveData()
     val viewStates: LiveData<PuzzleDetailViewState> = puzzleData

@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import io.github.plastix.buzz.Puzzle
 
 @Composable
-fun PuzzleDetail(viewState: PuzzleDetailViewState) {
+fun PuzzleDetailUi(viewState: PuzzleDetailViewState) {
     when (viewState) {
         is PuzzleDetailViewState.Loading -> LoadingState()
         is PuzzleDetailViewState.Success -> PuzzleBoard(viewState.puzzle)

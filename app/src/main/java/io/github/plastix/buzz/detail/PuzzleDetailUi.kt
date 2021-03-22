@@ -9,6 +9,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
@@ -17,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toColorInt
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
@@ -51,17 +53,16 @@ fun PuzzleBoard(response: BoardGameViewState, onShuffle: () -> Unit, onClick: (C
     }
 }
 
+fun String.toColor(): Color = Color(toColorInt())
+
 @Composable
 fun PuzzleKeypad(centerLetter: Char, outterLetters: List<Char>, onClick: (Char) -> Unit) {
     Layout(
         content = {
-            KeypadButton(centerLetter, onClick)
-            KeypadButton(outterLetters.getOrElse(0) { ' ' }, onClick)
-            KeypadButton(outterLetters.getOrElse(1) { ' ' }, onClick)
-            KeypadButton(outterLetters.getOrElse(2) { ' ' }, onClick)
-            KeypadButton(outterLetters.getOrElse(3) { ' ' }, onClick)
-            KeypadButton(outterLetters.getOrElse(4) { ' ' }, onClick)
-            KeypadButton(outterLetters.getOrElse(5) { ' ' }, onClick)
+            KeypadButton(centerLetter, "#F8CD05".toColor(), onClick)
+            outterLetters.take(6).forEach {
+                KeypadButton(it, "#E6E6E6".toColor(), onClick)
+            }
         },
         modifier = Modifier
     ) { measurables, constraints ->
@@ -97,16 +98,20 @@ fun PuzzleKeypad(centerLetter: Char, outterLetters: List<Char>, onClick: (Char) 
 @Composable
 @Preview
 fun PreviewPuzzleKeypad() {
-    PuzzleKeypad(centerLetter = 'x', outterLetters = listOf('a', 'b', 'c', 'd', 'e', 'f'), onClick = {})
+    PuzzleKeypad(
+        centerLetter = 'x',
+        outterLetters = listOf('a', 'b', 'c', 'd', 'e', 'f'),
+        onClick = {})
 }
 
 
 @Composable
-fun KeypadButton(letter: Char, onClick: (Char) -> Unit) {
+fun KeypadButton(letter: Char, color: Color = Color.Magenta, onClick: (Char) -> Unit) {
     Button(
         modifier = Modifier.size(64.dp),
         shape = RegularHexagonalShape(),
-        onClick = { onClick.invoke(letter) }
+        onClick = { onClick.invoke(letter) },
+        colors = ButtonDefaults.buttonColors(backgroundColor = color)
     ) {
         Text(letter.toString())
     }

@@ -1,15 +1,15 @@
 package io.github.plastix.buzz.list
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import io.github.plastix.buzz.Puzzle
-import io.github.plastix.buzz.network.PuzzleFetcher
 import io.github.plastix.buzz.Result
 import io.github.plastix.buzz.formatDate
+import io.github.plastix.buzz.network.PuzzleFetcher
 import io.github.plastix.buzz.persistence.PuzzleRepository
 import kotlinx.coroutines.launch
-import java.text.ParseException
-import java.text.SimpleDateFormat
-
 
 
 class PuzzleListViewModel(

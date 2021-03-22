@@ -12,7 +12,7 @@ interface PuzzleDao {
     fun getPuzzles(): LiveData<List<PuzzleEntity>>
 
     @Query("select * from puzzles where puzzleId == :puzzleId")
-    fun getPuzzleById(puzzleId: String): PuzzleEntity
+    fun getPuzzleById(puzzleId: String): PuzzleEntity?
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertPuzzles(puzzles: List<PuzzleEntity>)
@@ -21,8 +21,5 @@ interface PuzzleDao {
     fun insertGameModel(gameModelEntity: GameModelEntity)
 
     @Query("select * from `game-states` where puzzleId == :puzzleId")
-    fun getGameModel(puzzleId: String): GameModelEntity
-
-    @Query("select count() from `game-states` where puzzleId == :puzzleId")
-    fun countGameModel(puzzleId: String): Int
+    fun getGameModel(puzzleId: String): GameModelEntity?
 }

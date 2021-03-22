@@ -18,9 +18,9 @@ class PuzzleRepository(private val database: PuzzleDatabase) {
         return map(dao.getPuzzles(), List<PuzzleEntity>::toPuzzles)
     }
 
-    suspend fun getPuzzle(puzzleId: String): Puzzle {
+    suspend fun getPuzzle(puzzleId: String): Puzzle? {
         return withContext(Dispatchers.IO) {
-            dao.getPuzzleById(puzzleId).toPuzzle()
+            dao.getPuzzleById(puzzleId)?.toPuzzle()
         }
     }
 
@@ -36,15 +36,9 @@ class PuzzleRepository(private val database: PuzzleDatabase) {
         }
     }
 
-    suspend fun getGameModel(puzzleId: String): GameModel {
+    suspend fun getGameModel(puzzleId: String): GameModel? {
         return withContext(Dispatchers.IO) {
-            dao.getGameModel(puzzleId).toGameModel()
-        }
-    }
-
-    suspend fun hasGameModel(puzzleId: String): Boolean {
-        return withContext(Dispatchers.IO) {
-            dao.countGameModel(puzzleId) > 0
+            dao.getGameModel(puzzleId)?.toGameModel()
         }
     }
 }

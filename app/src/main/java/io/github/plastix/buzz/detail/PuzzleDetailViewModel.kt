@@ -11,30 +11,42 @@ class PuzzleDetailViewModel(
     private val repository: PuzzleRepository
 ) : ViewModel() {
 
-    private val data: MediatorLiveData<PuzzleDetailViewState> = MediatorLiveData()
-    val viewStates: LiveData<PuzzleDetailViewState> = data
-    private var puzzle: Puzzle? = null
-    private var gameModel: GameModel? = null
+    private data class PuzzleDetails(
+        val puzzle: Puzzle,
+        val gameModel: GameModel
+    )
+
+    private val _viewStates: MediatorLiveData<PuzzleDetailViewState> = MediatorLiveData()
+    val viewStates: LiveData<PuzzleDetailViewState> = _viewStates
+
+    private var puzzleData: MutableLiveData<PuzzleDetails?> = MutableLiveData(null)
 
     init {
         loadPuzzleData()
+        listenForBoardChanges()
     }
 
-    private fun loadPuzzleData() {
-        data.value = PuzzleDetailViewState.Loading
-        viewModelScope.launch {
-            val puzzle = repository.getPuzzle(puzzleId)
-            gameModel = if (repository.hasGameModel(puzzleId)) {
-                repository.getGameModel(puzzleId)
+    private fun listenForBoardChanges() {
+        _viewStates.addSource(puzzleData) { puzzleData ->
+            if (puzzleData == null) {
+                _viewStates.value = PuzzleDetailViewState.Loading
             } else {
-                GameModel(puzzle.outerLetters.toList(), "", emptySet())
+                _viewStates.value = PuzzleDetailViewState.Success(puzzleData.constructBoardState())
             }
-            this@PuzzleDetailViewModel.puzzle = puzzle
-            data.value = PuzzleDetailViewState.Success(constructBoardState(puzzle, gameModel!!))
         }
     }
 
-    private fun constructBoardState(puzzle: Puzzle, gameModel: GameModel): BoardGameViewState {
+    private fun loadPuzzleData() {
+        viewModelScope.launch {
+            // TODO real error handling
+            val puzzle: Puzzle =
+                repository.getPuzzle(puzzleId) ?: error("Error loading puzzle from db!")
+            val gameModel = repository.getGameModel(puzzleId) ?: puzzle.blankGameModel()
+            puzzleData.value = PuzzleDetails(puzzle, gameModel)
+        }
+    }
+
+    private fun PuzzleDetails.constructBoardState(): BoardGameViewState {
         return BoardGameViewState(
             date = puzzle.date,
             centerLetter = puzzle.centerLetter,
@@ -45,26 +57,33 @@ class PuzzleDetailViewModel(
     }
 
     fun shuffle() {
-        val gameModel = this.gameModel ?: return
-        val puzzle = this.puzzle ?: return
-        val newModel = gameModel.copy(outerLetters = gameModel.outerLetters.shuffled())
-
-        data.value = PuzzleDetailViewState.Success(constructBoardState(puzzle, newModel))
-        this.gameModel = newModel
+        updateGameModel {
+            gameModel.copy(outerLetters = gameModel.outerLetters.shuffled())
+        }
     }
 
     fun keyPress(char: Char) {
-        val gameModel = this.gameModel ?: return
-        val puzzle = this.puzzle ?: return
-        val newModel = gameModel.copy(currentWord = gameModel.currentWord.plus(char))
-        data.value = PuzzleDetailViewState.Success(constructBoardState(puzzle, newModel))
-        this.gameModel = newModel
+        updateGameModel {
+            gameModel.copy(currentWord = gameModel.currentWord.plus(char))
+        }
     }
 
     fun saveBoardState() {
-        val gameModel = this.gameModel ?: return
-        GlobalScope.launch {
-            repository.insertGameModel(gameModel, puzzleId)
+        withGameModel {
+            GlobalScope.launch {
+                repository.insertGameModel(gameModel, puzzleId)
+            }
         }
+    }
+
+    private fun updateGameModel(block: PuzzleDetails.() -> GameModel) {
+        val puzzleDetails = puzzleData.value ?: return
+        val newModel = puzzleDetails.block()
+        puzzleData.value = puzzleDetails.copy(gameModel = newModel)
+    }
+
+    private fun withGameModel(block: PuzzleDetails.() -> Unit) {
+        val puzzleDetails = puzzleData.value ?: return
+        puzzleDetails.block()
     }
 }

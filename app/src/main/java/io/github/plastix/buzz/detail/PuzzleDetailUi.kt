@@ -29,14 +29,22 @@ fun PuzzleDetailUi(viewModel: PuzzleDetailViewModel) {
         is PuzzleDetailViewState.Success -> PuzzleBoard(
             state.boardGameState,
             onShuffle = viewModel::shuffle,
-            onClick = viewModel::keyPress
+            onKeyClick = viewModel::keypress,
+            onDelete = viewModel::delete,
+            onEnter = viewModel::enter
         )
         is PuzzleDetailViewState.Error -> error(state.error)
     }
 }
 
 @Composable
-fun PuzzleBoard(response: BoardGameViewState, onShuffle: () -> Unit, onClick: (Char) -> Unit) {
+fun PuzzleBoard(
+    response: BoardGameViewState,
+    onShuffle: () -> Unit,
+    onKeyClick: (Char) -> Unit,
+    onDelete: () -> Unit,
+    onEnter: () -> Unit
+) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -44,9 +52,9 @@ fun PuzzleBoard(response: BoardGameViewState, onShuffle: () -> Unit, onClick: (C
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(response.currentWord.toUpperCase(), fontSize = 30.sp)
             Spacer(Modifier.height(32.dp))
-            PuzzleKeypad(response.centerLetter, response.outerLetters.toList(), onClick)
+            PuzzleKeypad(response.centerLetter, response.outerLetters.toList(), onKeyClick)
             Spacer(Modifier.height(32.dp))
-            ActionBar(onShuffle = onShuffle)
+            ActionBar(onShuffle = onShuffle, onDelete = onDelete, onEnter = onEnter)
         }
     }
 }
@@ -147,9 +155,9 @@ fun PreviewKeypadButton() {
 }
 
 @Composable
-fun ActionBar(onShuffle: () -> Unit) {
+fun ActionBar(onShuffle: () -> Unit, onDelete: () -> Unit, onEnter: () -> Unit) {
     Row {
-        OutlinedButton(onClick = {}) {
+        OutlinedButton(onClick = onDelete) {
             Text("Delete")
         }
         Spacer(Modifier.size(16.dp))
@@ -157,13 +165,13 @@ fun ActionBar(onShuffle: () -> Unit) {
             Icon(Icons.Filled.Autorenew, "refresh")
         }
         Spacer(Modifier.size(16.dp))
-        OutlinedButton(onClick = {}) {
+        OutlinedButton(onClick = onEnter) {
             Text("Enter")
         }
     }
 }
 
-@Composable
+@Composable     
 fun LoadingState() {
     Box(contentAlignment = Alignment.Center) {
         Text("Puzzle loading")

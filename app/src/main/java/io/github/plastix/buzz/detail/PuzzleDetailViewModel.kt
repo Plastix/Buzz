@@ -62,10 +62,20 @@ class PuzzleDetailViewModel(
         }
     }
 
-    fun keyPress(char: Char) {
+    fun keypress(char: Char) {
         updateGameState {
             gameState.copy(currentWord = gameState.currentWord.plus(char))
         }
+    }
+
+    fun delete() {
+        updateGameState {
+            gameState.copy(currentWord = gameState.currentWord.drop(1))
+        }
+    }
+
+    fun enter() {
+        // TODO
     }
 
     fun saveBoardState() {

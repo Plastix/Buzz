@@ -42,8 +42,8 @@ fun PuzzleBoard(response: BoardGameViewState, onShuffle: () -> Unit, onClick: (C
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(response.date)
-            Text(response.currentWord)
+            Text(response.currentWord.toUpperCase(), fontSize = 30.sp)
+            Spacer(Modifier.height(32.dp))
             PuzzleKeypad(response.centerLetter, response.outerLetters.toList(), onClick)
             Spacer(Modifier.height(32.dp))
             ActionBar(onShuffle = onShuffle)
@@ -72,7 +72,7 @@ fun PuzzleKeypad(centerLetter: Char, outterLetters: List<Char>, onClick: (Char) 
         val radius = (width / 2).toDouble()
         val centerToEdge = sqrt(radius.pow(2.0) - (radius / 2.0).pow(2.0)).toInt()
         val height = centerToEdge * 2
-        val gap = 20
+        val gap = 30
         val offset = height + gap
         val totalWidth = ((offset * cos(30.0 * (Math.PI / 180)) * 2) + width).toInt()
         val totalHeight = (height * 3) + (gap * 2)
@@ -106,7 +106,7 @@ fun PreviewPuzzleKeypad() {
 @Composable
 fun KeypadButton(letter: Char, color: Color = Color.Magenta, onClick: (Char) -> Unit) {
     Button(
-        modifier = Modifier.size(128.dp),
+        modifier = Modifier.size(100.dp),
         shape = RegularHexagonalShape(),
         onClick = { onClick.invoke(letter) },
         colors = ButtonDefaults.buttonColors(backgroundColor = color)

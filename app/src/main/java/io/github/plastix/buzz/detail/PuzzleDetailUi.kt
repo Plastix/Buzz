@@ -3,6 +3,7 @@ package io.github.plastix.buzz.detail
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
@@ -23,17 +24,37 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 @Composable
-fun PuzzleDetailUi(viewModel: PuzzleDetailViewModel) {
-    when (val state = viewModel.viewStates.observeAsState(PuzzleDetailViewState.Loading).value) {
-        is PuzzleDetailViewState.Loading -> LoadingState()
-        is PuzzleDetailViewState.Success -> PuzzleBoard(
-            state.boardGameState,
-            onShuffle = viewModel::shuffle,
-            onKeyClick = viewModel::keypress,
-            onDelete = viewModel::delete,
-            onEnter = viewModel::enter
+fun PuzzleDetailUi(
+    viewModel: PuzzleDetailViewModel,
+    onBack: () -> Unit
+) {
+    Scaffold(topBar = {
+        TopAppBar(
+            title = {
+                Text("Puzzle")
+            },
+            navigationIcon = {
+                IconButton(onClick = onBack) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Back"
+                    )
+                }
+            }
         )
-        is PuzzleDetailViewState.Error -> error(state.error)
+    }) {
+        when (val state =
+            viewModel.viewStates.observeAsState(PuzzleDetailViewState.Loading).value) {
+            is PuzzleDetailViewState.Loading -> LoadingState()
+            is PuzzleDetailViewState.Success -> PuzzleBoard(
+                state.boardGameState,
+                onShuffle = viewModel::shuffle,
+                onKeyClick = viewModel::keypress,
+                onDelete = viewModel::delete,
+                onEnter = viewModel::enter
+            )
+            is PuzzleDetailViewState.Error -> error(state.error)
+        }
     }
 }
 
@@ -171,7 +192,7 @@ fun ActionBar(onShuffle: () -> Unit, onDelete: () -> Unit, onEnter: () -> Unit) 
     }
 }
 
-@Composable     
+@Composable
 fun LoadingState() {
     Box(contentAlignment = Alignment.Center) {
         Text("Puzzle loading")

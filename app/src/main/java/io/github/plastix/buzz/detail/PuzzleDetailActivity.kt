@@ -6,7 +6,10 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material.Colors
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import io.github.plastix.buzz.list.PuzzleListViewModel
@@ -45,7 +48,16 @@ class PuzzleDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            PuzzleDetailUi(viewModel, this::finish)
+            MaterialTheme(
+                colors = MaterialTheme.colors.copy(
+                    primary = "#F8CD05".toColor(),
+                    onPrimary = Color.Black,
+                    secondary = "#E6E6E6".toColor(),
+                    onSurface = Color.Black,
+                )
+            ) {
+                PuzzleDetailUi(viewModel, this::finish)
+            }
         }
     }
 

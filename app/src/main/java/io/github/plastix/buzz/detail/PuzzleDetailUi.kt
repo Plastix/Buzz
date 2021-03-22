@@ -86,9 +86,9 @@ fun String.toColor(): Color = Color(toColorInt())
 fun PuzzleKeypad(centerLetter: Char, outterLetters: List<Char>, onClick: (Char) -> Unit) {
     Layout(
         content = {
-            KeypadButton(centerLetter, "#F8CD05".toColor(), onClick)
+            KeypadButton(centerLetter, onClick, primary = true)
             outterLetters.take(6).forEach {
-                KeypadButton(it, "#E6E6E6".toColor(), onClick)
+                KeypadButton(it, onClick, primary = false)
             }
         },
         modifier = Modifier
@@ -133,12 +133,18 @@ fun PreviewPuzzleKeypad() {
 
 
 @Composable
-fun KeypadButton(letter: Char, color: Color = Color.Magenta, onClick: (Char) -> Unit) {
+fun KeypadButton(letter: Char, onClick: (Char) -> Unit, primary: Boolean) {
     Button(
         modifier = Modifier.size(100.dp),
         shape = RegularHexagonalShape(),
         onClick = { onClick.invoke(letter) },
-        colors = ButtonDefaults.buttonColors(backgroundColor = color)
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = if (primary) {
+                MaterialTheme.colors.primary
+            } else {
+                MaterialTheme.colors.secondary
+            }
+        )
     ) {
         Text(letter.toUpperCase().toString(), fontSize = 24.sp)
     }
@@ -172,23 +178,35 @@ class RegularHexagonalShape : Shape {
 @Composable
 @Preview
 fun PreviewKeypadButton() {
-    KeypadButton(letter = 'x', onClick = {})
+    KeypadButton(letter = 'x', onClick = {}, primary = true)
 }
 
 @Composable
 fun ActionBar(onShuffle: () -> Unit, onDelete: () -> Unit, onEnter: () -> Unit) {
     Row {
-        OutlinedButton(onClick = onDelete) {
+        ActionButton(onClick = onDelete) {
             Text("Delete")
         }
         Spacer(Modifier.size(16.dp))
-        OutlinedButton(onClick = onShuffle) {
+        ActionButton(onClick = onShuffle) {
             Icon(Icons.Filled.Autorenew, "refresh")
         }
         Spacer(Modifier.size(16.dp))
-        OutlinedButton(onClick = onEnter) {
+        ActionButton(onClick = onEnter) {
             Text("Enter")
         }
+    }
+}
+
+@Composable
+fun ActionButton(onClick: () -> Unit, content: @Composable RowScope.() -> Unit) {
+    OutlinedButton(
+        onClick = onClick,
+        colors = ButtonDefaults.outlinedButtonColors(
+            contentColor = MaterialTheme.colors.onSurface
+        )
+    ) {
+        content()
     }
 }
 

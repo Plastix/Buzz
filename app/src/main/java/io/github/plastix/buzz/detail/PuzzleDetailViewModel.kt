@@ -70,7 +70,7 @@ class PuzzleDetailViewModel(
 
     fun delete() {
         updateGameState {
-            gameState.copy(currentWord = gameState.currentWord.drop(1))
+            gameState.copy(currentWord = gameState.currentWord.dropLast(1))
         }
     }
 

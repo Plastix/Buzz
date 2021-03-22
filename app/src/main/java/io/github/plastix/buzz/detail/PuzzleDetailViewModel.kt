@@ -13,7 +13,7 @@ class PuzzleDetailViewModel(
 
     private data class PuzzleDetails(
         val puzzle: Puzzle,
-        val gameModel: GameModel
+        val gameState: PuzzleGameState
     )
 
     private val _viewStates: MediatorLiveData<PuzzleDetailViewState> = MediatorLiveData()
@@ -41,8 +41,8 @@ class PuzzleDetailViewModel(
             // TODO real error handling
             val puzzle: Puzzle =
                 repository.getPuzzle(puzzleId) ?: error("Error loading puzzle from db!")
-            val gameModel = repository.getGameModel(puzzleId) ?: puzzle.blankGameModel()
-            puzzleData.value = PuzzleDetails(puzzle, gameModel)
+            val gameState = repository.getGameState(puzzleId) ?: puzzle.blankGameState()
+            puzzleData.value = PuzzleDetails(puzzle, gameState)
         }
     }
 
@@ -50,39 +50,39 @@ class PuzzleDetailViewModel(
         return BoardGameViewState(
             date = puzzle.date,
             centerLetter = puzzle.centerLetter,
-            outerLetters = gameModel.outerLetters,
-            currentWord = gameModel.currentWord,
-            discoveredWords = gameModel.discoveredWords
+            outerLetters = gameState.outerLetters,
+            currentWord = gameState.currentWord,
+            discoveredWords = gameState.discoveredWords
         )
     }
 
     fun shuffle() {
-        updateGameModel {
-            gameModel.copy(outerLetters = gameModel.outerLetters.shuffled())
+        updateGameState {
+            gameState.copy(outerLetters = gameState.outerLetters.shuffled())
         }
     }
 
     fun keyPress(char: Char) {
-        updateGameModel {
-            gameModel.copy(currentWord = gameModel.currentWord.plus(char))
+        updateGameState {
+            gameState.copy(currentWord = gameState.currentWord.plus(char))
         }
     }
 
     fun saveBoardState() {
-        withGameModel {
+        withGameState {
             GlobalScope.launch {
-                repository.insertGameModel(gameModel, puzzleId)
+                repository.insertGameState(gameState, puzzleId)
             }
         }
     }
 
-    private fun updateGameModel(block: PuzzleDetails.() -> GameModel) {
+    private fun updateGameState(block: PuzzleDetails.() -> PuzzleGameState) {
         val puzzleDetails = puzzleData.value ?: return
         val newModel = puzzleDetails.block()
-        puzzleData.value = puzzleDetails.copy(gameModel = newModel)
+        puzzleData.value = puzzleDetails.copy(gameState = newModel)
     }
 
-    private fun withGameModel(block: PuzzleDetails.() -> Unit) {
+    private fun withGameState(block: PuzzleDetails.() -> Unit) {
         val puzzleDetails = puzzleData.value ?: return
         puzzleDetails.block()
     }

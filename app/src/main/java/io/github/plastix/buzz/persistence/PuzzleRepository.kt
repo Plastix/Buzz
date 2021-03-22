@@ -3,7 +3,7 @@ package io.github.plastix.buzz.persistence
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations.map
 import io.github.plastix.buzz.Puzzle
-import io.github.plastix.buzz.detail.GameModel
+import io.github.plastix.buzz.detail.PuzzleGameState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -30,15 +30,16 @@ class PuzzleRepository(private val database: PuzzleDatabase) {
         }
     }
 
-    suspend fun insertGameModel(gameModel: GameModel, puzzleId: String) {
+    suspend fun insertGameState(puzzleGameState: PuzzleGameState, puzzleId: String) {
         withContext(Dispatchers.IO) {
-            dao.insertGameModel(gameModel.toEntity(puzzleId))
+            dao.insertGameState(puzzleGameState.toEntity(puzzleId))
         }
     }
 
-    suspend fun getGameModel(puzzleId: String): GameModel? {
+    suspend fun getGameState(puzzleId: String): PuzzleGameState? {
         return withContext(Dispatchers.IO) {
-            dao.getGameModel(puzzleId)?.toGameModel()
+            dao.getGameState(puzzleId)?.toGameState()
+
         }
     }
 }

@@ -1,16 +1,14 @@
 package io.github.plastix.buzz.persistence
 
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import io.github.plastix.buzz.Puzzle
-import io.github.plastix.buzz.detail.GameModel
+import io.github.plastix.buzz.detail.PuzzleGameState
 
 /**
- * Database model for persisting a [GameModel].
+ * Database model for persisting a [PuzzleGameState].
  */
 @Entity(tableName = "game-states")
-class GameModelEntity(
+class PuzzleGameStateEntity(
     @PrimaryKey
     val puzzleId: String,
     val outerLetters: List<Char>,
@@ -18,16 +16,16 @@ class GameModelEntity(
     val discoveredWords: Set<String>
 )
 
-fun GameModelEntity.toGameModel(): GameModel {
-    return GameModel(
+fun PuzzleGameStateEntity.toGameState(): PuzzleGameState {
+    return PuzzleGameState(
         outerLetters = outerLetters,
         currentWord = currentWord,
         discoveredWords = discoveredWords
     )
 }
 
-fun GameModel.toEntity(puzzleId: String): GameModelEntity {
-    return GameModelEntity(
+fun PuzzleGameState.toEntity(puzzleId: String): PuzzleGameStateEntity {
+    return PuzzleGameStateEntity(
         puzzleId = puzzleId,
         outerLetters = outerLetters,
         currentWord = currentWord,

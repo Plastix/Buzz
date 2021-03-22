@@ -15,9 +15,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.*
 import androidx.core.graphics.toColorInt
 import kotlin.math.cos
 import kotlin.math.pow
@@ -108,12 +106,12 @@ fun PreviewPuzzleKeypad() {
 @Composable
 fun KeypadButton(letter: Char, color: Color = Color.Magenta, onClick: (Char) -> Unit) {
     Button(
-        modifier = Modifier.size(64.dp),
+        modifier = Modifier.size(128.dp),
         shape = RegularHexagonalShape(),
         onClick = { onClick.invoke(letter) },
         colors = ButtonDefaults.buttonColors(backgroundColor = color)
     ) {
-        Text(letter.toUpperCase().toString())
+        Text(letter.toUpperCase().toString(), fontSize = 24.sp)
     }
 }
 

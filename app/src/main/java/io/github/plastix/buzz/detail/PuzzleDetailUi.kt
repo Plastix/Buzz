@@ -113,7 +113,7 @@ fun KeypadButton(letter: Char, color: Color = Color.Magenta, onClick: (Char) -> 
         onClick = { onClick.invoke(letter) },
         colors = ButtonDefaults.buttonColors(backgroundColor = color)
     ) {
-        Text(letter.toString())
+        Text(letter.toUpperCase().toString())
     }
 }
 

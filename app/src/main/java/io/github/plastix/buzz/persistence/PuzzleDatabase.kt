@@ -8,7 +8,8 @@ import androidx.room.TypeConverters
 
 @Database(
     entities = [
-        PuzzleEntity::class
+        PuzzleEntity::class,
+        GameModelEntity::class
     ],
     version = 1
 )

@@ -11,7 +11,7 @@ import io.github.plastix.buzz.Puzzle
 @Entity(tableName = "puzzles")
 class PuzzleEntity(
     @PrimaryKey
-    val date: String,
+    val puzzleId: String,
     val centerLetter: Char,
     val outerLetters: Set<Char>,
     val pangrams: Set<String>,
@@ -20,7 +20,7 @@ class PuzzleEntity(
 
 fun PuzzleEntity.toPuzzle(): Puzzle {
     return Puzzle(
-        date = date,
+        date = puzzleId,
         centerLetter = centerLetter,
         outerLetters = outerLetters,
         pangrams = pangrams,
@@ -32,13 +32,10 @@ fun List<PuzzleEntity>.toPuzzles(): List<Puzzle> = map(PuzzleEntity::toPuzzle)
 
 fun Puzzle.toEntity(): PuzzleEntity {
     return PuzzleEntity(
-        date = date,
+        puzzleId = date,
         centerLetter = centerLetter,
         outerLetters = outerLetters,
         pangrams = pangrams,
         answers = answers
     )
 }
-
-fun List<Puzzle>.toEntities(): List<PuzzleEntity> = map(Puzzle::toEntity)
-

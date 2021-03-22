@@ -23,4 +23,14 @@ class Converters {
     fun deserializeStringSet(string: String): Set<String> {
         return string.split(",").toSet()
     }
+
+    @TypeConverter
+    fun serializeCharList(list: List<Char>): String {
+        return list.joinToString(separator = ",")
+    }
+
+    @TypeConverter
+    fun deserializeCharList(string: String): List<Char> {
+        return string.split(",").map { it[0] }
+    }
 }

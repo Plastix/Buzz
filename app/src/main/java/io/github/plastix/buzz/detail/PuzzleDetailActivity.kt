@@ -25,25 +25,32 @@ class PuzzleDetailActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val context = this.applicationContext
-        val puzzleId: String = intent.getStringExtra(PUZZLE_ID_KEY) ?: error("Expecting puzzle id!")
+    private val puzzleId: String by lazy {
+        intent.getStringExtra(PUZZLE_ID_KEY) ?: error("Expecting puzzle id!")
+    }
+    private val viewModel: PuzzleDetailViewModel by viewModels {
         // TODO Real dependency injection
-        val viewModel: PuzzleDetailViewModel by viewModels {
-            object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    val repo =
-                        PuzzleRepository(instantiateDatabase(context))
-                    return modelClass.getConstructor(
-                        String::class.java,
-                        PuzzleRepository::class.java
-                    ).newInstance(puzzleId, repo)
-                }
+        object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                val repo =
+                    PuzzleRepository(instantiateDatabase(this@PuzzleDetailActivity.applicationContext))
+                return modelClass.getConstructor(
+                    String::class.java,
+                    PuzzleRepository::class.java
+                ).newInstance(puzzleId, repo)
             }
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setContent {
             PuzzleDetailUi(viewModel)
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.saveBoardState()
     }
 }

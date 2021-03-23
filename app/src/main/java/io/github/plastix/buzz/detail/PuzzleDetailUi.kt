@@ -1,6 +1,7 @@
 package io.github.plastix.buzz.detail
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -15,10 +16,12 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import io.github.plastix.buzz.R
 import io.github.plastix.buzz.theme.BuzzTheme
+import java.util.*
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
@@ -79,7 +82,11 @@ fun PuzzleBoard(
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(response.currentWord.toUpperCase(), fontSize = 30.sp)
+            Text(
+                text = response.currentWord.toUpperCase(Locale.getDefault()),
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Black
+            )
             Spacer(Modifier.height(32.dp))
             PuzzleKeypad(response.centerLetter, response.outerLetters.toList(), onKeyClick)
             Spacer(Modifier.height(32.dp))
@@ -152,7 +159,11 @@ fun KeypadButton(letter: Char, onClick: (Char) -> Unit, primary: Boolean) {
             }
         )
     ) {
-        Text(letter.toUpperCase().toString(), fontSize = 24.sp)
+        Text(
+            text = letter.toUpperCase().toString(),
+            fontSize = 24.sp,
+            fontWeight = FontWeight.ExtraBold
+        )
     }
 }
 
@@ -189,7 +200,7 @@ fun PreviewKeypadButton() {
 
 @Composable
 fun ActionBar(onShuffle: () -> Unit, onDelete: () -> Unit, onEnter: () -> Unit) {
-    Row {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         ActionButton(onClick = onDelete) {
             Text(stringResource(R.string.puzzle_detail_actionbar_delete))
         }
@@ -209,8 +220,9 @@ fun ActionButton(onClick: () -> Unit, content: @Composable RowScope.() -> Unit) 
     OutlinedButton(
         onClick = onClick,
         colors = ButtonDefaults.outlinedButtonColors(
-            contentColor = MaterialTheme.colors.onSurface
-        )
+            contentColor = MaterialTheme.colors.onSurface,
+        ),
+        shape = RoundedCornerShape(50),
     ) {
         content()
     }

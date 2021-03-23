@@ -1,14 +1,13 @@
 package io.github.plastix.buzz.network
 
-import com.squareup.moshi.Moshi
 import io.github.plastix.buzz.Puzzle
 import io.github.plastix.buzz.Result
 import io.github.plastix.buzz.serialization.Json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import okio.IOException
-import java.lang.Exception
 
 class PuzzleFetcher {
 

@@ -1,6 +1,5 @@
 package io.github.plastix.buzz.detail
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,9 +8,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -26,10 +24,12 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import io.github.plastix.buzz.R
 import io.github.plastix.buzz.theme.BuzzTheme
-import java.util.*
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
@@ -120,7 +120,7 @@ fun InputBox(centerLetter: Char, word: String) {
             fontWeight = FontWeight.Black
         )
         val infiniteTransition = rememberInfiniteTransition()
-        val cursorAnimation = infiniteTransition.animateFloat(
+        val cursorAnimation by infiniteTransition.animateFloat(
             initialValue = 0f,
             targetValue = 1f,
             animationSpec = infiniteRepeatable(
@@ -133,7 +133,7 @@ fun InputBox(centerLetter: Char, word: String) {
             fontSize = textSize,
             color = highlightColor,
             fontWeight = FontWeight.Light,
-            modifier = Modifier.alpha(if (cursorAnimation.value >= 0.5f) 1f else 0f)
+            modifier = Modifier.alpha(if (cursorAnimation >= 0.5f) 1f else 0f)
         )
     }
 }

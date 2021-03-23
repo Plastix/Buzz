@@ -5,7 +5,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import io.github.plastix.buzz.detail.PuzzleGameState
 
 @Database(
     entities = [

@@ -6,17 +6,10 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material.Colors
-import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import io.github.plastix.buzz.list.PuzzleListViewModel
-import io.github.plastix.buzz.network.PuzzleFetcher
 import io.github.plastix.buzz.persistence.PuzzleRepository
 import io.github.plastix.buzz.persistence.instantiateDatabase
-import io.github.plastix.buzz.theme.BuzzTheme
 
 
 class PuzzleDetailActivity : AppCompatActivity() {

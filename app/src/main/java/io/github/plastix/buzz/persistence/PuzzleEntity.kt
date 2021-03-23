@@ -1,7 +1,6 @@
 package io.github.plastix.buzz.persistence
 
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import io.github.plastix.buzz.Puzzle
 

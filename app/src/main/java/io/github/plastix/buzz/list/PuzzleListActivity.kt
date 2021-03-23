@@ -1,13 +1,11 @@
 package io.github.plastix.buzz.list
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import io.github.plastix.buzz.Puzzle
 import io.github.plastix.buzz.detail.PuzzleDetailActivity
 import io.github.plastix.buzz.network.PuzzleFetcher
 import io.github.plastix.buzz.persistence.PuzzleRepository

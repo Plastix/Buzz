@@ -16,6 +16,7 @@ import io.github.plastix.buzz.list.PuzzleListViewModel
 import io.github.plastix.buzz.network.PuzzleFetcher
 import io.github.plastix.buzz.persistence.PuzzleRepository
 import io.github.plastix.buzz.persistence.instantiateDatabase
+import io.github.plastix.buzz.theme.BuzzTheme
 
 
 class PuzzleDetailActivity : AppCompatActivity() {
@@ -48,16 +49,7 @@ class PuzzleDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme(
-                colors = MaterialTheme.colors.copy(
-                    primary = "#F8CD05".toColor(),
-                    onPrimary = Color.Black,
-                    secondary = "#E6E6E6".toColor(),
-                    onSurface = Color.Black,
-                )
-            ) {
-                PuzzleDetailUi(viewModel, this::finish)
-            }
+            PuzzleDetailUi(viewModel, this::finish)
         }
     }
 

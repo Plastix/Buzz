@@ -10,7 +10,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
@@ -18,8 +17,8 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
-import androidx.core.graphics.toColorInt
 import io.github.plastix.buzz.R
+import io.github.plastix.buzz.theme.BuzzTheme
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
@@ -30,33 +29,40 @@ fun PuzzleDetailUi(
     viewModel: PuzzleDetailViewModel,
     onBack: () -> Unit
 ) {
-    Scaffold(topBar = {
-        TopAppBar(
-            title = {
-                Text(stringResource(R.string.puzzle_detail_title))
-            },
-            navigationIcon = {
-                IconButton(onClick = onBack) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.puzzle_detail_title)
-                    )
+    BuzzTheme {
+        Scaffold(topBar = {
+            TopAppBar(
+                title = {
+                    Text(stringResource(R.string.puzzle_detail_title))
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.puzzle_detail_title)
+                        )
+                    }
                 }
-            }
-        )
-    }) {
-        when (val state =
-            viewModel.viewStates.observeAsState(PuzzleDetailViewState.Loading).value) {
-            is PuzzleDetailViewState.Loading -> LoadingState()
-            is PuzzleDetailViewState.Success -> PuzzleBoard(
-                state.boardGameState,
-                onShuffle = viewModel::shuffle,
-                onKeyClick = viewModel::keypress,
-                onDelete = viewModel::delete,
-                onEnter = viewModel::enter
             )
-            is PuzzleDetailViewState.Error -> error(state.error)
+        }) {
+            PuzzleDetailScreen(viewModel)
         }
+    }
+}
+
+@Composable
+fun PuzzleDetailScreen(viewModel: PuzzleDetailViewModel) {
+    when (val state =
+        viewModel.viewStates.observeAsState(PuzzleDetailViewState.Loading).value) {
+        is PuzzleDetailViewState.Loading -> PuzzleDetailLoadingState()
+        is PuzzleDetailViewState.Success -> PuzzleBoard(
+            state.boardGameState,
+            onShuffle = viewModel::shuffle,
+            onKeyClick = viewModel::keypress,
+            onDelete = viewModel::delete,
+            onEnter = viewModel::enter
+        )
+        is PuzzleDetailViewState.Error -> error(state.error)
     }
 }
 
@@ -81,8 +87,6 @@ fun PuzzleBoard(
         }
     }
 }
-
-fun String.toColor(): Color = Color(toColorInt())
 
 @Composable
 fun PuzzleKeypad(centerLetter: Char, outterLetters: List<Char>, onClick: (Char) -> Unit) {
@@ -213,9 +217,12 @@ fun ActionButton(onClick: () -> Unit, content: @Composable RowScope.() -> Unit) 
 }
 
 @Composable
-fun LoadingState() {
-    Box(contentAlignment = Alignment.Center) {
-        Text("Puzzle loading")
+fun PuzzleDetailLoadingState() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(modifier = Modifier.size(100.dp))
     }
 }
 

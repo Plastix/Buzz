@@ -31,8 +31,7 @@ class PuzzleListActivity : AppCompatActivity() {
             }
         }
         setContent {
-            val state = viewModel.viewStates.observeAsState(PuzzleListViewState.Loading)
-            PuzzleListUi(state.value, onPuzzleClick = this::openPuzzleDetail)
+            PuzzleListUi(viewModel, onPuzzleClick = this::openPuzzleDetail)
         }
     }
 

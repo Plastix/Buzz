@@ -75,7 +75,12 @@ class PuzzleDetailViewModel(
     }
 
     fun enter() {
-        // TODO
+        updateGameState {
+            // TODO Actual word validation
+            val enteredWord = gameState.currentWord
+            val discoveredSet = gameState.discoveredWords.plus(enteredWord)
+            gameState.copy(currentWord = "", discoveredWords = discoveredSet)
+        }
     }
 
     fun saveBoardState() {

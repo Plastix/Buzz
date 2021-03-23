@@ -10,4 +10,6 @@
     <string name="puzzle_detail_actionbar_delete">Delete</string>
     <string name="puzzle_detail_actionbar_enter">Enter</string>
     <string name="puzzle_detail_actionbar_shuffle">Shuffle</string>
+    <string name="puzzle_detail_word_list_empty">Your words…</string>
+    <string name="puzzle_detail_word_list_word_count">You have found %d words</string>
 </resources>

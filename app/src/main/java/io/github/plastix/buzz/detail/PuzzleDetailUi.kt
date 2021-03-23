@@ -1,5 +1,6 @@
 package io.github.plastix.buzz.detail
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -7,8 +8,9 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Autorenew
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
@@ -30,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.plastix.buzz.R
 import io.github.plastix.buzz.theme.BuzzTheme
+import java.util.*
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
@@ -79,25 +83,114 @@ fun PuzzleDetailScreen(viewModel: PuzzleDetailViewModel) {
 
 @Composable
 fun PuzzleBoard(
-    response: BoardGameViewState,
+    state: BoardGameViewState,
     onShuffle: () -> Unit,
     onKeyClick: (Char) -> Unit,
     onDelete: () -> Unit,
     onEnter: () -> Unit
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            InputBox(centerLetter = response.centerLetter, word = response.currentWord)
+        DiscoveredWordBox(words = state.discoveredWords)
+        Spacer(Modifier.height(32.dp))
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            InputBox(centerLetter = state.centerLetter, word = state.currentWord)
             Spacer(Modifier.height(32.dp))
-            PuzzleKeypad(response.centerLetter, response.outerLetters.toList(), onKeyClick)
+            PuzzleKeypad(state.centerLetter, state.outerLetters.toList(), onKeyClick)
             Spacer(Modifier.height(32.dp))
             ActionBar(onShuffle = onShuffle, onDelete = onDelete, onEnter = onEnter)
         }
     }
 }
+
+@Composable
+fun DiscoveredWordBox(words: Set<String>, defaultExpanded: Boolean = false) {
+    var expanded by remember { mutableStateOf(defaultExpanded) }
+    OutlinedButton(
+        onClick = { expanded = !expanded },
+        colors = ButtonDefaults.outlinedButtonColors(
+            contentColor = MaterialTheme.colors.onSurface,
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .animateContentSize(),
+        ) {
+            if (!expanded) {
+                val text = if (words.isEmpty()) {
+                    stringResource(R.string.puzzle_detail_word_list_empty)
+                } else {
+                    words.joinToString(separator = " ") { word -> word.capitalize(Locale.getDefault()) }
+                }
+                ChevronRow(text, false)
+            } else {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    ChevronRow(
+                        stringResource(
+                            R.string.puzzle_detail_word_list_word_count,
+                            words.size
+                        ), true
+                    )
+                    // TODO full word list here
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ChevronRow(text: String, expanded: Boolean) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.padding(4.dp)
+    ) {
+        Text(
+            text = text,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        Icon(
+            imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+            contentDescription = null
+        )
+    }
+}
+
+@Preview
+@Composable
+fun PreviewDiscoveredWordBoxEmpty() {
+    DiscoveredWordBox(words = emptySet())
+}
+
+@Preview
+@Composable
+fun PreviewDiscoveredWordBoxFull() {
+    DiscoveredWordBox(
+        words = setOf(
+            "handle", "story", "rabbit", "cloud", "couch", "towel", "anger", "greeting"
+        )
+    )
+}
+
+@Preview
+@Composable
+fun PreviewDiscoveredWordBoxFullExpanded() {
+    DiscoveredWordBox(
+        words = setOf(
+            "handle", "story", "rabbit", "cloud"
+        ),
+        defaultExpanded = true
+    )
+}
+
 
 @Composable
 fun InputBox(centerLetter: Char, word: String) {
@@ -249,7 +342,10 @@ fun ActionBar(onShuffle: () -> Unit, onDelete: () -> Unit, onEnter: () -> Unit) 
         }
         Spacer(Modifier.size(16.dp))
         ActionButton(onClick = onShuffle) {
-            Icon(Icons.Filled.Autorenew, stringResource(R.string.puzzle_detail_actionbar_shuffle))
+            Icon(
+                Icons.Filled.Autorenew,
+                stringResource(R.string.puzzle_detail_actionbar_shuffle)
+            )
         }
         Spacer(Modifier.size(16.dp))
         ActionButton(onClick = onEnter) {

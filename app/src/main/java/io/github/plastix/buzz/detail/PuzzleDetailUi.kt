@@ -1,5 +1,7 @@
 package io.github.plastix.buzz.detail
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -8,8 +10,11 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
@@ -96,21 +101,41 @@ fun PuzzleBoard(
 
 @Composable
 fun InputBox(centerLetter: Char, word: String) {
-    Text(
-        text = buildAnnotatedString {
-            word.forEach { c ->
-                if (c == centerLetter) {
-                    withStyle(style = SpanStyle(color = MaterialTheme.colors.primary)) {
+    val textSize = 30.sp
+    val highlightColor = MaterialTheme.colors.primary
+    Row {
+        Text(
+            text = buildAnnotatedString {
+                word.forEach { c ->
+                    if (c == centerLetter) {
+                        withStyle(style = SpanStyle(color = highlightColor)) {
+                            append(c.toUpperCase())
+                        }
+                    } else {
                         append(c.toUpperCase())
                     }
-                } else {
-                    append(c.toUpperCase())
                 }
-            }
-        },
-        fontSize = 30.sp,
-        fontWeight = FontWeight.Black
-    )
+            },
+            fontSize = textSize,
+            fontWeight = FontWeight.Black
+        )
+        val infiniteTransition = rememberInfiniteTransition()
+        val cursorAnimation = infiniteTransition.animateFloat(
+            initialValue = 0f,
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(500, easing = LinearEasing),
+                repeatMode = RepeatMode.Reverse
+            )
+        )
+        Text(
+            text = "|",
+            fontSize = textSize,
+            color = highlightColor,
+            fontWeight = FontWeight.Light,
+            modifier = Modifier.alpha(if (cursorAnimation.value >= 0.5f) 1f else 0f)
+        )
+    }
 }
 
 @Composable

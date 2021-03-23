@@ -19,6 +19,8 @@ private val DarkColors = darkColors(
 private val LightColors = lightColors(
     primary = YELLOW,
     secondary = GRAY,
+    onSurface = Color.Black,
+    onPrimary = Color.Black
 )
 
 @Composable

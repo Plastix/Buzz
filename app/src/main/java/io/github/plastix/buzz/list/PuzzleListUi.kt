@@ -6,9 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.Text
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import io.github.plastix.buzz.R
 
 @Composable
 fun PuzzleListUi(viewState: PuzzleListViewState, onPuzzleClick: (puzzleId: String) -> Unit) {
@@ -27,7 +29,7 @@ fun PuzzleListUi(viewState: PuzzleListViewState, onPuzzleClick: (puzzleId: Strin
 
 @Composable
 fun EmptyState() {
-    Text("No downloaded puzzles!")
+    Text(stringResource(R.string.puzzle_list_empty_state))
 }
 
 @Composable

@@ -15,9 +15,11 @@ import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.core.graphics.toColorInt
+import io.github.plastix.buzz.R
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
@@ -31,13 +33,13 @@ fun PuzzleDetailUi(
     Scaffold(topBar = {
         TopAppBar(
             title = {
-                Text("Puzzle")
+                Text(stringResource(R.string.puzzle_detail_title))
             },
             navigationIcon = {
                 IconButton(onClick = onBack) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Back"
+                        contentDescription = stringResource(R.string.puzzle_detail_title)
                     )
                 }
             }
@@ -185,15 +187,15 @@ fun PreviewKeypadButton() {
 fun ActionBar(onShuffle: () -> Unit, onDelete: () -> Unit, onEnter: () -> Unit) {
     Row {
         ActionButton(onClick = onDelete) {
-            Text("Delete")
+            Text(stringResource(R.string.puzzle_detail_actionbar_delete))
         }
         Spacer(Modifier.size(16.dp))
         ActionButton(onClick = onShuffle) {
-            Icon(Icons.Filled.Autorenew, "refresh")
+            Icon(Icons.Filled.Autorenew, stringResource(R.string.puzzle_detail_actionbar_shuffle))
         }
         Spacer(Modifier.size(16.dp))
         ActionButton(onClick = onEnter) {
-            Text("Enter")
+            Text(stringResource(R.string.puzzle_detail_actionbar_enter))
         }
     }
 }

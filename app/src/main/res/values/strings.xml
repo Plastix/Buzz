@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Buzz</string>
+    <string name="back">Back</string>
+
+    <string name="puzzle_list_empty_state">No downloaded puzzles!</string>
+
+    <string name="puzzle_detail_title">Puzzle</string>
+    <string name="puzzle_detail_actionbar_delete">Delete</string>
+    <string name="puzzle_detail_actionbar_enter">Enter</string>
+    <string name="puzzle_detail_actionbar_shuffle">Shuffle</string>
 </resources>

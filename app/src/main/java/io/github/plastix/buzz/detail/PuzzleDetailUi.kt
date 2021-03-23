@@ -16,7 +16,10 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import io.github.plastix.buzz.R
@@ -82,17 +85,32 @@ fun PuzzleBoard(
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = response.currentWord.toUpperCase(Locale.getDefault()),
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Black
-            )
+            InputBox(centerLetter = response.centerLetter, word = response.currentWord)
             Spacer(Modifier.height(32.dp))
             PuzzleKeypad(response.centerLetter, response.outerLetters.toList(), onKeyClick)
             Spacer(Modifier.height(32.dp))
             ActionBar(onShuffle = onShuffle, onDelete = onDelete, onEnter = onEnter)
         }
     }
+}
+
+@Composable
+fun InputBox(centerLetter: Char, word: String) {
+    Text(
+        text = buildAnnotatedString {
+            word.forEach { c ->
+                if (c == centerLetter) {
+                    withStyle(style = SpanStyle(color = MaterialTheme.colors.primary)) {
+                        append(c.toUpperCase())
+                    }
+                } else {
+                    append(c.toUpperCase())
+                }
+            }
+        },
+        fontSize = 30.sp,
+        fontWeight = FontWeight.Black
+    )
 }
 
 @Composable

@@ -139,6 +139,8 @@ fun DiscoveredWordBox(words: Set<String>, defaultExpanded: Boolean = false) {
                         ), true
                     )
                     // TODO full word list here
+                    Spacer(Modifier.height(16.dp))
+                    Text("TODO WORD GRID HERE")
                 }
             }
         }
@@ -150,7 +152,9 @@ fun ChevronRow(text: String, expanded: Boolean) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.padding(4.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
     ) {
         Text(
             text = text,

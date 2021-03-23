@@ -7,5 +7,6 @@ sealed class PuzzleListViewState {
 
 data class PuzzleRowState(
     val puzzleId: String,
-    val displayString: String
+    val displayString: String,
+    val puzzleString: String
 )

@@ -10,6 +10,7 @@ import io.github.plastix.buzz.formatDate
 import io.github.plastix.buzz.network.PuzzleFetcher
 import io.github.plastix.buzz.persistence.PuzzleRepository
 import kotlinx.coroutines.launch
+import java.util.*
 
 
 class PuzzleListViewModel(
@@ -36,7 +37,9 @@ class PuzzleListViewModel(
     private fun Puzzle.toRowState(): PuzzleRowState {
         return PuzzleRowState(
             puzzleId = date,
-            displayString = formatDate(date)
+            displayString = formatDate(date),
+            puzzleString = centerLetter.plus(outerLetters.joinToString(separator = ""))
+                .toUpperCase(Locale.getDefault())
         )
     }
 

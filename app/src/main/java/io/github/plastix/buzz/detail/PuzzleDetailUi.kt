@@ -3,6 +3,7 @@ package io.github.plastix.buzz.detail
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -22,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,10 +34,7 @@ import androidx.compose.ui.unit.sp
 import io.github.plastix.buzz.R
 import io.github.plastix.buzz.theme.BuzzTheme
 import java.util.*
-import kotlin.math.cos
-import kotlin.math.pow
-import kotlin.math.sin
-import kotlin.math.sqrt
+import kotlin.math.*
 
 @Composable
 fun PuzzleDetailUi(
@@ -145,9 +144,10 @@ fun DiscoveredWordBox(words: Set<String>, defaultExpanded: Boolean = false) {
                             words.size
                         ), true
                     )
-                    // TODO full word list here
-                    Spacer(Modifier.height(16.dp))
-                    Text("TODO WORD GRID HERE")
+                    if (words.isNotEmpty()) {
+                        Spacer(Modifier.height(16.dp))
+                        ColumnGridList(words.toList())
+                    }
                 }
             }
         }
@@ -155,7 +155,41 @@ fun DiscoveredWordBox(words: Set<String>, defaultExpanded: Boolean = false) {
 }
 
 @Composable
-fun ChevronRow(text: String, expanded: Boolean, textColor: Color = MaterialTheme.colors.onPrimary) {
+fun ColumnGridList(words: List<String>, columnNum: Int = 3) {
+    val wordsPerColumn = ceil(words.size / columnNum.toDouble()).toInt()
+    val columns = words.windowed(wordsPerColumn, step = wordsPerColumn, partialWindows = true)
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        for (i in 0 until wordsPerColumn) {
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    for (j in 0 until columnNum) {
+                        val word = columns.getOrNull(j)?.getOrNull(i) ?: ""
+                        println(word)
+                        Text(
+                            text = word,
+                            maxLines = 1,
+                            textAlign = TextAlign.Start,
+                            modifier = Modifier.weight(1f),
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+            }
+
+        }
+    }
+}
+
+@Composable
+fun ChevronRow(
+    text: String,
+    expanded: Boolean,
+    textColor: Color = MaterialTheme.colors.onPrimary
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,

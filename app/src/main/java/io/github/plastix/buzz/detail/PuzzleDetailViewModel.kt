@@ -83,6 +83,13 @@ class PuzzleDetailViewModel(
         }
     }
 
+    fun resetGame() {
+        // TODO confirmation dialog
+        updateGameState {
+            puzzle.blankGameState()
+        }
+    }
+
     fun saveBoardState() {
         withGameState {
             GlobalScope.launch {

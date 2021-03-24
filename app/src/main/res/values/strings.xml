@@ -7,6 +7,7 @@
     <string name="puzzle_list_empty_icon">Download failure icon</string>
 
     <string name="puzzle_detail_title">Puzzle</string>
+    <string name="puzzle_detail_toolbar_reset">Reset</string>
     <string name="puzzle_detail_actionbar_delete">Delete</string>
     <string name="puzzle_detail_actionbar_enter">Enter</string>
     <string name="puzzle_detail_actionbar_shuffle">Shuffle</string>

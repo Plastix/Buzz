@@ -6,10 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Autorenew
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -55,6 +52,14 @@ fun PuzzleDetailUi(
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = stringResource(R.string.puzzle_detail_title)
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = viewModel::resetGame) {
+                        Icon(
+                            imageVector = Icons.Filled.Replay,
+                            contentDescription = stringResource(R.string.puzzle_detail_toolbar_reset)
                         )
                     }
                 }

@@ -11,7 +11,11 @@ class Converters {
 
     @TypeConverter
     fun deserializeCharSet(string: String): Set<Char> {
-        return string.split(",").map { it[0] }.toSet()
+        return if (string.isBlank()) {
+            emptySet()
+        } else {
+            string.split(",").map { it[0] }.toSet()
+        }
     }
 
     @TypeConverter
@@ -21,7 +25,11 @@ class Converters {
 
     @TypeConverter
     fun deserializeStringSet(string: String): Set<String> {
-        return string.split(",").toSet()
+        return if (string.isBlank()) {
+            emptySet()
+        } else {
+            string.split(",").toSet()
+        }
     }
 
     @TypeConverter
@@ -31,6 +39,10 @@ class Converters {
 
     @TypeConverter
     fun deserializeCharList(string: String): List<Char> {
-        return string.split(",").map { it[0] }
+        return if (string.isBlank()) {
+            emptyList()
+        } else {
+            string.split(",").map { it[0] }
+        }
     }
 }

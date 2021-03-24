@@ -9,4 +9,8 @@ data class Puzzle(
     val outerLetters: Set<Char>,
     val pangrams: Set<String>,
     val answers: Set<String>
-)
+) {
+    fun eligibleLetter(char: Char) : Boolean {
+        return centerLetter == char || char in outerLetters
+    }
+}

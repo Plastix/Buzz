@@ -3,6 +3,7 @@ package io.github.plastix.buzz.detail
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.KeyEvent
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -49,5 +50,13 @@ class PuzzleDetailActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         viewModel.saveBoardState()
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        return if (!viewModel.keyboardEvent(event.unicodeChar)) {
+            super.onKeyDown(keyCode, event)
+        } else {
+            true
+        }
     }
 }

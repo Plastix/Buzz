@@ -98,6 +98,34 @@ class PuzzleDetailViewModel(
         }
     }
 
+    fun keyboardEvent(unicodeChar: Int): Boolean {
+        var handled = false
+        withGameState {
+            when (unicodeChar) {
+                0 -> {
+                    delete()
+                    handled = true
+                }
+                10 -> {
+                    enter()
+                    handled = true
+                }
+                32 -> {
+                    shuffle()
+                    handled = true
+                }
+                else -> {
+                    val char = unicodeChar.toChar()
+                    if (puzzle.eligibleLetter(char)) {
+                        keypress(char)
+                        handled = true
+                    }
+                }
+            }
+        }
+        return handled
+    }
+
     private fun updateGameState(block: PuzzleDetails.() -> PuzzleGameState) {
         val puzzleDetails = puzzleData.value ?: return
         val newModel = puzzleDetails.block()

@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
@@ -132,9 +133,10 @@ fun DiscoveredWordBox(words: Set<String>, defaultExpanded: Boolean = false) {
                 val text = if (words.isEmpty()) {
                     stringResource(R.string.puzzle_detail_word_list_empty)
                 } else {
-                    words.joinToString(separator = " ") { word -> word.capitalize(Locale.getDefault()) }
+                    words.reversed()
+                        .joinToString(separator = " ") { word -> word.capitalize(Locale.getDefault()) }
                 }
-                ChevronRow(text, false)
+                ChevronRow(text, expanded = false)
             } else {
                 Column(modifier = Modifier.fillMaxSize()) {
                     ChevronRow(
@@ -153,7 +155,7 @@ fun DiscoveredWordBox(words: Set<String>, defaultExpanded: Boolean = false) {
 }
 
 @Composable
-fun ChevronRow(text: String, expanded: Boolean) {
+fun ChevronRow(text: String, expanded: Boolean, textColor: Color = MaterialTheme.colors.onPrimary) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -164,8 +166,11 @@ fun ChevronRow(text: String, expanded: Boolean) {
         Text(
             text = text,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f),
+            color = textColor
         )
+        Spacer(modifier = Modifier.width(20.dp))
         Icon(
             imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
             contentDescription = null

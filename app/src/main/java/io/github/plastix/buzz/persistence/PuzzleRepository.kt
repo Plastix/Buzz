@@ -5,6 +5,7 @@ import androidx.lifecycle.Transformations.map
 import io.github.plastix.buzz.Puzzle
 import io.github.plastix.buzz.PuzzleBoardState
 import io.github.plastix.buzz.PuzzleGameState
+import io.github.plastix.buzz.blankGameState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -18,9 +19,10 @@ class PuzzleRepository(private val database: PuzzleDatabase) {
     fun getPuzzles(): LiveData<List<PuzzleBoardState>> {
         return map(dao.getPuzzles()) { states ->
             states.map { entity ->
+                val puzzle = entity.puzzle.toPuzzle()
                 PuzzleBoardState(
-                    puzzle = entity.puzzle.toPuzzle(),
-                    gameState = entity.gameState.toGameState()
+                    puzzle = puzzle,
+                    gameState = entity.gameState?.toGameState() ?: puzzle.blankGameState()
                 )
             }
         }

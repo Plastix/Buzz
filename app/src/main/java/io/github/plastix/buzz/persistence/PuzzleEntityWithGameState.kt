@@ -10,5 +10,6 @@ data class PuzzleEntityWithGameState(
     @Embedded
     val puzzle: PuzzleEntity,
     @Relation(parentColumn = "puzzleId", entityColumn="puzzleId")
-    val gameState: PuzzleGameStateEntity
+    // Nullable if no current game state saved for the puzzle
+    val gameState: PuzzleGameStateEntity?
 )

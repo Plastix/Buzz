@@ -117,6 +117,12 @@ class PuzzleDetailViewModel(
         }
     }
 
+    fun infoIconClicked() {
+        updateDetailsState {
+            copy(activeDialog = Dialog.InfoDialog)
+        }
+    }
+
     fun resetConfirmed() {
         updateGameState {
             puzzle.blankGameState()

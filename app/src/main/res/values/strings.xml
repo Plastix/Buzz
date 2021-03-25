@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Buzz</string>
     <string name="back">Back</string>
+    <string name="close">Close</string>
 
     <string name="puzzle_list_title">Puzzles</string>
     <string name="puzzle_list_empty_state">No downloaded puzzles!</string>
@@ -8,6 +9,7 @@
 
     <string name="puzzle_detail_title">Puzzle</string>
     <string name="puzzle_detail_toolbar_reset">Reset</string>
+    <string name="puzzle_detail_toolbar_info">Rules</string>
     <string name="puzzle_detail_actionbar_delete">Delete</string>
     <string name="puzzle_detail_actionbar_enter">Enter</string>
     <string name="puzzle_detail_actionbar_shuffle">Shuffle</string>
@@ -28,4 +30,21 @@
     <string name="puzzle_rank_great">Great</string>
     <string name="puzzle_rank_amazing">Amazing</string>
     <string name="puzzle_rank_genius">Genius</string>
+
+    <string name="puzzle_rules_dialog_title">How To Play</string>
+    <string name="puzzle_rules_title">Create words using letters from the hive.</string>
+    <string-array name="puzzle_rules">
+        <item>Words must contain at least 4 letters.</item>
+        <item>Words must include the center letter.</item>
+        <item>Our word list does not include words that are obscure, hyphenated, or proper nouns.</item>
+        <item>No cussing either, sorry.</item>
+        <item>Letters can be used more than once.</item>
+    </string-array>
+    <string name="puzzle_scoring_rules_title">Score points to increase your rating.</string>
+    <string-array name="puzzle_scoring_rules">
+        <item>4-letter words are worth 1 point each.</item>
+        <item>Longer words earn 1 point per letter.</item>
+        <item>Each puzzle includes at least one "pangram" which uses every letter. These are worth 7 extra points!</item>
+    </string-array>
+    <string name="puzzle_rules_new_puzzle">New puzzles are released daily at 3:00 a.m. ET.</string>
 </resources>

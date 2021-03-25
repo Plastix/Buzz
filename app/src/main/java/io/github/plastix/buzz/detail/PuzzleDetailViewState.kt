@@ -21,4 +21,5 @@ class BoardGameViewState(
 
 sealed class Dialog {
     object ConfirmReset : Dialog()
+    object InfoDialog : Dialog()
 }

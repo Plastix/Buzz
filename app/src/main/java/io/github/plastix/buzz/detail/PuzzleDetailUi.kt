@@ -2,12 +2,16 @@ package io.github.plastix.buzz.detail
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -19,6 +23,7 @@ import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -31,6 +36,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import io.github.plastix.buzz.PuzzleRanking
 import io.github.plastix.buzz.R
 import io.github.plastix.buzz.theme.BuzzTheme
@@ -57,6 +63,12 @@ fun PuzzleDetailUi(
                     }
                 },
                 actions = {
+                    IconButton(onClick = viewModel::infoIconClicked) {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = stringResource(R.string.puzzle_detail_toolbar_info)
+                        )
+                    }
                     IconButton(onClick = viewModel::resetGame) {
                         Icon(
                             imageVector = Icons.Filled.Replay,
@@ -128,6 +140,101 @@ fun PuzzleBoard(
 fun ShowDialog(viewModel: PuzzleDetailViewModel, activeDialog: Dialog) {
     when (activeDialog) {
         is Dialog.ConfirmReset -> ShowResetConfirmationDialog(viewModel)
+        is Dialog.InfoDialog -> ShowInfoDialog(viewModel)
+    }
+}
+
+@Composable
+fun ShowInfoDialog(viewModel: PuzzleDetailViewModel) {
+    Dialog(onDismissRequest = viewModel::dismissActiveDialog) {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(fraction = 0.9f),
+            shape = RoundedCornerShape(4.dp),
+            color = MaterialTheme.colors.surface
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = stringResource(R.string.puzzle_rules_dialog_title),
+                        fontSize = 24.sp
+                    )
+                    IconButton(onClick = viewModel::dismissActiveDialog) {
+                        Icon(
+                            imageVector = Icons.Filled.Clear,
+                            contentDescription = stringResource(R.string.close)
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.size(16.dp))
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    Text(
+                        text = stringResource(R.string.puzzle_rules_title),
+                        modifier = Modifier.fillMaxWidth(),
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.size(16.dp))
+                    BulletPointList(stringArrayResource(R.array.puzzle_rules))
+                    Spacer(modifier = Modifier.size(16.dp))
+                    Text(
+                        text = stringResource(R.string.puzzle_scoring_rules_title),
+                        modifier = Modifier.fillMaxWidth(),
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.size(16.dp))
+                    BulletPointList(stringArrayResource(R.array.puzzle_scoring_rules))
+                    Spacer(modifier = Modifier.size(16.dp))
+                    Text(
+                        text = stringResource(R.string.puzzle_rules_new_puzzle),
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun BulletPointList(strings: Array<String>) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        strings.forEach { string ->
+            Row(verticalAlignment = Alignment.Top) {
+                Column {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Icon(
+                        modifier = Modifier.size(6.dp),
+                        imageVector = Icons.Filled.Circle, contentDescription = "bullet point"
+                    )
+                }
+                Spacer(modifier = Modifier.size(8.dp))
+                Text(
+                    text = string,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun PreviewBulletPointList() {
+    Box(modifier = Modifier.background(Color.White)) {
+        BulletPointList(stringArrayResource(id = R.array.puzzle_rules))
     }
 }
 

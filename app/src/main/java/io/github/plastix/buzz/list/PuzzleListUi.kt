@@ -22,6 +22,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.github.plastix.buzz.PuzzleRanking
 import io.github.plastix.buzz.R
 import io.github.plastix.buzz.theme.BuzzTheme
 
@@ -106,19 +107,46 @@ fun PuzzleRow(puzzleRow: PuzzleRowState, onPuzzleClick: (puzzleId: String) -> Un
         Column(modifier = Modifier.padding(12.dp)) {
             Text(puzzleRow.displayString, fontSize = 24.sp, fontWeight = FontWeight.Light)
             Spacer(modifier = Modifier.size(4.dp))
-            Text(
-                buildAnnotatedString {
-                    withStyle(style = SpanStyle(color = MaterialTheme.colors.primary)) {
-                        append(puzzleRow.puzzleString.firstOrNull() ?: ' ')
-                    }
-                    append(puzzleRow.puzzleString.drop(1))
-                },
-                fontSize = 16.sp,
-                maxLines = 1,
-                letterSpacing = 2.sp,
-                fontWeight = FontWeight.Black
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    buildAnnotatedString {
+                        withStyle(style = SpanStyle(color = MaterialTheme.colors.primary)) {
+                            append(puzzleRow.puzzleString.firstOrNull() ?: ' ')
+                        }
+                        append(puzzleRow.puzzleString.drop(1))
+                    },
+                    modifier = Modifier.weight(1f),
+                    fontSize = 16.sp,
+                    maxLines = 1,
+                    letterSpacing = 2.sp,
+                    fontWeight = FontWeight.Black
+                )
+                RankLabel(puzzleRow.puzzleRank, puzzleRow.currentScore)
+            }
         }
+    }
+}
+
+@Composable
+fun RankLabel(rank: PuzzleRanking, score: Int) {
+    Row {
+        val rankString = when (rank) {
+            PuzzleRanking.Beginner -> stringResource(R.string.puzzle_rank_beginner)
+            PuzzleRanking.GoodStart -> stringResource(R.string.puzzle_rank_goodstart)
+            PuzzleRanking.MovingUp -> stringResource(R.string.puzzle_rank_movingup)
+            PuzzleRanking.Good -> stringResource(R.string.puzzle_rank_good)
+            PuzzleRanking.Solid -> stringResource(R.string.puzzle_rank_solid)
+            PuzzleRanking.Nice -> stringResource(R.string.puzzle_rank_nice)
+            PuzzleRanking.Great -> stringResource(R.string.puzzle_rank_great)
+            PuzzleRanking.Amazing -> stringResource(R.string.puzzle_rank_amazing)
+            PuzzleRanking.Genius -> stringResource(R.string.puzzle_rank_genius)
+        }
+        Text(text = rankString)
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(text = "($score)")
     }
 }
 
@@ -147,8 +175,14 @@ fun PreviewPuzzleList() {
     Box(modifier = Modifier.background(White)) {
         PuzzleList(
             puzzles = listOf(
-                PuzzleRowState("2021-03-21", "Monday March 22, 2021", "lenoptu"),
-                PuzzleRowState("2021-03-21", "Sunday March 21, 2021", "lenoptu"),
+                PuzzleRowState(
+                    "2021-03-21", "Monday March 22, 2021", "lenoptu",
+                    PuzzleRanking.Genius, 300
+                ),
+                PuzzleRowState(
+                    "2021-03-21", "Sunday March 21, 2021", "lenoptu",
+                    PuzzleRanking.GoodStart, 23
+                ),
             ),
             onPuzzleClick = {}
         )

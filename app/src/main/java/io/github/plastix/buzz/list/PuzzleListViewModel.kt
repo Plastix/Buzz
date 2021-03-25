@@ -5,6 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.plastix.buzz.Puzzle
+import io.github.plastix.buzz.PuzzleBoardState
 import io.github.plastix.buzz.Result
 import io.github.plastix.buzz.formatDate
 import io.github.plastix.buzz.network.PuzzleFetcher
@@ -34,12 +35,14 @@ class PuzzleListViewModel(
         }
     }
 
-    private fun Puzzle.toRowState(): PuzzleRowState {
+    private fun PuzzleBoardState.toRowState(): PuzzleRowState {
         return PuzzleRowState(
-            puzzleId = date,
-            displayString = formatDate(date),
-            puzzleString = centerLetter.plus(outerLetters.joinToString(separator = ""))
-                .toUpperCase(Locale.getDefault())
+            puzzleId = puzzle.date,
+            displayString = formatDate(puzzle.date),
+            puzzleString = puzzle.centerLetter.plus(puzzle.outerLetters.joinToString(separator = ""))
+                .toUpperCase(Locale.getDefault()),
+            puzzleRank = currentRank,
+            currentScore = currentScore
         )
     }
 

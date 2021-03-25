@@ -3,6 +3,7 @@ package io.github.plastix.buzz.persistence
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations.map
 import io.github.plastix.buzz.Puzzle
+import io.github.plastix.buzz.PuzzleBoardState
 import io.github.plastix.buzz.PuzzleGameState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -14,8 +15,15 @@ class PuzzleRepository(private val database: PuzzleDatabase) {
 
     private val dao: PuzzleDao by lazy { database.puzzleDao() }
 
-    fun getPuzzles(): LiveData<List<Puzzle>> {
-        return map(dao.getPuzzles(), List<PuzzleEntity>::toPuzzles)
+    fun getPuzzles(): LiveData<List<PuzzleBoardState>> {
+        return map(dao.getPuzzles()) { states ->
+            states.map { entity ->
+                PuzzleBoardState(
+                    puzzle = entity.puzzle.toPuzzle(),
+                    gameState = entity.gameState.toGameState()
+                )
+            }
+        }
     }
 
     suspend fun getPuzzle(puzzleId: String): Puzzle? {

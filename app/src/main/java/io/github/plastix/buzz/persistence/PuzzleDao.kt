@@ -10,7 +10,7 @@ import androidx.room.Query
 interface PuzzleDao {
 
     @Query("select * from puzzles")
-    fun getPuzzles(): LiveData<List<PuzzleEntity>>
+    fun getPuzzles(): LiveData<List<PuzzleEntityWithGameState>>
 
     @Query("select * from puzzles where puzzleId == :puzzleId")
     fun getPuzzleById(puzzleId: String): PuzzleEntity?

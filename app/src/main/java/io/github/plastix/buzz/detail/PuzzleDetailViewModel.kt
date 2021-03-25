@@ -17,7 +17,12 @@ class PuzzleDetailViewModel(
     private val _viewStates: MediatorLiveData<PuzzleDetailViewState> = MediatorLiveData()
     val viewStates: LiveData<PuzzleDetailViewState> = _viewStates
 
-    private var puzzleData: MutableLiveData<PuzzleBoardState?> = MutableLiveData(null)
+    private data class DetailState(
+        val board: PuzzleBoardState,
+        val activeDialog: Dialog?
+    )
+
+    private var detailState: MutableLiveData<DetailState?> = MutableLiveData(null)
 
     init {
         loadPuzzleData()
@@ -25,11 +30,12 @@ class PuzzleDetailViewModel(
     }
 
     private fun listenForBoardChanges() {
-        _viewStates.addSource(puzzleData) { puzzleData ->
+        _viewStates.addSource(detailState) { puzzleData ->
             if (puzzleData == null) {
                 _viewStates.value = PuzzleDetailViewState.Loading
             } else {
-                _viewStates.value = PuzzleDetailViewState.Success(puzzleData.constructBoardState())
+                _viewStates.value =
+                    PuzzleDetailViewState.Success(puzzleData.constructBoardState())
             }
         }
     }
@@ -40,19 +46,23 @@ class PuzzleDetailViewModel(
             val puzzle: Puzzle =
                 repository.getPuzzle(puzzleId) ?: error("Error loading puzzle from db!")
             val gameState = repository.getGameState(puzzleId) ?: puzzle.blankGameState()
-            puzzleData.value = PuzzleBoardState(puzzle, gameState)
+            detailState.value = DetailState(
+                board = PuzzleBoardState(puzzle, gameState),
+                activeDialog = null
+            )
         }
     }
 
-    private fun PuzzleBoardState.constructBoardState(): BoardGameViewState {
+    private fun DetailState.constructBoardState(): BoardGameViewState {
         return BoardGameViewState(
-            date = puzzle.date,
-            centerLetter = puzzle.centerLetter,
-            outerLetters = gameState.outerLetters,
-            currentWord = gameState.currentWord,
-            discoveredWords = gameState.discoveredWords,
-            currentRank = currentRank,
-            currentScore = currentScore
+            date = board.puzzle.date,
+            centerLetter = board.puzzle.centerLetter,
+            outerLetters = board.gameState.outerLetters,
+            currentWord = board.gameState.currentWord,
+            discoveredWords = board.gameState.discoveredWords,
+            currentRank = board.currentRank,
+            currentScore = board.currentScore,
+            activeDialog = activeDialog
         )
     }
 
@@ -87,16 +97,27 @@ class PuzzleDetailViewModel(
         }
     }
 
+    fun dismissActiveDialog() {
+        updateDetailsState {
+            copy(activeDialog = null)
+        }
+    }
+
     private fun PuzzleBoardState.isWordValid(word: String): Boolean {
-        if(word.length < 4) return false // "Too short"
-        if(!word.contains(puzzle.centerLetter)) return false // "Missing center letter"
-        if(word in gameState.discoveredWords) return false // "Already found"
-        if(word !in puzzle.answers) return false // "Not in word list"
+        if (word.length < 4) return false // "Too short"
+        if (!word.contains(puzzle.centerLetter)) return false // "Missing center letter"
+        if (word in gameState.discoveredWords) return false // "Already found"
+        if (word !in puzzle.answers) return false // "Not in word list"
         return true
     }
 
     fun resetGame() {
-        // TODO confirmation dialog
+        updateDetailsState {
+            copy(activeDialog = Dialog.ConfirmReset)
+        }
+    }
+
+    fun resetConfirmed() {
         updateGameState {
             puzzle.blankGameState()
         }
@@ -139,13 +160,24 @@ class PuzzleDetailViewModel(
     }
 
     private fun updateGameState(block: PuzzleBoardState.() -> PuzzleGameState) {
-        val puzzleDetails = puzzleData.value ?: return
+        val puzzleDetails = detailState.value ?: return
+        val newModel = puzzleDetails.board.block()
+        detailState.value =
+            puzzleDetails.copy(
+                board = puzzleDetails.board.copy(
+                    gameState = newModel
+                )
+            )
+    }
+
+    private fun updateDetailsState(block: DetailState.() -> DetailState) {
+        val puzzleDetails = detailState.value ?: return
         val newModel = puzzleDetails.block()
-        puzzleData.value = puzzleDetails.copy(gameState = newModel)
+        detailState.value = newModel
     }
 
     private fun withGameState(block: PuzzleBoardState.() -> Unit) {
-        val puzzleDetails = puzzleData.value ?: return
-        puzzleDetails.block()
+        val puzzleDetails = detailState.value ?: return
+        puzzleDetails.board.block()
     }
 }

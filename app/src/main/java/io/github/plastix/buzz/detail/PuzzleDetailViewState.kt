@@ -15,5 +15,10 @@ class BoardGameViewState(
     val currentWord: String,
     val discoveredWords: Set<String>,
     val currentRank: PuzzleRanking,
-    val currentScore: Int
+    val currentScore: Int,
+    val activeDialog: Dialog?
 )
+
+sealed class Dialog {
+    object ConfirmReset : Dialog()
+}

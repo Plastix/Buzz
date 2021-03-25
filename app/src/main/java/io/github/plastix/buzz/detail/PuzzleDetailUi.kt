@@ -78,6 +78,7 @@ fun PuzzleDetailScreen(viewModel: PuzzleDetailViewModel) {
         is PuzzleDetailViewState.Loading -> PuzzleDetailLoadingState()
         is PuzzleDetailViewState.Success -> PuzzleBoard(
             state.boardGameState,
+            viewModel,
             onShuffle = viewModel::shuffle,
             onKeyClick = viewModel::keypress,
             onDelete = viewModel::delete,
@@ -90,31 +91,65 @@ fun PuzzleDetailScreen(viewModel: PuzzleDetailViewModel) {
 @Composable
 fun PuzzleBoard(
     state: BoardGameViewState,
+    viewModel: PuzzleDetailViewModel,
     onShuffle: () -> Unit,
     onKeyClick: (Char) -> Unit,
     onDelete: () -> Unit,
     onEnter: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        ScoreBox(state.currentRank, state.currentScore)
-        Spacer(Modifier.height(12.dp))
-        DiscoveredWordBox(words = state.discoveredWords)
-        Spacer(Modifier.height(32.dp))
+    Box {
         Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
-            InputBox(centerLetter = state.centerLetter, word = state.currentWord)
+            ScoreBox(state.currentRank, state.currentScore)
+            Spacer(Modifier.height(12.dp))
+            DiscoveredWordBox(words = state.discoveredWords)
             Spacer(Modifier.height(32.dp))
-            PuzzleKeypad(state.centerLetter, state.outerLetters.toList(), onKeyClick)
-            Spacer(Modifier.height(32.dp))
-            ActionBar(onShuffle = onShuffle, onDelete = onDelete, onEnter = onEnter)
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                InputBox(centerLetter = state.centerLetter, word = state.currentWord)
+                Spacer(Modifier.height(32.dp))
+                PuzzleKeypad(state.centerLetter, state.outerLetters.toList(), onKeyClick)
+                Spacer(Modifier.height(32.dp))
+                ActionBar(onShuffle = onShuffle, onDelete = onDelete, onEnter = onEnter)
+            }
+        }
+        if (state.activeDialog != null) {
+            ShowDialog(viewModel, state.activeDialog)
         }
     }
+}
+
+@Composable
+fun ShowDialog(viewModel: PuzzleDetailViewModel, activeDialog: Dialog) {
+    when (activeDialog) {
+        is Dialog.ConfirmReset -> ShowResetConfirmationDialog(viewModel)
+    }
+}
+
+@Composable
+fun ShowResetConfirmationDialog(viewModel: PuzzleDetailViewModel) {
+    AlertDialog(onDismissRequest = viewModel::dismissActiveDialog,
+        title = { Text(stringResource(R.string.puzzle_detail_reset_confirm_title)) },
+        text = { Text(stringResource(R.string.puzzle_detail_reset_confirm_body)) },
+        confirmButton = {
+            TextButton(onClick = {
+                viewModel.dismissActiveDialog()
+                viewModel.resetConfirmed()
+            }) {
+                Text(stringResource(R.string.puzzle_detail_reset_confirm_ok))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = viewModel::dismissActiveDialog) {
+                Text(stringResource(R.string.puzzle_detail_reset_confirm_cancel))
+            }
+        }
+    )
 }
 
 @Composable

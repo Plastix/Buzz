@@ -14,6 +14,11 @@
     <string name="puzzle_detail_word_list_empty">Your words…</string>
     <string name="puzzle_detail_word_list_word_count">You have found %d words</string>
 
+    <string name="puzzle_detail_reset_confirm_title">Reset Puzzle?</string>
+    <string name="puzzle_detail_reset_confirm_body">You will lose all current progress. This cannot be undone!</string>
+    <string name="puzzle_detail_reset_confirm_ok">Reset Puzzle</string>
+    <string name="puzzle_detail_reset_confirm_cancel">Cancel</string>
+
     <string name="puzzle_rank_beginner">Beginner</string>
     <string name="puzzle_rank_goodstart">Good Start</string>
     <string name="puzzle_rank_movingup">Moving Up</string>

@@ -76,11 +76,23 @@ class PuzzleDetailViewModel(
 
     fun enter() {
         updateGameState {
-            // TODO Actual word validation
+            // TODO Success / error messages
             val enteredWord = gameState.currentWord
-            val discoveredSet = gameState.discoveredWords.plus(enteredWord)
-            gameState.copy(currentWord = "", discoveredWords = discoveredSet)
+            if (isWordValid(enteredWord)) {
+                val discoveredSet = gameState.discoveredWords.plus(enteredWord)
+                gameState.copy(currentWord = "", discoveredWords = discoveredSet)
+            } else {
+                gameState.copy(currentWord = "")
+            }
         }
+    }
+
+    private fun PuzzleBoardState.isWordValid(word: String): Boolean {
+        if(word.length < 4) return false // "Too short"
+        if(!word.contains(puzzle.centerLetter)) return false // "Missing center letter"
+        if(word in gameState.discoveredWords) return false // "Already found"
+        if(word !in puzzle.answers) return false // "Not in word list"
+        return true
     }
 
     fun resetGame() {

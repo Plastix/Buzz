@@ -105,37 +105,51 @@ fun PuzzleRow(puzzleRow: PuzzleRowState, onPuzzleClick: (puzzleId: String) -> Un
         shape = RoundedCornerShape(4.dp)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
-            Text(puzzleRow.displayString, fontSize = 24.sp, fontWeight = FontWeight.Light)
-            Spacer(modifier = Modifier.size(4.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    buildAnnotatedString {
+                    text = buildAnnotatedString {
                         withStyle(style = SpanStyle(color = MaterialTheme.colors.primary)) {
                             append(puzzleRow.puzzleString.firstOrNull() ?: ' ')
                         }
                         append(puzzleRow.puzzleString.drop(1))
                     },
                     modifier = Modifier.weight(1f),
-                    fontSize = 16.sp,
+                    fontSize = 24.sp,
                     maxLines = 1,
                     letterSpacing = 2.sp,
                     fontWeight = FontWeight.Black
                 )
                 RankLabel(puzzleRow.puzzleRank, puzzleRow.currentScore)
             }
+
+            Spacer(modifier = Modifier.size(4.dp))
+            Text(puzzleRow.displayString, fontWeight = FontWeight.Light)
         }
     }
 }
 
 @Composable
 fun RankLabel(rank: PuzzleRanking, score: Int) {
-    Row {
-        Text(text = stringResource(id = rank.displayString))
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = stringResource(id = rank.displayString),
+            fontWeight = FontWeight.Light
+        )
         Spacer(modifier = Modifier.width(4.dp))
-        Text(text = "($score)")
+        Surface(
+            shape = RoundedCornerShape(50),
+            color = MaterialTheme.colors.primary,
+        ) {
+            Text(
+                text = score.toString(),
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(horizontal = 5.dp, vertical = 2.dp)
+            )
+        }
     }
 }
 

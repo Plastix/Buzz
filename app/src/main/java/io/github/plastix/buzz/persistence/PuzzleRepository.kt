@@ -3,7 +3,7 @@ package io.github.plastix.buzz.persistence
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations.map
 import io.github.plastix.buzz.Puzzle
-import io.github.plastix.buzz.detail.PuzzleGameState
+import io.github.plastix.buzz.PuzzleGameState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

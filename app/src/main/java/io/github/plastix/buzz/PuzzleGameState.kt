@@ -1,9 +1,7 @@
-package io.github.plastix.buzz.detail
-
-import io.github.plastix.buzz.Puzzle
+package io.github.plastix.buzz
 
 /**
- * Representation of a puzzle board state at a moment in time.
+ * Representation of a "modified" puzzle in-play at a moment in time.
  */
 data class PuzzleGameState(
     val outerLetters: List<Char>,

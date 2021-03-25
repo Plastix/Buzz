@@ -2,7 +2,7 @@ package io.github.plastix.buzz.persistence
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import io.github.plastix.buzz.detail.PuzzleGameState
+import io.github.plastix.buzz.PuzzleGameState
 
 /**
  * Database model for persisting a [PuzzleGameState].

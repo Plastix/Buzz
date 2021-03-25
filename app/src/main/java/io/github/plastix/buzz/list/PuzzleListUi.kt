@@ -133,18 +133,7 @@ fun PuzzleRow(puzzleRow: PuzzleRowState, onPuzzleClick: (puzzleId: String) -> Un
 @Composable
 fun RankLabel(rank: PuzzleRanking, score: Int) {
     Row {
-        val rankString = when (rank) {
-            PuzzleRanking.Beginner -> stringResource(R.string.puzzle_rank_beginner)
-            PuzzleRanking.GoodStart -> stringResource(R.string.puzzle_rank_goodstart)
-            PuzzleRanking.MovingUp -> stringResource(R.string.puzzle_rank_movingup)
-            PuzzleRanking.Good -> stringResource(R.string.puzzle_rank_good)
-            PuzzleRanking.Solid -> stringResource(R.string.puzzle_rank_solid)
-            PuzzleRanking.Nice -> stringResource(R.string.puzzle_rank_nice)
-            PuzzleRanking.Great -> stringResource(R.string.puzzle_rank_great)
-            PuzzleRanking.Amazing -> stringResource(R.string.puzzle_rank_amazing)
-            PuzzleRanking.Genius -> stringResource(R.string.puzzle_rank_genius)
-        }
-        Text(text = rankString)
+        Text(text = stringResource(id = rank.displayString))
         Spacer(modifier = Modifier.width(4.dp))
         Text(text = "($score)")
     }

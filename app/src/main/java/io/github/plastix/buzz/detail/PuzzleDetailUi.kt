@@ -262,18 +262,10 @@ fun ShowResetConfirmationDialog(viewModel: PuzzleDetailViewModel) {
 @Composable
 fun ScoreBox(rank: PuzzleRanking, score: Int) {
     Row(modifier = Modifier.fillMaxWidth()) {
-        val rankString = when (rank) {
-            PuzzleRanking.Beginner -> stringResource(R.string.puzzle_rank_beginner)
-            PuzzleRanking.GoodStart -> stringResource(R.string.puzzle_rank_goodstart)
-            PuzzleRanking.MovingUp -> stringResource(R.string.puzzle_rank_movingup)
-            PuzzleRanking.Good -> stringResource(R.string.puzzle_rank_good)
-            PuzzleRanking.Solid -> stringResource(R.string.puzzle_rank_solid)
-            PuzzleRanking.Nice -> stringResource(R.string.puzzle_rank_nice)
-            PuzzleRanking.Great -> stringResource(R.string.puzzle_rank_great)
-            PuzzleRanking.Amazing -> stringResource(R.string.puzzle_rank_amazing)
-            PuzzleRanking.Genius -> stringResource(R.string.puzzle_rank_genius)
-        }
-        Text(text = rankString, fontWeight = FontWeight.Bold)
+        Text(
+            text = stringResource(rank.displayString),
+            fontWeight = FontWeight.Bold
+        )
         Spacer(modifier = Modifier.width(12.dp))
         Text(text = score.toString())
     }

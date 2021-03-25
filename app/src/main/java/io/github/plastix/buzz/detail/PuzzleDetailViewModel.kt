@@ -2,6 +2,7 @@ package io.github.plastix.buzz.detail
 
 import androidx.lifecycle.*
 import io.github.plastix.buzz.Puzzle
+import io.github.plastix.buzz.PuzzleRanking
 import io.github.plastix.buzz.persistence.PuzzleRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -14,7 +15,14 @@ class PuzzleDetailViewModel(
     private data class PuzzleDetails(
         val puzzle: Puzzle,
         val gameState: PuzzleGameState
-    )
+    ) {
+        val currentScore: Int = gameState.discoveredWords.sumBy { word -> puzzle.scoreWord(word) }
+        private val currentPercent: Int =
+            ((currentScore / puzzle.maxScore.toDouble()) * 100).toInt()
+        val currentRank: PuzzleRanking = PuzzleRanking.values()
+            .filter { rank -> rank.percentCutoff <= currentPercent }
+            .maxByOrNull { rank -> rank.percentCutoff } ?: PuzzleRanking.Beginner
+    }
 
     private val _viewStates: MediatorLiveData<PuzzleDetailViewState> = MediatorLiveData()
     val viewStates: LiveData<PuzzleDetailViewState> = _viewStates
@@ -52,7 +60,9 @@ class PuzzleDetailViewModel(
             centerLetter = puzzle.centerLetter,
             outerLetters = gameState.outerLetters,
             currentWord = gameState.currentWord,
-            discoveredWords = gameState.discoveredWords
+            discoveredWords = gameState.discoveredWords,
+            currentRank = currentRank,
+            currentScore = currentScore
         )
     }
 

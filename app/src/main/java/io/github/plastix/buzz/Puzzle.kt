@@ -10,7 +10,20 @@ data class Puzzle(
     val pangrams: Set<String>,
     val answers: Set<String>
 ) {
-    fun eligibleLetter(char: Char) : Boolean {
+
+    val maxScore: Int = answers.sumBy(::scoreWord)
+
+    fun eligibleLetter(char: Char): Boolean {
         return centerLetter == char || char in outerLetters
+    }
+
+    fun scoreWord(word: String): Int {
+        if (word !in answers) return 0
+        if (word.length == 4) return 1
+        return if (word in pangrams) {
+            word.length + 7
+        } else {
+            word.length
+        }
     }
 }

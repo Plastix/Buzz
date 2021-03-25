@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.github.plastix.buzz.PuzzleRanking
 import io.github.plastix.buzz.R
 import io.github.plastix.buzz.theme.BuzzTheme
 import java.util.*
@@ -99,6 +100,8 @@ fun PuzzleBoard(
             .fillMaxSize()
             .padding(16.dp)
     ) {
+        ScoreBox(state.currentRank, state.currentScore)
+        Spacer(Modifier.height(12.dp))
         DiscoveredWordBox(words = state.discoveredWords)
         Spacer(Modifier.height(32.dp))
         Column(
@@ -111,6 +114,26 @@ fun PuzzleBoard(
             Spacer(Modifier.height(32.dp))
             ActionBar(onShuffle = onShuffle, onDelete = onDelete, onEnter = onEnter)
         }
+    }
+}
+
+@Composable
+fun ScoreBox(rank: PuzzleRanking, score: Int) {
+    Row(modifier = Modifier.fillMaxWidth()) {
+        val rankString = when (rank) {
+            PuzzleRanking.Beginner -> stringResource(R.string.puzzle_rank_beginner)
+            PuzzleRanking.GoodStart -> stringResource(R.string.puzzle_rank_goodstart)
+            PuzzleRanking.MovingUp -> stringResource(R.string.puzzle_rank_movingup)
+            PuzzleRanking.Good -> stringResource(R.string.puzzle_rank_good)
+            PuzzleRanking.Solid -> stringResource(R.string.puzzle_rank_solid)
+            PuzzleRanking.Nice -> stringResource(R.string.puzzle_rank_nice)
+            PuzzleRanking.Great -> stringResource(R.string.puzzle_rank_great)
+            PuzzleRanking.Amazing -> stringResource(R.string.puzzle_rank_amazing)
+            PuzzleRanking.Genius -> stringResource(R.string.puzzle_rank_genius)
+        }
+        Text(text = rankString, fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.width(12.dp))
+        Text(text = score.toString())
     }
 }
 

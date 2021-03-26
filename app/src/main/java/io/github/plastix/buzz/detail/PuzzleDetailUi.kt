@@ -40,6 +40,7 @@ import androidx.compose.ui.window.Dialog
 import io.github.plastix.buzz.PuzzleRanking
 import io.github.plastix.buzz.R
 import io.github.plastix.buzz.theme.BuzzTheme
+import kotlinx.coroutines.delay
 import java.util.*
 import kotlin.math.*
 
@@ -123,6 +124,7 @@ fun PuzzleBoard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                WordToastRow(state, viewModel)
                 InputBox(centerLetter = state.centerLetter, word = state.currentWord)
                 Spacer(Modifier.height(32.dp))
                 PuzzleKeypad(state.centerLetter, state.outerLetters.toList(), onKeyClick)
@@ -133,6 +135,31 @@ fun PuzzleBoard(
         if (state.activeDialog != null) {
             ShowDialog(viewModel, state.activeDialog)
         }
+    }
+}
+
+@Composable
+fun WordToastRow(
+    state: BoardGameViewState,
+    viewModel: PuzzleDetailViewModel,
+    durationMs: Long = 1000
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .alpha(if (state.activeWordToast != null) 1f else 0f),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        val message = when (val toast = state.activeWordToast) {
+            is WordToast.Success -> "+${toast.pointValue}"
+            is WordToast.Error -> stringResource(id = toast.wordError.errorMessage)
+            null -> ""
+        }
+        Text(message)
+    }
+    LaunchedEffect(state) {
+        delay(durationMs)
+        viewModel.dismissActiveToast()
     }
 }
 

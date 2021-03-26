@@ -14,4 +14,15 @@ data class PuzzleBoardState(
     val currentRank: PuzzleRanking = PuzzleRanking.values()
         .filter { rank -> rank.percentCutoff <= currentPercent }
         .maxByOrNull { rank -> rank.percentCutoff } ?: PuzzleRanking.Beginner
+
+
+    fun validateWord(word: String): WordResult {
+        return when {
+            word.length < 4 -> WordResult.Error(WordError.TooShort)
+            !word.contains(puzzle.centerLetter) -> WordResult.Error(WordError.MissingCenterLetter)
+            word in gameState.discoveredWords -> WordResult.Error(WordError.AlreadyFound)
+            word !in puzzle.answers -> WordResult.Error(WordError.NotInWordList)
+            else -> WordResult.Valid
+        }
+    }
 }

@@ -1,10 +1,7 @@
 package io.github.plastix.buzz.detail
 
 import androidx.lifecycle.*
-import io.github.plastix.buzz.Puzzle
-import io.github.plastix.buzz.PuzzleBoardState
-import io.github.plastix.buzz.PuzzleGameState
-import io.github.plastix.buzz.blankGameState
+import io.github.plastix.buzz.*
 import io.github.plastix.buzz.persistence.PuzzleRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -19,7 +16,8 @@ class PuzzleDetailViewModel(
 
     private data class DetailState(
         val board: PuzzleBoardState,
-        val activeDialog: Dialog?
+        val activeDialog: Dialog?,
+        val activeWordToast: WordToast?
     )
 
     private var detailState: MutableLiveData<DetailState?> = MutableLiveData(null)
@@ -48,7 +46,8 @@ class PuzzleDetailViewModel(
             val gameState = repository.getGameState(puzzleId) ?: puzzle.blankGameState()
             detailState.value = DetailState(
                 board = PuzzleBoardState(puzzle, gameState),
-                activeDialog = null
+                activeDialog = null,
+                activeWordToast = null
             )
         }
     }
@@ -62,7 +61,8 @@ class PuzzleDetailViewModel(
             discoveredWords = board.gameState.discoveredWords,
             currentRank = board.currentRank,
             currentScore = board.currentScore,
-            activeDialog = activeDialog
+            activeDialog = activeDialog,
+            activeWordToast = activeWordToast
         )
     }
 
@@ -85,14 +85,36 @@ class PuzzleDetailViewModel(
     }
 
     fun enter() {
-        updateGameState {
-            // TODO Success / error messages
+        updateDetailsState {
+            val gameState = board.gameState
             val enteredWord = gameState.currentWord
-            if (isWordValid(enteredWord)) {
-                val discoveredSet = gameState.discoveredWords.plus(enteredWord)
-                gameState.copy(currentWord = "", discoveredWords = discoveredSet)
+            if (enteredWord.isBlank()) {
+                // Don't accept empty words
+                this
             } else {
-                gameState.copy(currentWord = "")
+                when (val wordResult = board.validateWord(enteredWord)) {
+                    is WordResult.Valid -> {
+                        val discoveredSet = gameState.discoveredWords.plus(enteredWord)
+                        copy(
+                            board = board.copy(
+                                gameState = gameState.copy(
+                                    currentWord = "",
+                                    discoveredWords = discoveredSet
+                                )
+                            ),
+                            activeWordToast = WordToast.Success(board.puzzle.scoreWord(enteredWord))
+                        )
+                    }
+
+                    is WordResult.Error -> {
+                        copy(
+                            board = board.copy(
+                                gameState = gameState.copy(currentWord = "")
+                            ),
+                            activeWordToast = WordToast.Error(wordResult.errorType)
+                        )
+                    }
+                }
             }
         }
     }
@@ -103,12 +125,10 @@ class PuzzleDetailViewModel(
         }
     }
 
-    private fun PuzzleBoardState.isWordValid(word: String): Boolean {
-        if (word.length < 4) return false // "Too short"
-        if (!word.contains(puzzle.centerLetter)) return false // "Missing center letter"
-        if (word in gameState.discoveredWords) return false // "Already found"
-        if (word !in puzzle.answers) return false // "Not in word list"
-        return true
+    fun dismissActiveToast() {
+        updateDetailsState {
+            copy(activeWordToast = null)
+        }
     }
 
     fun resetGame() {
@@ -124,8 +144,14 @@ class PuzzleDetailViewModel(
     }
 
     fun resetConfirmed() {
-        updateGameState {
-            puzzle.blankGameState()
+        updateDetailsState {
+            DetailState(
+                board.copy(
+                    gameState = board.puzzle.blankGameState()
+                ),
+                activeDialog = null,
+                activeWordToast = null
+            )
         }
     }
 

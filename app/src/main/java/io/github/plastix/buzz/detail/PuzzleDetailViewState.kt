@@ -1,6 +1,7 @@
 package io.github.plastix.buzz.detail
 
 import io.github.plastix.buzz.PuzzleRanking
+import io.github.plastix.buzz.WordError
 
 sealed class PuzzleDetailViewState {
     object Loading : PuzzleDetailViewState()
@@ -16,10 +17,16 @@ class BoardGameViewState(
     val discoveredWords: Set<String>,
     val currentRank: PuzzleRanking,
     val currentScore: Int,
-    val activeDialog: Dialog?
+    val activeDialog: Dialog?,
+    val activeWordToast: WordToast?
 )
 
 sealed class Dialog {
     object ConfirmReset : Dialog()
     object InfoDialog : Dialog()
+}
+
+sealed class WordToast {
+    data class Success(val pointValue: Int) : WordToast()
+    data class Error(val wordError: WordError) : WordToast()
 }

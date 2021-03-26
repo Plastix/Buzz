@@ -157,7 +157,7 @@ fun WordToastRow(
         }
         Text(message)
     }
-    LaunchedEffect(state) {
+    LaunchedEffect(state.activeWordToast) {
         delay(durationMs)
         viewModel.dismissActiveToast()
     }

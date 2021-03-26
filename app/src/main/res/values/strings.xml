@@ -22,6 +22,7 @@
     <string name="puzzle_detail_reset_confirm_cancel">Cancel</string>
 
     <string name="puzzle_detail_word_error_too_short">Too short!</string>
+    <string name="puzzle_detail_word_error_too_long">Too long!</string>
     <string name="puzzle_detail_word_error_missing_center_letter">Missing center letter!</string>
     <string name="puzzle_detail_word_error_already_found">Already found!</string>
     <string name="puzzle_detail_word_error_not_in_word_list">Not in word list!</string>

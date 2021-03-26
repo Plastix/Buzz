@@ -11,6 +11,11 @@ data class Puzzle(
     val answers: Set<String>
 ) {
 
+    companion object {
+        const val MIN_WORD_LENGTH = 4
+        const val MAX_WORD_LENGTH = 19
+    }
+
     val maxScore: Int = answers.sumBy(::scoreWord)
 
     fun eligibleLetter(char: Char): Boolean {

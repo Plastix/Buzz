@@ -76,6 +76,12 @@ class PuzzleDetailViewModel(
         updateGameState {
             gameState.copy(currentWord = gameState.currentWord.plus(char))
         }
+
+        withGameState {
+            if (gameState.currentWord.length > Puzzle.MAX_WORD_LENGTH) {
+                enter()
+            }
+        }
     }
 
     fun delete() {

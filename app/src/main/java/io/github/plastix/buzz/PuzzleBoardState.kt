@@ -17,8 +17,10 @@ data class PuzzleBoardState(
 
 
     fun validateWord(word: String): WordResult {
+        // The order of this when statement is the order that these errors should take precedence
         return when {
-            word.length < 4 -> WordResult.Error(WordError.TooShort)
+            word.length < Puzzle.MIN_WORD_LENGTH -> WordResult.Error(WordError.TooShort)
+            word.length > Puzzle.MAX_WORD_LENGTH -> WordResult.Error(WordError.TooLong)
             !word.contains(puzzle.centerLetter) -> WordResult.Error(WordError.MissingCenterLetter)
             word in gameState.discoveredWords -> WordResult.Error(WordError.AlreadyFound)
             word !in puzzle.answers -> WordResult.Error(WordError.NotInWordList)

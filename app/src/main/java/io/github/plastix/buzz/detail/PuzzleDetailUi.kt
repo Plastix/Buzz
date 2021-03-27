@@ -113,10 +113,9 @@ fun PuzzleBoard(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 16.dp)
         ) {
             ScoreBox(viewModel, state.currentRank, state.currentScore)
-            Spacer(Modifier.height(12.dp))
             DiscoveredWordBox(words = state.discoveredWords)
             Spacer(Modifier.height(32.dp))
             Column(
@@ -325,7 +324,8 @@ fun ScoreBox(viewModel: PuzzleDetailViewModel, rank: PuzzleRanking, score: Int) 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { viewModel.scoreBarClicked() },
+            .clickable { viewModel.scoreBarClicked() }
+            .padding(bottom = 12.dp, top = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(

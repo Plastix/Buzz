@@ -8,11 +8,12 @@ import io.github.plastix.buzz.PuzzleGameState
 import io.github.plastix.buzz.blankGameState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * Encapsulates all operations for storing Puzzle data locally.
  */
-class PuzzleRepository(private val database: PuzzleDatabase) {
+class PuzzleRepository @Inject constructor(private val database: PuzzleDatabase) {
 
     private val dao: PuzzleDao by lazy { database.puzzleDao() }
 

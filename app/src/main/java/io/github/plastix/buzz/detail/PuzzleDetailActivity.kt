@@ -9,10 +9,12 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import dagger.hilt.android.AndroidEntryPoint
 import io.github.plastix.buzz.persistence.PuzzleRepository
-import io.github.plastix.buzz.persistence.instantiateDatabase
+import javax.inject.Inject
 
 
+@AndroidEntryPoint
 class PuzzleDetailActivity : AppCompatActivity() {
 
     companion object {
@@ -26,16 +28,20 @@ class PuzzleDetailActivity : AppCompatActivity() {
     private val puzzleId: String by lazy {
         intent.getStringExtra(PUZZLE_ID_KEY) ?: error("Expecting puzzle id!")
     }
+
+    @Inject
+    lateinit var puzzleRepository: PuzzleRepository
+
     private val viewModel: PuzzleDetailViewModel by viewModels {
-        // TODO Real dependency injection
+        // Dagger hilt does not support assisted injection atm
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                val repo =
-                    PuzzleRepository(instantiateDatabase(this@PuzzleDetailActivity.applicationContext))
-                return modelClass.getConstructor(
-                    String::class.java,
-                    PuzzleRepository::class.java
-                ).newInstance(puzzleId, repo)
+                if (modelClass.isAssignableFrom(PuzzleDetailViewModel::class.java)) {
+                    @Suppress("UNCHECKED_CAST")
+                    return PuzzleDetailViewModel(puzzleId, puzzleRepository) as T
+                } else {
+                    error("Unknown view model type $modelClass!")
+                }
             }
         }
     }

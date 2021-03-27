@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.plastix.buzz.Puzzle
 import io.github.plastix.buzz.PuzzleBoardState
 import io.github.plastix.buzz.Result
@@ -12,9 +13,11 @@ import io.github.plastix.buzz.network.PuzzleFetcher
 import io.github.plastix.buzz.persistence.PuzzleRepository
 import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 
 
-class PuzzleListViewModel(
+@HiltViewModel
+class PuzzleListViewModel @Inject constructor(
     private val fetcher: PuzzleFetcher,
     private val puzzleRepository: PuzzleRepository
 ) : ViewModel() {

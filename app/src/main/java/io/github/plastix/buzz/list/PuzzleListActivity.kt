@@ -4,30 +4,14 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import dagger.hilt.android.AndroidEntryPoint
 import io.github.plastix.buzz.detail.PuzzleDetailActivity
-import io.github.plastix.buzz.network.PuzzleFetcher
-import io.github.plastix.buzz.persistence.PuzzleRepository
-import io.github.plastix.buzz.persistence.instantiateDatabase
 
+@AndroidEntryPoint
 class PuzzleListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val context = this.applicationContext
-        // TODO Real dependency injection
-        val viewModel: PuzzleListViewModel by viewModels {
-            object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    val fetcher = PuzzleFetcher()
-                    val repo = PuzzleRepository(instantiateDatabase(context))
-                    return modelClass.getConstructor(
-                        PuzzleFetcher::class.java,
-                        PuzzleRepository::class.java
-                    ).newInstance(fetcher, repo)
-                }
-            }
-        }
+        val viewModel: PuzzleListViewModel by viewModels()
         setContent {
             PuzzleListUi(viewModel, onPuzzleClick = this::openPuzzleDetail)
         }

@@ -1,15 +1,19 @@
 package io.github.plastix.buzz.network
 
+import com.squareup.moshi.Moshi
 import io.github.plastix.buzz.Puzzle
 import io.github.plastix.buzz.Result
-import io.github.plastix.buzz.serialization.Json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.IOException
+import javax.inject.Inject
 
-class PuzzleFetcher {
+class PuzzleFetcher @Inject constructor(
+    private val client: OkHttpClient,
+    private val json: Moshi
+) {
 
     companion object {
         private const val API_URL = "https://www.nytimes.com/puzzles/spelling-bee"
@@ -20,8 +24,6 @@ class PuzzleFetcher {
         @Suppress("RegExpRedundantEscape")
         private val parser = "gameData = (\\{.*?\\}\\})".toRegex()
     }
-
-    private val client by lazy { OkHttpClient() }
 
     /**
      * Fetches the latest two puzzles from the NYTimes "API". This operates on an I/O scheduler
@@ -43,7 +45,7 @@ class PuzzleFetcher {
                 val payload = parser.find(body)?.groupValues?.get(1) ?: return Result.Error(
                     IllegalArgumentException("Could not parse API response!")
                 )
-                val adapter = Json.instance.adapter(PuzzleContainerResponse::class.java)
+                val adapter = json.adapter(PuzzleContainerResponse::class.java)
                 val puzzle: PuzzleContainerResponse =
                     adapter.fromJson(payload) ?: return Result.Error(
                         IllegalArgumentException("Could not deserialize JSON blob! $payload")

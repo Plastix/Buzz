@@ -20,10 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.res.stringArrayResource
@@ -678,10 +675,17 @@ fun PreviewKeypadButton() {
 fun ActionBar(onShuffle: () -> Unit, onDelete: () -> Unit, onEnter: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         ActionButton(onClick = onDelete) {
-            Text(stringResource(R.string.puzzle_detail_actionbar_delete))
+            Text(
+                stringResource(R.string.puzzle_detail_actionbar_delete),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Light
+            )
         }
         Spacer(Modifier.size(16.dp))
-        ActionButton(onClick = onShuffle) {
+        ActionButton(
+            onClick = onShuffle,
+            shape = CircleShape
+        ) {
             Icon(
                 Icons.Filled.Autorenew,
                 stringResource(R.string.puzzle_detail_actionbar_shuffle)
@@ -689,19 +693,27 @@ fun ActionBar(onShuffle: () -> Unit, onDelete: () -> Unit, onEnter: () -> Unit) 
         }
         Spacer(Modifier.size(16.dp))
         ActionButton(onClick = onEnter) {
-            Text(stringResource(R.string.puzzle_detail_actionbar_enter))
+            Text(
+                stringResource(R.string.puzzle_detail_actionbar_enter),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Light
+            )
         }
     }
 }
 
 @Composable
-fun ActionButton(onClick: () -> Unit, content: @Composable RowScope.() -> Unit) {
+fun ActionButton(
+    onClick: () -> Unit,
+    shape: Shape = RoundedCornerShape(50),
+    content: @Composable RowScope.() -> Unit
+) {
     OutlinedButton(
         onClick = onClick,
         colors = ButtonDefaults.outlinedButtonColors(
             contentColor = MaterialTheme.colors.onSurface,
         ),
-        shape = RoundedCornerShape(50),
+        shape = shape,
     ) {
         content()
     }

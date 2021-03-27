@@ -1,5 +1,6 @@
 package io.github.plastix.buzz.detail
 
+import android.view.KeyEvent
 import androidx.lifecycle.*
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -199,19 +200,24 @@ class PuzzleDetailViewModel @AssistedInject constructor(
         }
     }
 
-    fun keyboardEvent(unicodeChar: Int): Boolean {
+    fun keyboardEvent(event: KeyEvent): Boolean {
         var handled = false
         withGameState {
-            when (unicodeChar) {
+            when (val unicodeChar = event.unicodeChar) {
                 0 -> {
-                    delete()
-                    handled = true
+                    handled = when (event.keyCode) {
+                        KeyCodes.DELETE -> {
+                            delete()
+                            true
+                        }
+                        else -> false
+                    }
                 }
-                10 -> {
+                KeyCodes.ENTER -> {
                     enter()
                     handled = true
                 }
-                32 -> {
+                KeyCodes.SPACE -> {
                     shuffle()
                     handled = true
                 }

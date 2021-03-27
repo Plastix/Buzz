@@ -46,7 +46,7 @@ class PuzzleDetailActivity : AppCompatActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        return if (!viewModel.keyboardEvent(event.unicodeChar)) {
+        return if (!viewModel.keyboardEvent(event)) {
             super.onKeyDown(keyCode, event)
         } else {
             true

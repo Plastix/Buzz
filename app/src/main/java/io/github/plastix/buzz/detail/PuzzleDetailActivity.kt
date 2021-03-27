@@ -30,20 +30,10 @@ class PuzzleDetailActivity : AppCompatActivity() {
     }
 
     @Inject
-    lateinit var puzzleRepository: PuzzleRepository
+    lateinit var viewModelFactory: PuzzleDetailViewModel.Factory
 
     private val viewModel: PuzzleDetailViewModel by viewModels {
-        // Dagger hilt does not support assisted injection atm
-        object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                if (modelClass.isAssignableFrom(PuzzleDetailViewModel::class.java)) {
-                    @Suppress("UNCHECKED_CAST")
-                    return PuzzleDetailViewModel(puzzleId, puzzleRepository) as T
-                } else {
-                    error("Unknown view model type $modelClass!")
-                }
-            }
-        }
+        PuzzleDetailViewModel.provideFactory(viewModelFactory, puzzleId)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

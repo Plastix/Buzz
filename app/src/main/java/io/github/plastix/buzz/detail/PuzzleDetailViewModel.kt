@@ -1,15 +1,35 @@
 package io.github.plastix.buzz.detail
 
 import androidx.lifecycle.*
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import io.github.plastix.buzz.*
 import io.github.plastix.buzz.persistence.PuzzleRepository
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class PuzzleDetailViewModel(
-    private val puzzleId: String,
+class PuzzleDetailViewModel @AssistedInject constructor(
+    @Assisted private val puzzleId: String,
     private val repository: PuzzleRepository
 ) : ViewModel() {
+
+    @AssistedFactory
+    interface Factory {
+        fun create(puzzleId: String): PuzzleDetailViewModel
+    }
+
+    companion object {
+        fun provideFactory(
+            assistedFactory: Factory,
+            puzzleId: String
+        ) = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return assistedFactory.create(puzzleId) as T
+            }
+        }
+    }
 
     private val _viewStates: MediatorLiveData<PuzzleDetailViewState> = MediatorLiveData()
     val viewStates: LiveData<PuzzleDetailViewState> = _viewStates

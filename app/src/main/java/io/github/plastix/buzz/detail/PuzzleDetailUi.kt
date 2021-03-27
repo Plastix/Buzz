@@ -97,7 +97,30 @@ fun PuzzleDetailScreen(viewModel: PuzzleDetailViewModel) {
             onDelete = viewModel::delete,
             onEnter = viewModel::enter
         )
-        is PuzzleDetailViewState.Error -> error(state.error)
+        is PuzzleDetailViewState.Error -> PuzzleErrorState()
+    }
+}
+
+@Composable
+fun PuzzleErrorState() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            modifier = Modifier.size(100.dp),
+            imageVector = Icons.Filled.ErrorOutline,
+            contentDescription = stringResource(R.string.puzzle_detail_error_icon_content_description),
+        )
+        Spacer(Modifier.size(16.dp))
+        Text(
+            stringResource(R.string.puzzle_detail_error_description),
+            fontSize = 16.sp,
+            textAlign = TextAlign.Center
+        )
     }
 }
 

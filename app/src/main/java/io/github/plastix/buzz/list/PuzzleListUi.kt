@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -60,7 +61,9 @@ fun PuzzleListScreen(viewModel: PuzzleListViewModel, onPuzzleClick: (puzzleId: S
 @Composable
 fun PuzzleListEmptyState() {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -70,7 +73,11 @@ fun PuzzleListEmptyState() {
             contentDescription = stringResource(R.string.puzzle_list_empty_icon),
         )
         Spacer(Modifier.size(16.dp))
-        Text(stringResource(R.string.puzzle_list_empty_state), fontSize = 16.sp)
+        Text(
+            stringResource(R.string.puzzle_list_empty_state),
+            fontSize = 16.sp,
+            textAlign = TextAlign.Center
+        )
     }
 }
 

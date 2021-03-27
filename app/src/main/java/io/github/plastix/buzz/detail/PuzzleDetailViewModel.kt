@@ -60,15 +60,19 @@ class PuzzleDetailViewModel @AssistedInject constructor(
 
     private fun loadPuzzleData() {
         viewModelScope.launch {
-            // TODO real error handling
-            val puzzle: Puzzle =
-                repository.getPuzzle(puzzleId) ?: error("Error loading puzzle from db!")
-            val gameState = repository.getGameState(puzzleId) ?: puzzle.blankGameState()
-            detailState.value = DetailState(
-                board = PuzzleBoardState(puzzle, gameState),
-                activeDialog = null,
-                activeWordToast = null
-            )
+            try {
+                val puzzle: Puzzle =
+                    repository.getPuzzle(puzzleId)
+                        ?: error("Expecting puzzle in database for id $puzzleId")
+                val gameState = repository.getGameState(puzzleId) ?: puzzle.blankGameState()
+                detailState.value = DetailState(
+                    board = PuzzleBoardState(puzzle, gameState),
+                    activeDialog = null,
+                    activeWordToast = null
+                )
+            } catch (e: Exception) {
+                _viewStates.value = PuzzleDetailViewState.Error(e)
+            }
         }
     }
 

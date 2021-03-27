@@ -410,7 +410,7 @@ fun ColumnGridList(words: List<String>, columnNum: Int = 3) {
 fun ChevronRow(
     text: String,
     expanded: Boolean,
-    textColor: Color = MaterialTheme.colors.onPrimary
+    textColor: Color = MaterialTheme.colors.onSurface
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,

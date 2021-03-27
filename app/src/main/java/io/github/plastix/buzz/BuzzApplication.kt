@@ -1,4 +1,4 @@
-package io.github.plastix
+package io.github.plastix.buzz
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

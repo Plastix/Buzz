@@ -35,10 +35,10 @@ class PuzzleFetcher @Inject constructor(
     }
 
     private fun fetchLatestPuzzlesInternal(): Result<List<Puzzle>> {
-        val request = Request.Builder().url(API_URL).build()
-        val response = client.newCall(request).execute()
-        if (response.isSuccessful) {
-            try {
+        try {
+            val request = Request.Builder().url(API_URL).build()
+            val response = client.newCall(request).execute()
+            if (response.isSuccessful) {
                 val body = response.body?.string() ?: return Result.Error(
                     IllegalArgumentException("Null response body!")
                 )
@@ -57,11 +57,11 @@ class PuzzleFetcher @Inject constructor(
                         puzzle.yesterday
                     ).map(PuzzleResponse::toPuzzle)
                 )
-            } catch (e: Exception) {
-                return Result.Error(e)
+            } else {
+                return Result.Error(IOException("Unexpected code $response"))
             }
-        } else {
-            return Result.Error(IOException("Unexpected code $response"))
+        } catch (e: Exception) {
+            return Result.Error(e)
         }
     }
 }

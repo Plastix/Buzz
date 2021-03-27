@@ -22,6 +22,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.Placeable
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -328,9 +330,11 @@ fun ScoreBox(viewModel: PuzzleDetailViewModel, rank: PuzzleRanking, score: Int) 
             .padding(bottom = 12.dp, top = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
+        MaxWidthText(
             text = stringResource(rank.displayString),
-            fontWeight = FontWeight.Bold
+            options = PuzzleRanking.sortedValues.map {
+                stringResource(it.displayString)
+            }
         )
         Spacer(modifier = Modifier.width(8.dp))
         Box(
@@ -370,6 +374,30 @@ fun ScoreBox(viewModel: PuzzleDetailViewModel, rank: PuzzleRanking, score: Int) 
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun MaxWidthText(
+    text: String,
+    options: List<String> = emptyList(),
+    fontWeight: FontWeight = FontWeight.Bold
+) {
+    Layout(
+        content = {
+            setOf(text).plus(options).forEach { string ->
+                Text(string, fontWeight = fontWeight)
+            }
+        }
+    ) { measurables, constraints ->
+        val placeables = measurables.map { measurable ->
+            measurable.measure(constraints.copy(minHeight = 0))
+        }
+        val maxWidth: Int = placeables.maxOf(Placeable::width)
+        layout(maxWidth, constraints.minHeight) {
+            val item = placeables.first()
+            item.place(0, -item.height / 2)
         }
     }
 }

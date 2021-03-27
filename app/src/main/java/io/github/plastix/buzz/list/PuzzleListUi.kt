@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -140,15 +141,18 @@ fun RankLabel(rank: PuzzleRanking, score: Int) {
             fontWeight = FontWeight.Light
         )
         Spacer(modifier = Modifier.width(4.dp))
+
         Surface(
-            shape = RoundedCornerShape(50),
+            shape = CircleShape,
             color = MaterialTheme.colors.primary,
+            modifier = Modifier.size(24.dp)
         ) {
-            Text(
-                text = score.toString(),
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(horizontal = 5.dp, vertical = 2.dp)
-            )
+            Box(contentAlignment = Alignment.Center) {
+                Text(
+                    text = score.toString(),
+                    fontSize = 12.sp,
+                )
+            }
         }
     }
 }

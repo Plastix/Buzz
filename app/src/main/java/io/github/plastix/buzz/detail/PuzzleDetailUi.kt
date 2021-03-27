@@ -543,11 +543,11 @@ fun InputBox(centerLetter: Char, word: String) {
 }
 
 @Composable
-fun PuzzleKeypad(centerLetter: Char, outterLetters: List<Char>, onClick: (Char) -> Unit) {
+fun PuzzleKeypad(centerLetter: Char, outerLetters: List<Char>, onClick: (Char) -> Unit) {
     Layout(
         content = {
             KeypadButton(centerLetter, onClick, primary = true)
-            outterLetters.take(6).forEach {
+            outerLetters.take(6).forEach {
                 KeypadButton(it, onClick, primary = false)
             }
         },
@@ -587,7 +587,7 @@ fun PuzzleKeypad(centerLetter: Char, outterLetters: List<Char>, onClick: (Char) 
 fun PreviewPuzzleKeypad() {
     PuzzleKeypad(
         centerLetter = 'x',
-        outterLetters = listOf('a', 'b', 'c', 'd', 'e', 'f'),
+        outerLetters = listOf('a', 'b', 'c', 'd', 'e', 'f'),
         onClick = {})
 }
 

@@ -97,4 +97,9 @@ dependencies {
 
     implementation 'com.google.dagger:hilt-android:2.33-beta'
     kapt 'com.google.dagger:hilt-compiler:2.33-beta'
+
+    // Kotlin + coroutines
+    implementation "androidx.work:work-runtime-ktx:2.6.0-alpha01"
+    implementation 'androidx.hilt:hilt-work:1.0.0-beta01'
+
 }

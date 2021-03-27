@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="io.github.plastix.buzz">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -23,6 +24,18 @@
         </activity>
 
         <activity android:name=".detail.PuzzleDetailActivity" />
+
+        <!-- Disable automatic work manager initialization because we configure it manually to
+        enable hilt support
+
+        See: https://developer.android.com/training/dependency-injection/hilt-jetpack#workmanager
+        -->
+        <provider
+            android:name="androidx.work.impl.WorkManagerInitializer"
+            android:authorities="${applicationId}.workmanager-init"
+            tools:ignore="Instantiatable"
+            tools:node="remove" />
+
     </application>
 
 </manifest>

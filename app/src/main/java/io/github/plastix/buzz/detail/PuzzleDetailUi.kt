@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -285,13 +286,53 @@ fun ShowResetConfirmationDialog(viewModel: PuzzleDetailViewModel) {
 
 @Composable
 fun ScoreBox(rank: PuzzleRanking, score: Int) {
-    Row(modifier = Modifier.fillMaxWidth()) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Text(
             text = stringResource(rank.displayString),
             fontWeight = FontWeight.Bold
         )
-        Spacer(modifier = Modifier.width(12.dp))
-        Text(text = score.toString())
+        Spacer(modifier = Modifier.width(8.dp))
+        Box(
+            modifier = Modifier.weight(1f),
+            contentAlignment = Alignment.CenterEnd
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(2.dp)
+                    .background(MaterialTheme.colors.secondary)
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                val sortedRanks = PuzzleRanking.values().sortedBy(PuzzleRanking::percentCutoff)
+                val indexOfRank = sortedRanks.indexOf(rank)
+                sortedRanks.forEachIndexed { index, puzzleRanking ->
+                    val bubbleSize = if (puzzleRanking == rank) 24.dp else 8.dp
+                    val color =
+                        if (index <= indexOfRank) MaterialTheme.colors.primary else MaterialTheme.colors.secondary
+                    Surface(
+                        modifier = Modifier.size(bubbleSize),
+                        shape = CircleShape,
+                        color = color,
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            if (puzzleRanking == rank) {
+                                Text(
+                                    text = score.toString(),
+                                    fontSize = 12.sp
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

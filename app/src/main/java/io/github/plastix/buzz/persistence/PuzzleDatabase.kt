@@ -1,7 +1,6 @@
 package io.github.plastix.buzz.persistence
 
 import android.app.Application
-import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -31,7 +30,7 @@ internal object DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideDatabase(app: Application):  PuzzleDatabase {
+    fun provideDatabase(app: Application): PuzzleDatabase {
         return Room.databaseBuilder(app, PuzzleDatabase::class.java, "buzz-database")
             .fallbackToDestructiveMigration() // TODO good enough for now
             .build()

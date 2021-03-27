@@ -5,7 +5,6 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.plastix.buzz.Puzzle
 import io.github.plastix.buzz.PuzzleBoardState
 import io.github.plastix.buzz.Result
 import io.github.plastix.buzz.formatDate

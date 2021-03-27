@@ -9,7 +9,7 @@ import androidx.room.Relation
 data class PuzzleEntityWithGameState(
     @Embedded
     val puzzle: PuzzleEntity,
-    @Relation(parentColumn = "puzzleId", entityColumn="puzzleId")
+    @Relation(parentColumn = "puzzleId", entityColumn = "puzzleId")
     // Nullable if no current game state saved for the puzzle
     val gameState: PuzzleGameStateEntity?
 )

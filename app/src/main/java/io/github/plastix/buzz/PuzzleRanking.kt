@@ -43,4 +43,8 @@ enum class PuzzleRanking(
         percentCutoff = 70,
         displayString = R.string.puzzle_rank_genius
     );
+
+    companion object {
+        val sortedValues: List<PuzzleRanking> = values().sortedBy(PuzzleRanking::percentCutoff)
+    }
 }

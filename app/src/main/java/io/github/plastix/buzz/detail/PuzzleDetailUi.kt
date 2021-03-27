@@ -3,6 +3,7 @@ package io.github.plastix.buzz.detail
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
@@ -114,7 +115,7 @@ fun PuzzleBoard(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            ScoreBox(state.currentRank, state.currentScore)
+            ScoreBox(viewModel, state.currentRank, state.currentScore)
             Spacer(Modifier.height(12.dp))
             DiscoveredWordBox(words = state.discoveredWords)
             Spacer(Modifier.height(32.dp))
@@ -165,12 +166,17 @@ fun WordToastRow(
 fun ShowDialog(viewModel: PuzzleDetailViewModel, activeDialog: Dialog) {
     when (activeDialog) {
         is Dialog.ConfirmReset -> ShowResetConfirmationDialog(viewModel)
-        is Dialog.InfoDialog -> ShowInfoDialog(viewModel)
+        is Dialog.InfoDialog -> InfoDialog(viewModel)
+        is Dialog.RankingDialog -> RankingDialog(viewModel, activeDialog.maxPuzzleScore)
     }
 }
 
 @Composable
-fun ShowInfoDialog(viewModel: PuzzleDetailViewModel) {
+fun CustomDialog(
+    viewModel: PuzzleDetailViewModel,
+    title: String,
+    content: @Composable () -> Unit
+) {
     Dialog(onDismissRequest = viewModel::dismissActiveDialog) {
         Surface(
             modifier = Modifier
@@ -191,7 +197,7 @@ fun ShowInfoDialog(viewModel: PuzzleDetailViewModel) {
                 ) {
                     Text(
                         modifier = Modifier.weight(1f),
-                        text = stringResource(R.string.puzzle_rules_dialog_title),
+                        text = title,
                         fontSize = 24.sp
                     )
                     IconButton(onClick = viewModel::dismissActiveDialog) {
@@ -207,28 +213,58 @@ fun ShowInfoDialog(viewModel: PuzzleDetailViewModel) {
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
                 ) {
-                    Text(
-                        text = stringResource(R.string.puzzle_rules_title),
-                        modifier = Modifier.fillMaxWidth(),
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.size(16.dp))
-                    BulletPointList(stringArrayResource(R.array.puzzle_rules))
-                    Spacer(modifier = Modifier.size(16.dp))
-                    Text(
-                        text = stringResource(R.string.puzzle_scoring_rules_title),
-                        modifier = Modifier.fillMaxWidth(),
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.size(16.dp))
-                    BulletPointList(stringArrayResource(R.array.puzzle_scoring_rules))
-                    Spacer(modifier = Modifier.size(16.dp))
-                    Text(
-                        text = stringResource(R.string.puzzle_rules_new_puzzle),
-                        modifier = Modifier.fillMaxWidth(),
-                    )
+                    content.invoke()
                 }
             }
+        }
+    }
+}
+
+
+@Composable
+fun InfoDialog(viewModel: PuzzleDetailViewModel) {
+    CustomDialog(
+        viewModel = viewModel,
+        title = stringResource(R.string.puzzle_rules_dialog_title)
+    ) {
+        Text(
+            text = stringResource(R.string.puzzle_rules_title),
+            modifier = Modifier.fillMaxWidth(),
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.size(16.dp))
+        BulletPointList(stringArrayResource(R.array.puzzle_rules))
+        Spacer(modifier = Modifier.size(16.dp))
+        Text(
+            text = stringResource(R.string.puzzle_scoring_rules_title),
+            modifier = Modifier.fillMaxWidth(),
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.size(16.dp))
+        BulletPointList(stringArrayResource(R.array.puzzle_scoring_rules))
+        Spacer(modifier = Modifier.size(16.dp))
+        Text(
+            text = stringResource(R.string.puzzle_rules_new_puzzle),
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+}
+
+@Composable
+fun RankingDialog(viewModel: PuzzleDetailViewModel, maxPuzzleScore: Int) {
+    CustomDialog(
+        viewModel = viewModel,
+        title = stringResource(R.string.puzzle_ranking_dialog_title)
+    ) {
+        Text(
+            text = stringResource(R.string.puzzle_ranking_description),
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Spacer(modifier = Modifier.size(16.dp))
+        PuzzleRanking.sortedValues.forEach { ranking ->
+            val rankName = stringResource(ranking.displayString)
+            val rankScore = (maxPuzzleScore * (ranking.percentCutoff / 100.0)).roundToInt()
+            Text(text = "$rankName ($rankScore)")
         }
     }
 }
@@ -285,9 +321,11 @@ fun ShowResetConfirmationDialog(viewModel: PuzzleDetailViewModel) {
 }
 
 @Composable
-fun ScoreBox(rank: PuzzleRanking, score: Int) {
+fun ScoreBox(viewModel: PuzzleDetailViewModel, rank: PuzzleRanking, score: Int) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { viewModel.scoreBarClicked() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
@@ -310,7 +348,7 @@ fun ScoreBox(rank: PuzzleRanking, score: Int) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                val sortedRanks = PuzzleRanking.values().sortedBy(PuzzleRanking::percentCutoff)
+                val sortedRanks = PuzzleRanking.sortedValues
                 val indexOfRank = sortedRanks.indexOf(rank)
                 sortedRanks.forEachIndexed { index, puzzleRanking ->
                     val bubbleSize = if (puzzleRanking == rank) 24.dp else 8.dp

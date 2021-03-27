@@ -24,6 +24,7 @@ class BoardGameViewState(
 sealed class Dialog {
     object ConfirmReset : Dialog()
     object InfoDialog : Dialog()
+    data class RankingDialog(val maxPuzzleScore: Int) : Dialog()
 }
 
 sealed class WordToast {

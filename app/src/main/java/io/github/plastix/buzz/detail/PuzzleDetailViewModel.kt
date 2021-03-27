@@ -169,6 +169,12 @@ class PuzzleDetailViewModel @AssistedInject constructor(
         }
     }
 
+    fun scoreBarClicked() {
+        updateDetailsState {
+            copy(activeDialog = Dialog.RankingDialog(board.puzzle.maxScore))
+        }
+    }
+
     fun resetConfirmed() {
         updateDetailsState {
             DetailState(

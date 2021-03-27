@@ -53,4 +53,8 @@
         <item>Each puzzle includes at least one "pangram" which uses every letter. These are worth 7 extra points!</item>
     </string-array>
     <string name="puzzle_rules_new_puzzle">New puzzles are released daily at 3:00 a.m. ET.</string>
+
+    <string name="puzzle_ranking_dialog_title">Rankings</string>
+    <string name="puzzle_ranking_description">Ranks are based on a percentage of possible points in a puzzle. The minimum scores to reach each rank for today’s are:</string>
+
 </resources>

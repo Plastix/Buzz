@@ -478,7 +478,7 @@ fun ColumnGridList(words: List<String>, columnNum: Int = 3) {
                     for (j in 0 until columnNum) {
                         val word = columns.getOrNull(j)?.getOrNull(i) ?: ""
                         Text(
-                            text = word,
+                            text = word.capitalize(Locale.getDefault()),
                             maxLines = 1,
                             textAlign = TextAlign.Start,
                             modifier = Modifier.weight(1f),

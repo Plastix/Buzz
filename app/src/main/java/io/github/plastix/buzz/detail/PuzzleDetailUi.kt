@@ -40,6 +40,7 @@ import androidx.compose.ui.window.Dialog
 import io.github.plastix.buzz.PuzzleRanking
 import io.github.plastix.buzz.R
 import io.github.plastix.buzz.theme.BuzzTheme
+import io.github.plastix.buzz.util.constrainHeight
 import kotlinx.coroutines.delay
 import java.util.*
 import kotlin.math.*
@@ -202,15 +203,12 @@ fun CustomDialog(
 ) {
     Dialog(onDismissRequest = viewModel::dismissActiveDialog) {
         Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(fraction = 0.9f),
+            modifier = Modifier.constrainHeight(fraction = 0.9f),
             shape = RoundedCornerShape(4.dp),
             color = MaterialTheme.colors.surface
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
+                modifier = Modifier.wrapContentHeight()
                     .padding(20.dp)
             ) {
                 Row(
@@ -233,7 +231,7 @@ fun CustomDialog(
                 Spacer(modifier = Modifier.size(16.dp))
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .wrapContentHeight()
                         .verticalScroll(rememberScrollState())
                 ) {
                     content.invoke()

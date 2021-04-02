@@ -141,7 +141,11 @@ fun PuzzleBoard(
                 .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 16.dp)
         ) {
             ScoreBox(viewModel, state.currentRank, state.currentScore)
-            DiscoveredWordBox(words = state.discoveredWords)
+            DiscoveredWordBox(
+                words = state.discoveredWords,
+                state.wordBoxExpanded,
+                viewModel::toggleWorldBox
+            )
             Spacer(Modifier.height(32.dp))
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -424,10 +428,13 @@ fun MaxWidthText(
 }
 
 @Composable
-fun DiscoveredWordBox(words: Set<String>, defaultExpanded: Boolean = false) {
-    var expanded by remember { mutableStateOf(defaultExpanded) }
+fun DiscoveredWordBox(
+    words: Set<String>,
+    expanded: Boolean = false,
+    toggleExpand: () -> Unit = {}
+) {
     OutlinedButton(
-        onClick = { expanded = !expanded },
+        onClick = toggleExpand,
         colors = ButtonDefaults.outlinedButtonColors(
             contentColor = MaterialTheme.colors.onSurface,
         )
@@ -523,7 +530,7 @@ fun ChevronRow(
 @Preview
 @Composable
 fun PreviewDiscoveredWordBoxEmpty() {
-    DiscoveredWordBox(words = emptySet())
+    DiscoveredWordBox(words = emptySet(), false)
 }
 
 @Preview
@@ -543,7 +550,7 @@ fun PreviewDiscoveredWordBoxFullExpanded() {
         words = setOf(
             "handle", "story", "rabbit", "cloud"
         ),
-        defaultExpanded = true
+        expanded = true
     )
 }
 

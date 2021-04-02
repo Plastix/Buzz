@@ -38,7 +38,8 @@ class PuzzleDetailViewModel @AssistedInject constructor(
     private data class DetailState(
         val board: PuzzleBoardState,
         val activeDialog: Dialog?,
-        val activeWordToast: WordToast?
+        val activeWordToast: WordToast?,
+        val wordBoxExpanded: Boolean
     )
 
     private var detailState: MutableLiveData<DetailState?> = MutableLiveData(null)
@@ -69,7 +70,8 @@ class PuzzleDetailViewModel @AssistedInject constructor(
                 detailState.value = DetailState(
                     board = PuzzleBoardState(puzzle, gameState),
                     activeDialog = null,
-                    activeWordToast = null
+                    activeWordToast = null,
+                    wordBoxExpanded = false
                 )
             } catch (e: Exception) {
                 _viewStates.value = PuzzleDetailViewState.Error(e)
@@ -86,7 +88,8 @@ class PuzzleDetailViewModel @AssistedInject constructor(
             currentRank = board.currentRank,
             currentScore = board.currentScore,
             activeDialog = activeDialog,
-            activeWordToast = activeWordToast
+            activeWordToast = activeWordToast,
+            wordBoxExpanded = wordBoxExpanded
         )
     }
 
@@ -186,8 +189,15 @@ class PuzzleDetailViewModel @AssistedInject constructor(
                     gameState = board.puzzle.blankGameState()
                 ),
                 activeDialog = null,
-                activeWordToast = null
+                activeWordToast = null,
+                wordBoxExpanded = false
             )
+        }
+    }
+
+    fun toggleWorldBox() {
+        updateDetailsState {
+            copy(wordBoxExpanded = !wordBoxExpanded)
         }
     }
 
@@ -201,13 +211,21 @@ class PuzzleDetailViewModel @AssistedInject constructor(
 
     fun keyboardEvent(event: KeyEvent): Boolean {
         var handled = false
-        withGameState {
+        withDetailsState {
             when (val unicodeChar = event.unicodeChar) {
                 0 -> {
                     handled = when (event.keyCode) {
                         KeyCodes.DELETE -> {
                             delete()
                             true
+                        }
+                        KeyCodes.BACK -> {
+                            if (wordBoxExpanded) {
+                                toggleWorldBox()
+                                true
+                            } else {
+                                false
+                            }
                         }
                         else -> false
                     }
@@ -222,7 +240,7 @@ class PuzzleDetailViewModel @AssistedInject constructor(
                 }
                 else -> {
                     val char = unicodeChar.toChar()
-                    if (puzzle.eligibleLetter(char)) {
+                    if (board.puzzle.eligibleLetter(char)) {
                         keypress(char)
                         handled = true
                     }
@@ -247,6 +265,11 @@ class PuzzleDetailViewModel @AssistedInject constructor(
         val puzzleDetails = detailState.value ?: return
         val newModel = puzzleDetails.block()
         detailState.value = newModel
+    }
+
+    private fun withDetailsState(block: DetailState.() -> Unit) {
+        val puzzleDetails = detailState.value ?: return
+        puzzleDetails.block()
     }
 
     private fun withGameState(block: PuzzleBoardState.() -> Unit) {

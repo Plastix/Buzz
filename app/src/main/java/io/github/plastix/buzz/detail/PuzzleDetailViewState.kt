@@ -17,7 +17,8 @@ class BoardGameViewState(
     val currentRank: PuzzleRanking,
     val currentScore: Int,
     val activeDialog: Dialog?,
-    val activeWordToast: WordToast?
+    val activeWordToast: WordToast?,
+    val wordBoxExpanded: Boolean
 )
 
 sealed class Dialog {

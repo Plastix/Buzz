@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.plastix.buzz.PuzzleBoardState
 import io.github.plastix.buzz.Result
-import io.github.plastix.buzz.formatDate
+import io.github.plastix.buzz.util.formatDate
 import io.github.plastix.buzz.network.PuzzleFetcher
 import io.github.plastix.buzz.persistence.PuzzleRepository
 import kotlinx.coroutines.launch

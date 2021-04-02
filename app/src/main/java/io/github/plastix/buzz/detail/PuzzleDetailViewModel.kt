@@ -79,7 +79,6 @@ class PuzzleDetailViewModel @AssistedInject constructor(
 
     private fun DetailState.constructBoardState(): BoardGameViewState {
         return BoardGameViewState(
-            date = board.puzzle.date,
             centerLetter = board.puzzle.centerLetter,
             outerLetters = board.gameState.outerLetters,
             currentWord = board.gameState.currentWord,

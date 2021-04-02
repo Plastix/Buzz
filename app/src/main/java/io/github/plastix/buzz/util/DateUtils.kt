@@ -1,4 +1,4 @@
-package io.github.plastix.buzz
+package io.github.plastix.buzz.util
 
 import java.text.ParseException
 import java.text.SimpleDateFormat

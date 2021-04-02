@@ -10,7 +10,6 @@ sealed class PuzzleDetailViewState {
 }
 
 class BoardGameViewState(
-    val date: String,
     val centerLetter: Char,
     val outerLetters: List<Char>,
     val currentWord: String,

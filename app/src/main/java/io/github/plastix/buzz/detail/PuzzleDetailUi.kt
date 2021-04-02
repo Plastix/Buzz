@@ -208,7 +208,8 @@ fun CustomDialog(
             color = MaterialTheme.colors.surface
         ) {
             Column(
-                modifier = Modifier.wrapContentHeight()
+                modifier = Modifier
+                    .wrapContentHeight()
                     .padding(20.dp)
             ) {
                 Row(
@@ -645,13 +646,24 @@ fun KeypadButton(letter: Char, onClick: (Char) -> Unit, primary: Boolean) {
         modifier = Modifier.size(100.dp),
         shape = RegularHexagonalShape(),
         onClick = { onClick.invoke(letter) },
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = if (primary) {
-                MaterialTheme.colors.primary
-            } else {
-                MaterialTheme.colors.secondary
-            }
-        )
+        colors = if (MaterialTheme.colors.isLight) {
+            ButtonDefaults.buttonColors(
+                backgroundColor = if (primary) {
+                    MaterialTheme.colors.primary
+                } else {
+                    MaterialTheme.colors.secondary
+                }
+            )
+        } else {
+            ButtonDefaults.outlinedButtonColors(
+                contentColor = if (primary) {
+                    MaterialTheme.colors.primary
+                } else {
+                    MaterialTheme.colors.onSurface
+                }
+            )
+        },
+        border = if (MaterialTheme.colors.isLight) null else ButtonDefaults.outlinedBorder
     ) {
         Text(
             text = letter.toUpperCase().toString(),
@@ -671,7 +683,8 @@ class RegularHexagonalShape : Shape {
         val cx = size.width / 2
         val cy = size.height / 2
         var angle = 0
-        for (i in 0 until 6) {
+        // Loop 7 times so that we connect all 6 edges together with lines
+        for (i in 0 until 7) {
             angle += 60
             val x = cos(angle * (Math.PI / 180)) * cx + cx
             val y = sin(angle * (Math.PI / 180)) * cy + cy

@@ -3,6 +3,12 @@
     just the color of the Status Bar. For the colors used by the Composable functions, see Theme.kt
     -->
     <style name="Theme.Buzz" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/primary</item>
+        <item name="colorSecondaryVariant">@color/secondary</item>
         <item name="android:statusBarColor">@color/status_bar</item>
     </style>
 </resources>

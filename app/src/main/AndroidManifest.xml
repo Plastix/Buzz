@@ -25,6 +25,8 @@
 
         <activity android:name=".detail.PuzzleDetailActivity" />
 
+        <activity android:name=".settings.SettingsActivity" />
+
         <!-- Disable automatic work manager initialization because we configure it manually to
         enable hilt support
 

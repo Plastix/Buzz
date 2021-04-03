@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="preferences_appearance">appearance</string>
+    <string name="preferences_appearance_theme">appearance.theme</string>
+    <string name="preferences_appearance_theme.always_light">Light</string>
+    <string name="preferences_appearance_theme.always_dark">Dark</string>
+    <string name="preferences_appearance_theme.auto">System default</string>
+    <array name="preferences_appearance_theme_values">
+        <item name="always_light">@string/preferences_appearance_theme.always_light</item>
+        <item name="always_dark">@string/preferences_appearance_theme.always_dark</item>
+        <item name="auto">@string/preferences_appearance_theme.auto</item>
+    </array>
+</resources>

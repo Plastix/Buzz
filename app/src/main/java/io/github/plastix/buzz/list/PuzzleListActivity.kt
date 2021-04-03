@@ -6,6 +6,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.plastix.buzz.detail.PuzzleDetailActivity
+import io.github.plastix.buzz.settings.SettingsActivity
 
 @AndroidEntryPoint
 class PuzzleListActivity : AppCompatActivity() {
@@ -13,11 +14,15 @@ class PuzzleListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val viewModel: PuzzleListViewModel by viewModels()
         setContent {
-            PuzzleListUi(viewModel, onPuzzleClick = this::openPuzzleDetail)
+            PuzzleListUi(viewModel, onPuzzleClick = this::openPuzzleDetail, this::openSettings)
         }
     }
 
     private fun openPuzzleDetail(puzzleId: String) {
         startActivity(PuzzleDetailActivity.newIntent(this, puzzleId))
+    }
+
+    private fun openSettings() {
+        startActivity(SettingsActivity.newIntent(this))
     }
 }

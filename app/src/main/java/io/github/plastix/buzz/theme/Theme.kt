@@ -1,6 +1,5 @@
 package io.github.plastix.buzz.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
@@ -27,11 +26,11 @@ private val LightColors = lightColors(
 
 @Composable
 fun BuzzTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
+    val themeMode = LocalUiThemeMode.current
     MaterialTheme(
-        colors = if (darkTheme) DarkColors else LightColors,
+        colors = if (themeMode.isDarkMode()) DarkColors else LightColors,
         content = content
     )
 }

@@ -59,4 +59,13 @@
     <string name="puzzle_ranking_dialog_title">Rankings</string>
     <string name="puzzle_ranking_description">Ranks are based on a percentage of possible points in a puzzle. The minimum scores to reach each rank for today’s are:</string>
 
+    <string name="settings_title">Settings</string>
+    <string name="settings_appearance">Appearance</string>
+
+    <array name="settings_appearance_modes">
+        <item name="always_light">Light</item>
+        <item name="always_dark">Dark</item>
+        <item name="auto">System default</item>
+    </array>
+
 </resources>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:key="@string/preferences_appearance"
+        app:title="@string/settings_appearance">
+
+        <ListPreference
+            android:defaultValue="@string/preferences_appearance_theme.auto"
+            android:entries="@array/settings_appearance_modes"
+            android:entryValues="@array/preferences_appearance_theme_values"
+            android:key="@string/preferences_appearance_theme"
+            android:title="Theme"
+            app:iconSpaceReserved="false"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+</androidx.preference.PreferenceScreen>

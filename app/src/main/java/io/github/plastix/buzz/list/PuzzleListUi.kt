@@ -9,7 +9,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SyncProblem
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -30,23 +33,41 @@ import io.github.plastix.buzz.theme.BuzzTheme
 
 
 @Composable
-fun PuzzleListUi(viewModel: PuzzleListViewModel, onPuzzleClick: (puzzleId: String) -> Unit) {
+fun PuzzleListUi(
+    viewModel: PuzzleListViewModel,
+    onPuzzleClick: (puzzleId: String) -> Unit,
+    onSettings: () -> Unit
+) {
     BuzzTheme {
-        Scaffold(topBar = {
-            TopAppBar(
-                title = {
-                    Text(stringResource(R.string.puzzle_list_title))
-                },
-            )
-        }) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(stringResource(R.string.puzzle_list_title))
+                    },
+                    actions = {
+                        IconButton(onClick = onSettings) {
+                            Icon(
+                                imageVector = Icons.Filled.Settings,
+                                contentDescription = stringResource(R.string.settings_title)
+                            )
+                        }
+                    }
+                )
+            }
+        ) {
             PuzzleListScreen(viewModel, onPuzzleClick)
         }
     }
 }
 
 @Composable
-fun PuzzleListScreen(viewModel: PuzzleListViewModel, onPuzzleClick: (puzzleId: String) -> Unit) {
-    when (val viewState = viewModel.viewStates.observeAsState(PuzzleListViewState.Loading).value) {
+fun PuzzleListScreen(
+    viewModel: PuzzleListViewModel,
+    onPuzzleClick: (puzzleId: String) -> Unit
+) {
+    when (val viewState =
+        viewModel.viewStates.observeAsState(PuzzleListViewState.Loading).value) {
         is PuzzleListViewState.Loading -> PuzzleListLoadingState()
         is PuzzleListViewState.Success -> {
             if (viewState.puzzles.isEmpty()) {

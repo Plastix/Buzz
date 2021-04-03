@@ -63,7 +63,7 @@ fun PuzzleDetailUi(
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.puzzle_detail_title)
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },

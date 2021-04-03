@@ -70,7 +70,7 @@
     </array>
 
     <string name="settings_puzzle_data">Puzzle Data</string>
-    <string name="settings_puzzle_download_title">Auto-download Puzzles</string>
+    <string name="settings_puzzle_download_title">Auto Download</string>
     <string name="settings_puzzle_download_summary">Automatically downloads the daily puzzle</string>
 
 </resources>

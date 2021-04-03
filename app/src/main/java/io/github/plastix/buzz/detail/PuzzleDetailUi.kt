@@ -20,7 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.res.stringArrayResource
@@ -557,7 +560,7 @@ fun PreviewDiscoveredWordBoxFullExpanded() {
 
 @Composable
 fun InputBox(centerLetter: Char, word: String) {
-    val textSize = 30.sp
+    var textSize by remember { mutableStateOf(30.sp) }
     val highlightColor = MaterialTheme.colors.primary
     Row {
         Text(
@@ -575,8 +578,11 @@ fun InputBox(centerLetter: Char, word: String) {
             fontSize = textSize,
             fontWeight = FontWeight.Black,
             maxLines = 1,
-            // TODO Support auto text reszing
-            overflow = TextOverflow.Ellipsis
+            onTextLayout = { result ->
+                if (result.hasVisualOverflow) {
+                    textSize *= 0.9f
+                }
+            }
         )
         val infiniteTransition = rememberInfiniteTransition()
         val cursorAnimation by infiniteTransition.animateFloat(

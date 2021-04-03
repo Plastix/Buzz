@@ -10,4 +10,7 @@
         <item name="always_dark">@string/preferences_appearance_theme.always_dark</item>
         <item name="auto">@string/preferences_appearance_theme.auto</item>
     </array>
+
+    <string name="preferences_download">download</string>
+    <string name="preferences_download_enabled">download.enabled</string>
 </resources>

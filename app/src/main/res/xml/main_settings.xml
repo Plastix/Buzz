@@ -13,8 +13,21 @@
             android:entries="@array/settings_appearance_modes"
             android:entryValues="@array/preferences_appearance_theme_values"
             android:key="@string/preferences_appearance_theme"
-            android:title="Theme"
+            android:title="@string/settings_theme_title"
             app:iconSpaceReserved="false"
             app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:key="@string/preferences_download"
+        app:title="@string/settings_puzzle_data">
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/preferences_download_enabled"
+            android:summary="@string/settings_puzzle_download_summary"
+            android:title="@string/settings_puzzle_download_title"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
 </androidx.preference.PreferenceScreen>

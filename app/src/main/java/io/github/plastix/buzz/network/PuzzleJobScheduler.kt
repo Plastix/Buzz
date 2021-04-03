@@ -2,11 +2,13 @@ package io.github.plastix.buzz.network
 
 import android.app.Application
 import androidx.work.*
+import io.github.plastix.buzz.settings.Preferences
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class PuzzleJobScheduler @Inject constructor(
-    private val application: Application
+    private val application: Application,
+    private val preferences: Preferences
 ) {
 
     companion object {
@@ -14,6 +16,14 @@ class PuzzleJobScheduler @Inject constructor(
     }
 
     fun scheduleDailyDownloadJob() {
+        if (preferences.autoDownloadEnabled()) {
+            scheduleJob()
+        } else {
+            clearJob()
+        }
+    }
+
+    private fun scheduleJob() {
         // Currently does not support setting a specific time to run each day
         val workRequest = PeriodicWorkRequest.Builder(
             PuzzleDownloadJob::class.java,
@@ -31,5 +41,10 @@ class PuzzleJobScheduler @Inject constructor(
                 ExistingPeriodicWorkPolicy.KEEP,
                 workRequest
             )
+    }
+
+    private fun clearJob() {
+        WorkManager.getInstance(application)
+            .cancelUniqueWork(PUZZLE_JOB_ID)
     }
 }

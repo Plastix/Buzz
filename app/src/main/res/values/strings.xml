@@ -61,11 +61,16 @@
 
     <string name="settings_title">Settings</string>
     <string name="settings_appearance">Appearance</string>
+    <string name="settings_theme_title">Theme</string>
 
     <array name="settings_appearance_modes">
         <item name="always_light">Light</item>
         <item name="always_dark">Dark</item>
         <item name="auto">System default</item>
     </array>
+
+    <string name="settings_puzzle_data">Puzzle Data</string>
+    <string name="settings_puzzle_download_title">Auto-download Puzzles</string>
+    <string name="settings_puzzle_download_summary">Automatically downloads the daily puzzle</string>
 
 </resources>

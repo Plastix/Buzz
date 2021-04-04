@@ -1,5 +1,6 @@
 package io.github.plastix.buzz.detail
 
+import android.content.res.Configuration
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -26,6 +27,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Placeable
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -93,14 +95,25 @@ fun PuzzleDetailScreen(viewModel: PuzzleDetailViewModel) {
     when (val state =
         viewModel.viewStates.observeAsState(PuzzleDetailViewState.Loading).value) {
         is PuzzleDetailViewState.Loading -> PuzzleDetailLoadingState()
-        is PuzzleDetailViewState.Success -> PuzzleBoard(
-            state.boardGameState,
-            viewModel,
-            onShuffle = viewModel::shuffle,
-            onKeyClick = viewModel::keypress,
-            onDelete = viewModel::delete,
-            onEnter = viewModel::enter
-        )
+        is PuzzleDetailViewState.Success -> if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            PuzzleBoardLandscape(
+                state.boardGameState,
+                viewModel,
+                onShuffle = viewModel::shuffle,
+                onKeyClick = viewModel::keypress,
+                onDelete = viewModel::delete,
+                onEnter = viewModel::enter
+            )
+        } else {
+            PuzzleBoard(
+                state.boardGameState,
+                viewModel,
+                onShuffle = viewModel::shuffle,
+                onKeyClick = viewModel::keypress,
+                onDelete = viewModel::delete,
+                onEnter = viewModel::enter
+            )
+        }
         is PuzzleDetailViewState.Error -> PuzzleErrorState()
     }
 }
@@ -164,6 +177,50 @@ fun PuzzleBoard(
         }
         if (state.activeDialog != null) {
             ShowDialog(viewModel, state.activeDialog)
+        }
+    }
+}
+
+@Composable
+fun PuzzleBoardLandscape(
+    state: BoardGameViewState,
+    viewModel: PuzzleDetailViewModel,
+    onShuffle: () -> Unit,
+    onKeyClick: (Char) -> Unit,
+    onDelete: () -> Unit,
+    onEnter: () -> Unit
+) {
+    Row(
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            ScoreBox(viewModel, state.currentRank, state.currentScore)
+            PuzzleKeypad(state.centerLetter, state.outerLetters.toList(), onKeyClick)
+        }
+        Spacer(Modifier.width(16.dp))
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .padding(bottom = 12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            DiscoveredWordBox(
+                words = state.discoveredWords,
+                expanded = state.wordBoxExpanded,
+                toggleExpand = viewModel::toggleWorldBox
+            )
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                WordToastRow(state, viewModel)
+                InputBox(centerLetter = state.centerLetter, word = state.currentWord)
+            }
+            ActionBar(onShuffle = onShuffle, onDelete = onDelete, onEnter = onEnter)
         }
     }
 }

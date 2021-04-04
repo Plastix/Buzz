@@ -1,0 +1,23 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.squareup.sqldelight:gradle-plugin:1.4.4'
+    }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'com.squareup.sqldelight'
+
+sqldelight {
+    Database { // This will be the name of the generated database class.
+        packageName = "io.plastix.github.buzz.dataset"
+    }
+}
+
+dependencies {
+    implementation "com.squareup.sqldelight:sqlite-driver:1.4.4"
+    implementation(project(":core"))
+}

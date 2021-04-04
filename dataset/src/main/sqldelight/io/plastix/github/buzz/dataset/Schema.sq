@@ -1,0 +1,19 @@
+CREATE TABLE IF NOT EXISTS dictionary_words (
+    `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    character_set INTEGER NOT NULL,
+    word TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS character_set_index ON dictionary_words(character_set);
+
+addWord:
+INSERT INTO dictionary_words(character_set, word)
+VALUES (?, ?);
+
+CREATE TABLE IF NOT EXISTS puzzle_seeds (
+    character_set INTEGER NOT NULL PRIMARY KEY
+);
+
+addPuzzleSeed:
+INSERT OR IGNORE INTO puzzle_seeds(character_set)
+VALUES (?);

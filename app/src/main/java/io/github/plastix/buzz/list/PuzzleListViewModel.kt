@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.plastix.buzz.PuzzleBoardState
 import io.github.plastix.buzz.Result
+import io.github.plastix.buzz.blankGameState
 import io.github.plastix.buzz.util.formatDate
 import io.github.plastix.buzz.network.PuzzleFetcher
 import io.github.plastix.buzz.persistence.PuzzleRepository
@@ -57,5 +58,15 @@ class PuzzleListViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun newPuzzle() {
+        viewModelScope
+            .launch {
+                val puzzle = puzzleRepository.generateRandomPuzzle()
+                puzzleRepository.insertPuzzles(listOf(puzzle))
+                puzzleRepository.insertGameState(puzzle.blankGameState(), puzzle.date)
+                println(puzzle)
+            }
     }
 }

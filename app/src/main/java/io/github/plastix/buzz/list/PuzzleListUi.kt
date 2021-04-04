@@ -9,8 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.SyncProblem
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.Composable
@@ -46,6 +45,12 @@ fun PuzzleListUi(
                         Text(stringResource(R.string.puzzle_list_title))
                     },
                     actions = {
+                        IconButton(onClick = viewModel::newPuzzle) {
+                            Icon(
+                                imageVector = Icons.Filled.AddCircleOutline,
+                                contentDescription = "New Puzzle"
+                            )
+                        }
                         IconButton(onClick = onSettings) {
                             Icon(
                                 imageVector = Icons.Filled.Settings,

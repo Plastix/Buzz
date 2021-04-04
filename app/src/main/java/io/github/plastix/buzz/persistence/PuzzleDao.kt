@@ -15,7 +15,7 @@ interface PuzzleDao {
     @Query("select * from puzzles where puzzleId == :puzzleId")
     fun getPuzzleById(puzzleId: String): PuzzleEntity?
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPuzzles(puzzles: List<PuzzleEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

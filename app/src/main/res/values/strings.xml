@@ -73,4 +73,7 @@
     <string name="settings_puzzle_download_title">Auto Download</string>
     <string name="settings_puzzle_download_summary">Automatically downloads the daily puzzle</string>
 
+    <string name="about_dialog_title">About Buzz</string>
+    <string name="about_dialog_body">A shameless spelling bee clone. Made with ❤️ in SF!</string>
+
 </resources>

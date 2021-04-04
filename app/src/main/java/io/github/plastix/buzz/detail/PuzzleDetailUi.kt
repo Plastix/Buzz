@@ -45,6 +45,7 @@ import androidx.compose.ui.window.Dialog
 import io.github.plastix.buzz.PuzzleRanking
 import io.github.plastix.buzz.R
 import io.github.plastix.buzz.theme.BuzzTheme
+import io.github.plastix.buzz.util.CustomDialog
 import io.github.plastix.buzz.util.constrainHeight
 import kotlinx.coroutines.delay
 import java.util.*
@@ -259,58 +260,11 @@ fun ShowDialog(viewModel: PuzzleDetailViewModel, activeDialog: Dialog) {
     }
 }
 
-@Composable
-fun CustomDialog(
-    viewModel: PuzzleDetailViewModel,
-    title: String,
-    content: @Composable () -> Unit
-) {
-    Dialog(onDismissRequest = viewModel::dismissActiveDialog) {
-        Surface(
-            modifier = Modifier.constrainHeight(fraction = 0.9f),
-            shape = RoundedCornerShape(4.dp),
-            color = MaterialTheme.colors.surface
-        ) {
-            Column(
-                modifier = Modifier
-                    .wrapContentHeight()
-                    .padding(20.dp)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        modifier = Modifier.weight(1f),
-                        text = title,
-                        fontSize = 24.sp
-                    )
-                    IconButton(onClick = viewModel::dismissActiveDialog) {
-                        Icon(
-                            imageVector = Icons.Filled.Clear,
-                            contentDescription = stringResource(R.string.close)
-                        )
-                    }
-                }
-                Spacer(modifier = Modifier.size(16.dp))
-                Column(
-                    modifier = Modifier
-                        .wrapContentHeight()
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    content.invoke()
-                }
-            }
-        }
-    }
-}
-
 
 @Composable
 fun InfoDialog(viewModel: PuzzleDetailViewModel) {
     CustomDialog(
-        viewModel = viewModel,
+        onDismiss = viewModel::dismissActiveDialog,
         title = stringResource(R.string.puzzle_rules_dialog_title)
     ) {
         Text(
@@ -339,7 +293,7 @@ fun InfoDialog(viewModel: PuzzleDetailViewModel) {
 @Composable
 fun RankingDialog(viewModel: PuzzleDetailViewModel, maxPuzzleScore: Int) {
     CustomDialog(
-        viewModel = viewModel,
+        onDismiss = viewModel::dismissActiveDialog,
         title = stringResource(R.string.puzzle_ranking_dialog_title)
     ) {
         Text(

@@ -571,7 +571,7 @@ fun PreviewDiscoveredWordBoxFullExpanded() {
 
 @Composable
 fun InputBox(centerLetter: Char, word: String) {
-    var textSize by remember { mutableStateOf(30.sp) }
+    val textSize = 30.sp
     val highlightColor = MaterialTheme.colors.primary
     Row {
         Text(
@@ -589,11 +589,7 @@ fun InputBox(centerLetter: Char, word: String) {
             fontSize = textSize,
             fontWeight = FontWeight.Black,
             maxLines = 1,
-            onTextLayout = { result ->
-                if (result.hasVisualOverflow) {
-                    textSize *= 0.9f
-                }
-            }
+            overflow = TextOverflow.Ellipsis
         )
         val infiniteTransition = rememberInfiniteTransition()
         val cursorAnimation by infiniteTransition.animateFloat(

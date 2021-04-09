@@ -1,7 +1,5 @@
 package io.github.plastix.buzz.persistence
 
-import androidx.annotation.Nullable
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -16,7 +14,7 @@ import java.time.LocalDate
     tableName = "puzzles",
     indices = [
         Index(
-            value = ["centerLetter", "outerLetters", "puzzleType"],
+            value = ["centerLetter", "outerLetters"],
             unique = true
         )
     ]

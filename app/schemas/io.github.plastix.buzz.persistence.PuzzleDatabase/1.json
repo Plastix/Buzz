@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "092515b7707204719f0515eb657752c1",
+    "identityHash": "9ef9fa28ea1daa2b55d2e253fd825dba",
     "entities": [
       {
         "tableName": "puzzles",
@@ -57,7 +57,18 @@
           ],
           "autoGenerate": true
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_puzzles_centerLetter_outerLetters_puzzleType",
+            "unique": true,
+            "columnNames": [
+              "centerLetter",
+              "outerLetters",
+              "puzzleType"
+            ],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_puzzles_centerLetter_outerLetters_puzzleType` ON `${TABLE_NAME}` (`centerLetter`, `outerLetters`, `puzzleType`)"
+          }
+        ],
         "foreignKeys": []
       },
       {
@@ -102,7 +113,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '092515b7707204719f0515eb657752c1')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9ef9fa28ea1daa2b55d2e253fd825dba')"
     ]
   }
 }

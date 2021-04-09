@@ -1,16 +1,26 @@
 package io.github.plastix.buzz.persistence
 
+import androidx.annotation.Nullable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import io.github.plastix.buzz.Puzzle
 import io.github.plastix.buzz.PuzzleType
 import java.time.LocalDate
-import java.util.*
 
 /**
  * Database model for persisting a [Puzzle].
  */
-@Entity(tableName = "puzzles")
+@Entity(
+    tableName = "puzzles",
+    indices = [
+        Index(
+            value = ["centerLetter", "outerLetters", "puzzleType"],
+            unique = true
+        )
+    ]
+)
 class PuzzleEntity(
     @PrimaryKey(autoGenerate = true)
     val puzzleId: Long,

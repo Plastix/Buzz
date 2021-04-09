@@ -282,11 +282,6 @@ fun InfoDialog(viewModel: PuzzleDetailViewModel) {
         )
         Spacer(modifier = Modifier.size(16.dp))
         BulletPointList(stringArrayResource(R.array.puzzle_scoring_rules))
-        Spacer(modifier = Modifier.size(16.dp))
-        Text(
-            text = stringResource(R.string.puzzle_rules_new_puzzle),
-            modifier = Modifier.fillMaxWidth(),
-        )
     }
 }
 

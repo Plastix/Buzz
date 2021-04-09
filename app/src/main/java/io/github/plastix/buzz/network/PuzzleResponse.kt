@@ -30,7 +30,7 @@ data class PuzzleResponse(
  */
 fun PuzzleResponse.toPuzzle(): Puzzle {
     return Puzzle(
-        id = 0,
+        id = Puzzle.AUTO_GENERATE_ID,
         date = printDate.parseDate(),
         centerLetter = centerLetter[0],
         outerLetters = outerLetters.map { it[0] }.toSet(),

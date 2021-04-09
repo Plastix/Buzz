@@ -18,6 +18,7 @@ data class Puzzle(
     companion object {
         const val MIN_WORD_LENGTH = 4
         const val MAX_WORD_LENGTH = 19
+        const val AUTO_GENERATE_ID = 0L
     }
 
     val maxScore: Int = answers.sumBy(::scoreWord)

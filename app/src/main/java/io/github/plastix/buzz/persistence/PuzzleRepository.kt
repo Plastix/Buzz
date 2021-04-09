@@ -63,7 +63,6 @@ class PuzzleRepository @Inject constructor(
         return withContext(Dispatchers.IO) {
             val charSet = dictionary.getRandomPuzzlePuzzleSeed()?.characterSet
                 ?: error("Failed to find valid puzzle character set!")
-            // Pick a random letter from char set to use as required letter
             val requiredCharSet = charSet.toCharArray().random().toCharacterSet()
             val keys = charSet.powerSet().map { it or requiredCharSet }.toSet()
             val solutions = keys.flatMap {
@@ -78,7 +77,7 @@ class PuzzleRepository @Inject constructor(
             }
 
             val newPuzzle = PuzzleEntity(
-                puzzleId = 0,
+                puzzleId = Puzzle.AUTO_GENERATE_ID,
                 date = LocalDate.now(),
                 centerLetter = requiredCharSet.toCharArray().first(),
                 outerLetters = (requiredCharSet xor charSet).toCharArray().toSet(),

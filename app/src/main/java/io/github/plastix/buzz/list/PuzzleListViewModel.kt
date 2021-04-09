@@ -54,7 +54,7 @@ class PuzzleListViewModel @Inject constructor(
             when (val result = fetcher.fetchLatestPuzzles()) {
                 is Result.Success -> puzzleRepository.insertPuzzles(result.data)
                 is Result.Error -> {
-                    // TODO
+                    // No-op
                 }
             }
         }
@@ -62,7 +62,11 @@ class PuzzleListViewModel @Inject constructor(
 
     fun newPuzzle() {
         viewModelScope.launch {
-            puzzleRepository.generateRandomPuzzle()
+            try {
+                puzzleRepository.generateRandomPuzzle()
+            } catch (e: Exception) {
+                // No-op
+            }
         }
     }
 }

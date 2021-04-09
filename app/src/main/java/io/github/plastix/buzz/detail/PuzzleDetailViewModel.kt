@@ -11,19 +11,19 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class PuzzleDetailViewModel @AssistedInject constructor(
-    @Assisted private val puzzleId: String,
+    @Assisted private val puzzleId: Long,
     private val repository: PuzzleRepository
 ) : ViewModel() {
 
     @AssistedFactory
     interface Factory {
-        fun create(puzzleId: String): PuzzleDetailViewModel
+        fun create(puzzleId: Long): PuzzleDetailViewModel
     }
 
     companion object {
         fun provideFactory(
             assistedFactory: Factory,
-            puzzleId: String
+            puzzleId: Long
         ) = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {

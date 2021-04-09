@@ -2,15 +2,13 @@ package io.github.plastix.buzz.persistence
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations.map
-import io.github.plastix.buzz.Puzzle
-import io.github.plastix.buzz.PuzzleBoardState
-import io.github.plastix.buzz.PuzzleGameState
-import io.github.plastix.buzz.blankGameState
+import io.github.plastix.buzz.*
 import io.github.plastix.buzz.core.*
 import io.github.plastix.buzz.persistence.gen.DictionaryDao
 import io.github.plastix.buzz.persistence.gen.DictionaryDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
 import javax.inject.Inject
 
 /**
@@ -36,7 +34,7 @@ class PuzzleRepository @Inject constructor(
         }
     }
 
-    suspend fun getPuzzle(puzzleId: String): Puzzle? {
+    suspend fun getPuzzle(puzzleId: Long): Puzzle? {
         return withContext(Dispatchers.IO) {
             dao.getPuzzleById(puzzleId)?.toPuzzle()
         }
@@ -48,20 +46,20 @@ class PuzzleRepository @Inject constructor(
         }
     }
 
-    suspend fun insertGameState(puzzleGameState: PuzzleGameState, puzzleId: String) {
+    suspend fun insertGameState(puzzleGameState: PuzzleGameState, puzzleId: Long) {
         withContext(Dispatchers.IO) {
             dao.insertGameState(puzzleGameState.toEntity(puzzleId))
         }
     }
 
-    suspend fun getGameState(puzzleId: String): PuzzleGameState? {
+    suspend fun getGameState(puzzleId: Long): PuzzleGameState? {
         return withContext(Dispatchers.IO) {
             dao.getGameState(puzzleId)?.toGameState()
 
         }
     }
 
-    suspend fun generateRandomPuzzle(): Puzzle {
+    suspend fun generateRandomPuzzle() {
         return withContext(Dispatchers.IO) {
             val charSet = dictionary.getRandomPuzzlePuzzleSeed()?.characterSet
                 ?: error("Failed to find valid puzzle character set!")
@@ -71,17 +69,24 @@ class PuzzleRepository @Inject constructor(
             val solutions = keys.flatMap {
                 dictionary.getWordsMatchingCharacterSets(it)
             }
-            assert(solutions.isNotEmpty())
+            assert(solutions.isNotEmpty()) {
+                "No solutions to puzzle!"
+            }
             val pangrams = solutions.filter { it.characterSet.size >= Constants.LETTER_COUNT }
-            assert(pangrams.isNotEmpty())
+            assert(pangrams.isNotEmpty()) {
+                "No pangram in puzzle!"
+            }
 
-            Puzzle(
-                date = "",
+            val newPuzzle = PuzzleEntity(
+                puzzleId = 0,
+                date = LocalDate.now(),
                 centerLetter = requiredCharSet.toCharArray().first(),
                 outerLetters = (requiredCharSet xor charSet).toCharArray().toSet(),
                 pangrams = pangrams.map { it.word }.toSet(),
-                answers = solutions.map { it.word }.toSet()
+                answers = solutions.map { it.word }.toSet(),
+                puzzleType = PuzzleType.GENERATED
             )
+            dao.insertPuzzles(listOf(newPuzzle))
         }
     }
 }

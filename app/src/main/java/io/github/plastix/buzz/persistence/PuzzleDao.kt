@@ -13,7 +13,7 @@ interface PuzzleDao {
     fun getPuzzles(): LiveData<List<PuzzleEntityWithGameState>>
 
     @Query("select * from puzzles where puzzleId == :puzzleId")
-    fun getPuzzleById(puzzleId: String): PuzzleEntity?
+    fun getPuzzleById(puzzleId: Long): PuzzleEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPuzzles(puzzles: List<PuzzleEntity>)
@@ -22,5 +22,5 @@ interface PuzzleDao {
     fun insertGameState(puzzleGameState: PuzzleGameStateEntity)
 
     @Query("select * from `game-states` where puzzleId == :puzzleId")
-    fun getGameState(puzzleId: String): PuzzleGameStateEntity?
+    fun getGameState(puzzleId: Long): PuzzleGameStateEntity?
 }

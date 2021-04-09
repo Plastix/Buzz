@@ -34,7 +34,7 @@ import io.github.plastix.buzz.theme.BuzzTheme
 @Composable
 fun PuzzleListUi(
     viewModel: PuzzleListViewModel,
-    onPuzzleClick: (puzzleId: String) -> Unit,
+    onPuzzleClick: (puzzleId: Long) -> Unit,
     onSettings: () -> Unit
 ) {
     BuzzTheme {
@@ -69,7 +69,7 @@ fun PuzzleListUi(
 @Composable
 fun PuzzleListScreen(
     viewModel: PuzzleListViewModel,
-    onPuzzleClick: (puzzleId: String) -> Unit
+    onPuzzleClick: (puzzleId: Long) -> Unit
 ) {
     when (val viewState =
         viewModel.viewStates.observeAsState(PuzzleListViewState.Loading).value) {
@@ -118,7 +118,7 @@ fun PuzzleListLoadingState() {
 }
 
 @Composable
-fun PuzzleList(puzzles: List<PuzzleRowState>, onPuzzleClick: (puzzleId: String) -> Unit) {
+fun PuzzleList(puzzles: List<PuzzleRowState>, onPuzzleClick: (puzzleId: Long) -> Unit) {
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
         modifier = Modifier.fillMaxSize(),
@@ -131,7 +131,7 @@ fun PuzzleList(puzzles: List<PuzzleRowState>, onPuzzleClick: (puzzleId: String) 
 }
 
 @Composable
-fun PuzzleRow(puzzleRow: PuzzleRowState, onPuzzleClick: (puzzleId: String) -> Unit) {
+fun PuzzleRow(puzzleRow: PuzzleRowState, onPuzzleClick: (puzzleId: Long) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -216,11 +216,11 @@ fun PreviewPuzzleList() {
         PuzzleList(
             puzzles = listOf(
                 PuzzleRowState(
-                    "2021-03-21", "Monday March 22, 2021", "lenoptu",
+                    0, "Monday March 22, 2021", "lenoptu",
                     PuzzleRanking.Genius, 300
                 ),
                 PuzzleRowState(
-                    "2021-03-21", "Sunday March 21, 2021", "lenoptu",
+                    1, "Sunday March 21, 2021", "lenoptu",
                     PuzzleRanking.GoodStart, 23
                 ),
             ),

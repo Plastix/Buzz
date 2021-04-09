@@ -1,14 +1,18 @@
 package io.github.plastix.buzz
 
+import java.time.LocalDate
+
 /**
  * Internal client representation of a Spelling Bee puzzle.
  */
 data class Puzzle(
-    val date: String,
+    val id: Long,
+    val date: LocalDate,
     val centerLetter: Char,
     val outerLetters: Set<Char>,
     val pangrams: Set<String>,
-    val answers: Set<String>
+    val answers: Set<String>,
+    val type: PuzzleType,
 ) {
 
     companion object {

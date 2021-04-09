@@ -2,15 +2,21 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f8bcb436d63d221b2f7e65d6c6fb5fdd",
+    "identityHash": "092515b7707204719f0515eb657752c1",
     "entities": [
       {
         "tableName": "puzzles",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`puzzleId` TEXT NOT NULL, `centerLetter` INTEGER NOT NULL, `outerLetters` TEXT NOT NULL, `pangrams` TEXT NOT NULL, `answers` TEXT NOT NULL, PRIMARY KEY(`puzzleId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`puzzleId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` TEXT NOT NULL, `centerLetter` INTEGER NOT NULL, `outerLetters` TEXT NOT NULL, `pangrams` TEXT NOT NULL, `answers` TEXT NOT NULL, `puzzleType` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "puzzleId",
             "columnName": "puzzleId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -37,25 +43,31 @@
             "columnName": "answers",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "puzzleType",
+            "columnName": "puzzleType",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
           "columnNames": [
             "puzzleId"
           ],
-          "autoGenerate": false
+          "autoGenerate": true
         },
         "indices": [],
         "foreignKeys": []
       },
       {
         "tableName": "game-states",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`puzzleId` TEXT NOT NULL, `outerLetters` TEXT NOT NULL, `currentWord` TEXT NOT NULL, `discoveredWords` TEXT NOT NULL, PRIMARY KEY(`puzzleId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`puzzleId` INTEGER NOT NULL, `outerLetters` TEXT NOT NULL, `currentWord` TEXT NOT NULL, `discoveredWords` TEXT NOT NULL, PRIMARY KEY(`puzzleId`))",
         "fields": [
           {
             "fieldPath": "puzzleId",
             "columnName": "puzzleId",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -90,7 +102,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f8bcb436d63d221b2f7e65d6c6fb5fdd')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '092515b7707204719f0515eb657752c1')"
     ]
   }
 }

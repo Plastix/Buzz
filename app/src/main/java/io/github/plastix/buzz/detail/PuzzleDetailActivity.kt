@@ -16,14 +16,14 @@ class PuzzleDetailActivity : AppCompatActivity() {
 
     companion object {
         private const val PUZZLE_ID_KEY: String = "puzzle.id"
-        fun newIntent(context: Context, puzzleId: String): Intent {
+        fun newIntent(context: Context, puzzleId: Long): Intent {
             return Intent(context, PuzzleDetailActivity::class.java)
                 .putExtra(PUZZLE_ID_KEY, puzzleId)
         }
     }
 
-    private val puzzleId: String by lazy {
-        intent.getStringExtra(PUZZLE_ID_KEY) ?: error("Expecting puzzle id!")
+    private val puzzleId: Long by lazy {
+        intent.getLongExtra(PUZZLE_ID_KEY, -1)
     }
 
     @Inject

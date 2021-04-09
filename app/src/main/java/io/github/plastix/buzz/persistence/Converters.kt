@@ -1,6 +1,10 @@
 package io.github.plastix.buzz.persistence
 
 import androidx.room.TypeConverter
+import io.github.plastix.buzz.PuzzleType
+import io.github.plastix.buzz.util.parseDate
+import java.time.LocalDate
+import java.time.format.DateTimeParseException
 
 class Converters {
 
@@ -44,5 +48,25 @@ class Converters {
         } else {
             string.split(",").map { it[0] }
         }
+    }
+
+    @TypeConverter
+    fun serializeDate(date: LocalDate): String {
+        return date.toString()
+    }
+
+    @TypeConverter
+    fun deserializeDate(string: String): LocalDate {
+        return string.parseDate()
+    }
+
+    @TypeConverter
+    fun serializePuzzleType(puzzleType: PuzzleType): String {
+        return puzzleType.stringKey
+    }
+
+    @TypeConverter
+    fun deserializePuzzleType(string: String): PuzzleType {
+        return PuzzleType.fromStringKey(string)
     }
 }

@@ -10,7 +10,7 @@ import io.github.plastix.buzz.PuzzleGameState
 @Entity(tableName = "game-states")
 class PuzzleGameStateEntity(
     @PrimaryKey
-    val puzzleId: String,
+    val puzzleId: Long,
     val outerLetters: List<Char>,
     val currentWord: String,
     val discoveredWords: Set<String>
@@ -24,7 +24,7 @@ fun PuzzleGameStateEntity.toGameState(): PuzzleGameState {
     )
 }
 
-fun PuzzleGameState.toEntity(puzzleId: String): PuzzleGameStateEntity {
+fun PuzzleGameState.toEntity(puzzleId: Long): PuzzleGameStateEntity {
     return PuzzleGameStateEntity(
         puzzleId = puzzleId,
         outerLetters = outerLetters,

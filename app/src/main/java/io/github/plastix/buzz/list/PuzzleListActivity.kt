@@ -18,7 +18,7 @@ class PuzzleListActivity : AppCompatActivity() {
         }
     }
 
-    private fun openPuzzleDetail(puzzleId: String) {
+    private fun openPuzzleDetail(puzzleId: Long) {
         startActivity(PuzzleDetailActivity.newIntent(this, puzzleId))
     }
 

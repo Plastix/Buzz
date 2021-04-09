@@ -158,17 +158,19 @@ fun PuzzleRow(puzzleRow: PuzzleRowState, onPuzzleClick: (puzzleId: Long) -> Unit
                 )
                 RankLabel(puzzleRow.puzzleRank, puzzleRow.currentScore)
             }
-
             Spacer(modifier = Modifier.size(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 val (icon, contentDescription) = when (puzzleRow.type) {
-                    PuzzleType.GENERATED -> Icons.Default.Casino to null
-                    PuzzleType.DOWNLOADED -> Icons.Default.Verified to null
+                    PuzzleType.GENERATED -> Icons.Default.Casino to stringResource(
+                        R.string.puzzle_generated_content_description
+                    )
+                    PuzzleType.DOWNLOADED -> Icons.Default.Verified to stringResource(
+                        R.string.puzzle_downloaded_content_description
+                    )
                 }
                 Icon(imageVector = icon, contentDescription = contentDescription)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(puzzleRow.dateString, fontWeight = FontWeight.Light)
-
             }
         }
     }

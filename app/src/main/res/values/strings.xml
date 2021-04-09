@@ -6,6 +6,8 @@
     <string name="puzzle_list_title">Puzzles</string>
     <string name="puzzle_list_empty_state">No downloaded puzzles!</string>
     <string name="puzzle_list_empty_icon">Download failure icon</string>
+    <string name="puzzle_generated_content_description">Generated puzzle</string>
+    <string name="puzzle_downloaded_content_description">Official puzzle</string>
 
     <string name="puzzle_detail_title">Puzzle</string>
     <string name="puzzle_detail_toolbar_reset">Reset</string>

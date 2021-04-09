@@ -40,11 +40,12 @@ class PuzzleListViewModel @Inject constructor(
     private fun PuzzleBoardState.toRowState(): PuzzleRowState {
         return PuzzleRowState(
             puzzleId = puzzle.id,
-            displayString = puzzle.date.toDisplayString(),
+            dateString = puzzle.date.toDisplayString(),
             puzzleString = puzzle.centerLetter.plus(puzzle.outerLetters.joinToString(separator = ""))
                 .toUpperCase(Locale.getDefault()),
             puzzleRank = currentRank,
-            currentScore = currentScore
+            currentScore = currentScore,
+            type = puzzle.type
         )
     }
 

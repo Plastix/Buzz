@@ -10,8 +10,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -27,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.plastix.buzz.PuzzleRanking
+import io.github.plastix.buzz.PuzzleType
 import io.github.plastix.buzz.R
 import io.github.plastix.buzz.theme.BuzzTheme
 
@@ -161,7 +160,16 @@ fun PuzzleRow(puzzleRow: PuzzleRowState, onPuzzleClick: (puzzleId: Long) -> Unit
             }
 
             Spacer(modifier = Modifier.size(4.dp))
-            Text(puzzleRow.displayString, fontWeight = FontWeight.Light)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                val (icon, contentDescription) = when (puzzleRow.type) {
+                    PuzzleType.GENERATED -> Icons.Default.Casino to null
+                    PuzzleType.DOWNLOADED -> Icons.Default.Verified to null
+                }
+                Icon(imageVector = icon, contentDescription = contentDescription)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(puzzleRow.dateString, fontWeight = FontWeight.Light)
+
+            }
         }
     }
 }
@@ -217,11 +225,13 @@ fun PreviewPuzzleList() {
             puzzles = listOf(
                 PuzzleRowState(
                     0, "Monday March 22, 2021", "lenoptu",
-                    PuzzleRanking.Genius, 300
+                    PuzzleRanking.Genius, 300,
+                    PuzzleType.DOWNLOADED
                 ),
                 PuzzleRowState(
                     1, "Sunday March 21, 2021", "lenoptu",
-                    PuzzleRanking.GoodStart, 23
+                    PuzzleRanking.GoodStart, 23,
+                    PuzzleType.GENERATED
                 ),
             ),
             onPuzzleClick = {}

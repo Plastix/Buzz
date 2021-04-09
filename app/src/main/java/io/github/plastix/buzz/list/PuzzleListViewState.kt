@@ -1,6 +1,7 @@
 package io.github.plastix.buzz.list
 
 import io.github.plastix.buzz.PuzzleRanking
+import io.github.plastix.buzz.PuzzleType
 
 sealed class PuzzleListViewState {
     object Loading : PuzzleListViewState()
@@ -9,8 +10,9 @@ sealed class PuzzleListViewState {
 
 data class PuzzleRowState(
     val puzzleId: Long,
-    val displayString: String,
+    val dateString: String,
     val puzzleString: String,
     val puzzleRank: PuzzleRanking,
-    val currentScore: Int
+    val currentScore: Int,
+    val type: PuzzleType
 )

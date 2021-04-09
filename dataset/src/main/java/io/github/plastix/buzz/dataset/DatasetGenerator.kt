@@ -25,7 +25,7 @@ fun main() {
     var totalWords = 0
     var procesedCount = 0
     val profaneWords = mutableSetOf<String>()
-    var puzzleSeeds = 0
+    val puzzleSeeds = mutableSetOf<Long>()
     val durationMs = measureTimeMillis {
         // Delete the existing table file
         File("$DB_EXPORT_FOLDER$DB_EXPORT_NAME").delete()
@@ -47,8 +47,9 @@ fun main() {
                     queries.addWord(charSet.toLong(), word)
 
                     if (charSet.size == Constants.LETTER_COUNT) {
-                        queries.addPuzzleSeed(charSet.toLong())
-                        puzzleSeeds++
+                        val seed = charSet.toLong()
+                        queries.addPuzzleSeed(seed)
+                        puzzleSeeds.add(seed)
                     }
                     procesedCount++
 
@@ -68,7 +69,7 @@ fun main() {
         Final count: $procesedCount
         Blocked profane words: ${profaneWords.size}
 
-        Found $puzzleSeeds possible puzzle seeds
+        Found ${puzzleSeeds.size} possible puzzle seeds
     """.trimIndent()
     )
 }

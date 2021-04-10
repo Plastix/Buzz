@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.Placeable
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -693,11 +694,16 @@ fun KeypadButton(letter: Char, onClick: (Char) -> Unit, primary: Boolean) {
         },
         border = if (MaterialTheme.colors.isLight) null else ButtonDefaults.outlinedBorder
     ) {
-        Text(
-            text = letter.toUpperCase().toString(),
-            fontSize = 24.sp,
-            fontWeight = FontWeight.ExtraBold
-        )
+        BoxWithConstraints(contentAlignment = Alignment.Center) {
+            val fontSize = with(LocalDensity.current) {
+                (maxWidth * 0.12f).toPx().sp
+            }
+            Text(
+                text = letter.toUpperCase().toString(),
+                fontSize = fontSize,
+                fontWeight = FontWeight.ExtraBold
+            )
+        }
     }
 }
 

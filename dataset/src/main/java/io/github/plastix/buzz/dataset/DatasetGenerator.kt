@@ -10,7 +10,6 @@ import java.io.File
 import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
 import kotlin.system.measureTimeMillis
-import kotlin.time.measureTime
 
 
 const val DB_EXPORT_FOLDER = "app/src/main/assets/database/"
@@ -23,7 +22,7 @@ const val RESOURCES_PATH = "dataset/src/main/resources/"
  */
 fun main() {
     var totalWords = 0
-    var procesedCount = 0
+    var processedCount = 0
     val profaneWords = mutableSetOf<String>()
     val puzzleSeeds = mutableSetOf<Long>()
     val durationMs = measureTimeMillis {
@@ -51,7 +50,7 @@ fun main() {
                         queries.addPuzzleSeed(seed)
                         puzzleSeeds.add(seed)
                     }
-                    procesedCount++
+                    processedCount++
 
                 } else {
                     profaneWords.add(word)
@@ -66,7 +65,7 @@ fun main() {
     println(
         """
         Processed $totalWords words from word list in $seconds seconds!
-        Final count: $procesedCount
+        Final count: $processedCount
         Blocked profane words: ${profaneWords.size}
 
         Found ${puzzleSeeds.size} possible puzzle seeds

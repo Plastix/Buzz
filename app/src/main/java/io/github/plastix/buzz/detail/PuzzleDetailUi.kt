@@ -584,7 +584,6 @@ fun InputBox(centerLetter: Char, word: String) {
             fontSize = textSize,
             fontWeight = FontWeight.Black,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis
         )
         val infiniteTransition = rememberInfiniteTransition()
         val cursorAnimation by infiniteTransition.animateFloat(

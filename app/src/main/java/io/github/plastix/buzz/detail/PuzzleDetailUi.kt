@@ -93,24 +93,30 @@ fun PuzzleDetailScreen(viewModel: PuzzleDetailViewModel) {
     when (val state =
         viewModel.viewStates.observeAsState(PuzzleDetailViewState.Loading).value) {
         is PuzzleDetailViewState.Loading -> PuzzleDetailLoadingState()
-        is PuzzleDetailViewState.Success -> if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            PuzzleBoardLandscape(
-                state.boardGameState,
-                viewModel,
-                onShuffle = viewModel::shuffle,
-                onKeyClick = viewModel::keypress,
-                onDelete = viewModel::delete,
-                onEnter = viewModel::enter
-            )
-        } else {
-            PuzzleBoard(
-                state.boardGameState,
-                viewModel,
-                onShuffle = viewModel::shuffle,
-                onKeyClick = viewModel::keypress,
-                onDelete = viewModel::delete,
-                onEnter = viewModel::enter
-            )
+        is PuzzleDetailViewState.Success -> {
+            val gameState = state.boardGameState
+            if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                PuzzleBoardLandscape(
+                    gameState,
+                    viewModel,
+                    onShuffle = viewModel::shuffle,
+                    onKeyClick = viewModel::keypress,
+                    onDelete = viewModel::delete,
+                    onEnter = viewModel::enter
+                )
+            } else {
+                PuzzleBoard(
+                    gameState,
+                    viewModel,
+                    onShuffle = viewModel::shuffle,
+                    onKeyClick = viewModel::keypress,
+                    onDelete = viewModel::delete,
+                    onEnter = viewModel::enter
+                )
+            }
+            if (gameState.activeDialog != null) {
+                ShowDialog(viewModel, gameState.activeDialog)
+            }
         }
         is PuzzleDetailViewState.Error -> PuzzleErrorState()
     }
@@ -175,9 +181,6 @@ fun PuzzleBoard(
                 Spacer(Modifier.height(24.dp))
                 ActionBar(onShuffle = onShuffle, onDelete = onDelete, onEnter = onEnter)
             }
-        }
-        if (state.activeDialog != null) {
-            ShowDialog(viewModel, state.activeDialog)
         }
     }
 }

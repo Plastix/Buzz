@@ -37,10 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.Dialog
 import io.github.plastix.buzz.PuzzleRanking
 import io.github.plastix.buzz.R
@@ -165,14 +162,17 @@ fun PuzzleBoard(
             )
             Spacer(Modifier.height(32.dp))
             Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 WordToastRow(state, viewModel)
                 InputBox(centerLetter = state.centerLetter, word = state.currentWord)
-                Spacer(Modifier.height(32.dp))
-                PuzzleKeypad(state.centerLetter, state.outerLetters.toList(), onKeyClick)
-                Spacer(Modifier.height(32.dp))
+                Spacer(Modifier.height(12.dp))
+                PuzzleKeypad(
+                    state.centerLetter, state.outerLetters.toList(), onKeyClick,
+                    modifier = Modifier.weight(1f)
+                )
+                Spacer(Modifier.height(24.dp))
                 ActionBar(onShuffle = onShuffle, onDelete = onDelete, onEnter = onEnter)
             }
         }
@@ -606,7 +606,12 @@ fun InputBox(centerLetter: Char, word: String) {
 }
 
 @Composable
-fun PuzzleKeypad(centerLetter: Char, outerLetters: List<Char>, onClick: (Char) -> Unit) {
+fun PuzzleKeypad(
+    centerLetter: Char,
+    outerLetters: List<Char>,
+    onClick: (Char) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Layout(
         content = {
             KeypadButton(centerLetter, onClick, primary = true)
@@ -614,10 +619,16 @@ fun PuzzleKeypad(centerLetter: Char, outerLetters: List<Char>, onClick: (Char) -
                 KeypadButton(it, onClick, primary = false)
             }
         },
-        modifier = Modifier
+        modifier = modifier
     ) { measurables, constraints ->
         val placeables = measurables.map { measurable ->
-            measurable.measure(constraints)
+            val buttonSize = min(constraints.maxWidth, constraints.maxHeight) / 3
+            measurable.measure(
+                Constraints(
+                    maxWidth = buttonSize,
+                    maxHeight = buttonSize
+                )
+            )
         }
 
         val width = placeables.first().measuredWidth
@@ -658,7 +669,7 @@ fun PreviewPuzzleKeypad() {
 @Composable
 fun KeypadButton(letter: Char, onClick: (Char) -> Unit, primary: Boolean) {
     Button(
-        modifier = Modifier.size(100.dp),
+        modifier = Modifier.fillMaxSize(),
         shape = RegularHexagonalShape(),
         onClick = { onClick.invoke(letter) },
         colors = if (MaterialTheme.colors.isLight) {

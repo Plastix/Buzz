@@ -76,5 +76,7 @@
 
     <string name="about_dialog_title">About Buzz</string>
     <string name="about_dialog_body">A shameless spelling bee clone. Made with ❤️ in SF!</string>
+    <string name="about_dialog_give_feedback">Give App Feedback</string>
+    <string name="feedback_email_subject">Buzz app feedback</string>
 
 </resources>

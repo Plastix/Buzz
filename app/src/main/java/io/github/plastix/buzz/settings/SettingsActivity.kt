@@ -26,7 +26,15 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         findViewById<ComposeView>(R.id.compose_view).setContent {
-            SettingsUi(this::finish)
+            SettingsUi(this::finish, this::openFeedbackEmail)
         }
+    }
+
+    private fun openFeedbackEmail() {
+        startActivity(Intent(Intent.ACTION_SEND).apply {
+            type = "plain/text"
+            putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.developer_feedback_email)))
+            putExtra(Intent.EXTRA_SUBJECT, getString(R.string.feedback_email_subject))
+        })
     }
 }

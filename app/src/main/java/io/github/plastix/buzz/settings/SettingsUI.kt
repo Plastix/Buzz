@@ -3,10 +3,7 @@ package io.github.plastix.buzz.settings
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Replay
@@ -27,7 +24,8 @@ import io.github.plastix.buzz.util.CustomDialog
 
 @Composable
 fun SettingsUi(
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onGiveFeedback: () -> Unit
 ) {
     BuzzTheme {
         // Because I'm too lazy to move this state out of the UI layer
@@ -66,6 +64,15 @@ fun SettingsUi(
                     Spacer(Modifier.height(16.dp))
                     Text("v ${BuildConfig.VERSION_NAME}")
                     Text("(${BuildConfig.VERSION_CODE})")
+                    Spacer(Modifier.height(16.dp))
+                    OutlinedButton(
+                        onClick = onGiveFeedback,
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = MaterialTheme.colors.onSurface,
+                        )
+                    ) {
+                        Text(stringResource(R.string.about_dialog_give_feedback))
+                    }
                 }
             }
         }

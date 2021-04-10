@@ -7,15 +7,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,12 +39,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
-import androidx.compose.ui.window.Dialog
 import io.github.plastix.buzz.PuzzleRanking
 import io.github.plastix.buzz.R
 import io.github.plastix.buzz.theme.BuzzTheme
 import io.github.plastix.buzz.util.CustomDialog
-import io.github.plastix.buzz.util.constrainHeight
 import kotlinx.coroutines.delay
 import java.util.*
 import kotlin.math.*
@@ -167,19 +165,21 @@ fun PuzzleBoard(
                 state.wordBoxExpanded,
                 viewModel::toggleWorldBox
             )
-            Spacer(Modifier.height(32.dp))
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceEvenly
             ) {
-                WordToastRow(state, viewModel)
-                InputBox(centerLetter = state.centerLetter, word = state.currentWord)
-                Spacer(Modifier.height(12.dp))
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    WordToastRow(state, viewModel)
+                    InputBox(centerLetter = state.centerLetter, word = state.currentWord)
+                }
                 PuzzleKeypad(
                     state.centerLetter, state.outerLetters.toList(), onKeyClick,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.fillMaxHeight(0.75f)
                 )
-                Spacer(Modifier.height(24.dp))
                 ActionBar(onShuffle = onShuffle, onDelete = onDelete, onEnter = onEnter)
             }
         }
@@ -696,7 +696,7 @@ fun KeypadButton(letter: Char, onClick: (Char) -> Unit, primary: Boolean) {
     ) {
         BoxWithConstraints(contentAlignment = Alignment.Center) {
             val fontSize = with(LocalDensity.current) {
-                (maxWidth * 0.12f).toPx().sp
+                (maxWidth * 0.15f).toPx().sp
             }
             Text(
                 text = letter.toUpperCase().toString(),

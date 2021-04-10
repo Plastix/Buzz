@@ -85,6 +85,8 @@ class PuzzleDetailViewModel @AssistedInject constructor(
             outerLetters = board.gameState.outerLetters,
             currentWord = board.gameState.currentWord,
             discoveredWords = board.gameState.discoveredWords,
+            discoveredPangrams = board.gameState.discoveredWords
+                .filter { word -> word in board.puzzle.pangrams }.toSet(),
             currentRank = board.currentRank,
             currentScore = board.currentScore,
             activeDialog = activeDialog,

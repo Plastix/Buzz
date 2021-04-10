@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -31,6 +32,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -162,6 +164,7 @@ fun PuzzleBoard(
             ScoreBox(viewModel, state.currentRank, state.currentScore)
             DiscoveredWordBox(
                 words = state.discoveredWords,
+                pangrams = state.discoveredPangrams,
                 state.wordBoxExpanded,
                 viewModel::toggleWorldBox
             )
@@ -218,6 +221,7 @@ fun PuzzleBoardLandscape(
         ) {
             DiscoveredWordBox(
                 words = state.discoveredWords,
+                pangrams = state.discoveredPangrams,
                 expanded = state.wordBoxExpanded,
                 toggleExpand = viewModel::toggleWorldBox
             )
@@ -443,6 +447,7 @@ fun MaxWidthText(
 @Composable
 fun DiscoveredWordBox(
     words: Set<String>,
+    pangrams: Set<String>,
     expanded: Boolean = false,
     toggleExpand: () -> Unit = {}
 ) {
@@ -458,24 +463,36 @@ fun DiscoveredWordBox(
                 .animateContentSize(),
         ) {
             if (!expanded) {
-                val text = if (words.isEmpty()) {
-                    stringResource(R.string.puzzle_detail_word_list_empty)
+                val text: AnnotatedString = if (words.isEmpty()) {
+                    AnnotatedString(stringResource(R.string.puzzle_detail_word_list_empty))
                 } else {
-                    words.reversed()
-                        .joinToString(separator = " ") { word -> word.capitalize(Locale.getDefault()) }
+                    buildAnnotatedString {
+                        words.reversed().forEachIndexed { index, word ->
+                            val fontWeight =
+                                if (word in pangrams) FontWeight.ExtraBold else FontWeight.Medium
+
+                            withStyle(style = SpanStyle(fontWeight = fontWeight)) {
+                                append(word.capitalize(Locale.ENGLISH))
+                            }
+
+                            if (index < words.size - 1) {
+                                append(" ")
+                            }
+                        }
+                    }
                 }
                 ChevronRow(text, expanded = false)
             } else {
                 Column(modifier = Modifier.fillMaxSize()) {
                     ChevronRow(
-                        stringResource(
+                        AnnotatedString(stringResource(
                             R.string.puzzle_detail_word_list_word_count,
                             words.size
-                        ), true
+                        )), true
                     )
                     if (words.isNotEmpty()) {
                         Spacer(Modifier.height(16.dp))
-                        ColumnGridList(words.toList())
+                        ColumnGridList(words.toList(), pangrams)
                     }
                 }
             }
@@ -484,37 +501,34 @@ fun DiscoveredWordBox(
 }
 
 @Composable
-fun ColumnGridList(words: List<String>, columnNum: Int = 3) {
-    val wordsPerColumn = ceil(words.size / columnNum.toDouble()).toInt()
-    val columns = words.windowed(wordsPerColumn, step = wordsPerColumn, partialWindows = true)
+fun ColumnGridList(words: List<String>, pangrams: Set<String>, columnNum: Int = 3) {
+    val rows = words.sorted().chunked(columnNum)
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        for (i in 0 until wordsPerColumn) {
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    for (j in 0 until columnNum) {
-                        val word = columns.getOrNull(j)?.getOrNull(i) ?: ""
-                        Text(
-                            text = word.capitalize(Locale.getDefault()),
-                            maxLines = 1,
-                            textAlign = TextAlign.Start,
-                            modifier = Modifier.weight(1f),
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
+        items(rows) { rowWords ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                for (i in 0 until columnNum) {
+                    val word = rowWords.getOrNull(i) ?: ""
+                    Text(
+                        text = word.capitalize(Locale.ENGLISH),
+                        maxLines = 1,
+                        textAlign = TextAlign.Start,
+                        modifier = Modifier.weight(1f),
+                        overflow = TextOverflow.Ellipsis,
+                        fontWeight = if (word in pangrams) FontWeight.ExtraBold else FontWeight.Medium
+                    )
                 }
-                Spacer(modifier = Modifier.height(4.dp))
             }
-
+            Spacer(modifier = Modifier.height(4.dp))
         }
     }
 }
 
 @Composable
 fun ChevronRow(
-    text: String,
+    text: AnnotatedString,
     expanded: Boolean,
     textColor: Color = MaterialTheme.colors.onSurface
 ) {
@@ -543,7 +557,7 @@ fun ChevronRow(
 @Preview
 @Composable
 fun PreviewDiscoveredWordBoxEmpty() {
-    DiscoveredWordBox(words = emptySet(), false)
+    DiscoveredWordBox(words = emptySet(), pangrams = emptySet(), false)
 }
 
 @Preview
@@ -552,7 +566,8 @@ fun PreviewDiscoveredWordBoxFull() {
     DiscoveredWordBox(
         words = setOf(
             "handle", "story", "rabbit", "cloud", "couch", "towel", "anger", "greeting"
-        )
+        ),
+        pangrams = emptySet()
     )
 }
 
@@ -563,6 +578,7 @@ fun PreviewDiscoveredWordBoxFullExpanded() {
         words = setOf(
             "handle", "story", "rabbit", "cloud"
         ),
+        pangrams = emptySet(),
         expanded = true
     )
 }

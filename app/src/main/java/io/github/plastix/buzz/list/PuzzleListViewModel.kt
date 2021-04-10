@@ -42,7 +42,7 @@ class PuzzleListViewModel @Inject constructor(
             puzzleId = puzzle.id,
             dateString = puzzle.date.toDisplayString(),
             puzzleString = puzzle.centerLetter.plus(puzzle.outerLetters.joinToString(separator = ""))
-                .toUpperCase(Locale.getDefault()),
+                .toUpperCase(Locale.ENGLISH),
             puzzleRank = currentRank,
             currentScore = currentScore,
             type = puzzle.type

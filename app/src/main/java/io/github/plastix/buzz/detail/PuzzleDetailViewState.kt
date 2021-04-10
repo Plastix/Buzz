@@ -14,6 +14,7 @@ class BoardGameViewState(
     val outerLetters: List<Char>,
     val currentWord: String,
     val discoveredWords: Set<String>,
+    val discoveredPangrams: Set<String>,
     val currentRank: PuzzleRanking,
     val currentScore: Int,
     val activeDialog: Dialog?,

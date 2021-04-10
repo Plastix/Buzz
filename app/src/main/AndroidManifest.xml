@@ -15,7 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Buzz">
 
-        <activity android:name=".list.PuzzleListActivity">
+        <activity android:name=".list.PuzzleListActivity"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

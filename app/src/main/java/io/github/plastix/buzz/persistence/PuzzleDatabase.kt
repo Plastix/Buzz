@@ -32,7 +32,7 @@ internal object DatabaseModule {
     @Provides
     fun provideDatabase(app: Application): PuzzleDatabase {
         return Room.databaseBuilder(app, PuzzleDatabase::class.java, "buzz-database")
-            .fallbackToDestructiveMigration() // TODO good enough for now
+            .fallbackToDestructiveMigration()
             .build()
     }
 }

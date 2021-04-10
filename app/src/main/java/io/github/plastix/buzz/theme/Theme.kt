@@ -12,7 +12,6 @@ private val YELLOW_NIGHT = Color(0xFFE4CD05)
 private val GRAY_NIGHT = Color(0xFF6F6F6F)
 
 
-// TODO Dark mode colors
 private val DarkColors = darkColors(
     primary = YELLOW_NIGHT,
     secondary = GRAY_NIGHT,

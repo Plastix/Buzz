@@ -1,7 +1,9 @@
 package io.github.plastix.buzz.detail
 
+import android.os.Bundle
 import android.view.KeyEvent
 import androidx.lifecycle.*
+import androidx.savedstate.SavedStateRegistryOwner
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -11,25 +13,35 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class PuzzleDetailViewModel @AssistedInject constructor(
+    @Assisted private val savedStateHandle: SavedStateHandle,
     @Assisted private val puzzleId: Long,
     private val repository: PuzzleRepository
 ) : ViewModel() {
 
     @AssistedFactory
     interface Factory {
-        fun create(puzzleId: Long): PuzzleDetailViewModel
+        fun create(savedStateHandle: SavedStateHandle, puzzleId: Long): PuzzleDetailViewModel
     }
 
     companion object {
         fun provideFactory(
             assistedFactory: Factory,
+            registryOwner: SavedStateRegistryOwner,
             puzzleId: Long
-        ) = object : ViewModelProvider.Factory {
+        ) = object : AbstractSavedStateViewModelFactory(registryOwner, Bundle()) {
             @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                return assistedFactory.create(puzzleId) as T
+            override fun <T : ViewModel?> create(
+                key: String,
+                modelClass: Class<T>,
+                handle: SavedStateHandle
+            ): T {
+                return assistedFactory.create(handle, puzzleId) as T
             }
         }
+
+        private const val ACTIVE_DIALOG_KEY = "active_dialog"
+        private const val ACTIVE_WORD_TOAST_KEY = "active_word_toast"
+        private const val WORD_BOX_EXPANDED_KEY = "word_box_expanded"
     }
 
     private val _viewStates: MediatorLiveData<PuzzleDetailViewState> = MediatorLiveData()
@@ -42,7 +54,7 @@ class PuzzleDetailViewModel @AssistedInject constructor(
         val wordBoxExpanded: Boolean
     )
 
-    private var detailState: MutableLiveData<DetailState?> = MutableLiveData(null)
+    private val detailState: MutableLiveData<DetailState?> = MutableLiveData(null)
 
     init {
         loadPuzzleData()
@@ -51,12 +63,13 @@ class PuzzleDetailViewModel @AssistedInject constructor(
 
     private fun listenForBoardChanges() {
         _viewStates.addSource(detailState) { puzzleData ->
-            if (puzzleData == null) {
-                _viewStates.value = PuzzleDetailViewState.Loading
+            val newViewState = if (puzzleData == null) {
+                PuzzleDetailViewState.Loading
             } else {
-                _viewStates.value =
-                    PuzzleDetailViewState.Success(puzzleData.constructBoardState())
+                val boardState = puzzleData.constructBoardState()
+                PuzzleDetailViewState.Success(boardState)
             }
+            _viewStates.value = newViewState
         }
     }
 
@@ -67,16 +80,20 @@ class PuzzleDetailViewModel @AssistedInject constructor(
                     repository.getPuzzle(puzzleId)
                         ?: error("Expecting puzzle in database for id $puzzleId")
                 val gameState = repository.getGameState(puzzleId) ?: puzzle.blankGameState()
-                detailState.value = DetailState(
-                    board = PuzzleBoardState(puzzle, gameState),
-                    activeDialog = null,
-                    activeWordToast = null,
-                    wordBoxExpanded = false
-                )
+                detailState.value = constructDetailStateState(puzzle, gameState)
             } catch (e: Exception) {
                 _viewStates.value = PuzzleDetailViewState.Error(e)
             }
         }
+    }
+
+    private fun constructDetailStateState(puzzle: Puzzle, gameState: PuzzleGameState): DetailState {
+        return DetailState(
+            board = PuzzleBoardState(puzzle, gameState),
+            activeDialog = savedStateHandle[ACTIVE_DIALOG_KEY],
+            activeWordToast = savedStateHandle[ACTIVE_WORD_TOAST_KEY],
+            wordBoxExpanded = savedStateHandle[WORD_BOX_EXPANDED_KEY] ?: false
+        )
     }
 
     private fun DetailState.constructBoardState(): BoardGameViewState {
@@ -204,10 +221,13 @@ class PuzzleDetailViewModel @AssistedInject constructor(
     }
 
     fun saveBoardState() {
-        withGameState {
+        withDetailsState {
             GlobalScope.launch {
-                repository.insertGameState(gameState, puzzleId)
+                repository.insertGameState(board.gameState, puzzleId)
             }
+            savedStateHandle[ACTIVE_DIALOG_KEY] = activeDialog
+            savedStateHandle[ACTIVE_WORD_TOAST_KEY] = activeWordToast
+            savedStateHandle[WORD_BOX_EXPANDED_KEY] = wordBoxExpanded
         }
     }
 

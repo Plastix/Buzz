@@ -1,7 +1,9 @@
 package io.github.plastix.buzz.detail
 
+import android.os.Parcelable
 import io.github.plastix.buzz.PuzzleRanking
 import io.github.plastix.buzz.WordError
+import kotlinx.parcelize.Parcelize
 
 sealed class PuzzleDetailViewState {
     object Loading : PuzzleDetailViewState()
@@ -22,13 +24,21 @@ class BoardGameViewState(
     val wordBoxExpanded: Boolean
 )
 
-sealed class Dialog {
+sealed class Dialog : Parcelable {
+    @Parcelize
     object ConfirmReset : Dialog()
+
+    @Parcelize
     object InfoDialog : Dialog()
+
+    @Parcelize
     data class RankingDialog(val maxPuzzleScore: Int) : Dialog()
 }
 
-sealed class WordToast {
+sealed class WordToast : Parcelable {
+    @Parcelize
     data class Success(val pointValue: Int) : WordToast()
+
+    @Parcelize
     data class Error(val wordError: WordError) : WordToast()
 }

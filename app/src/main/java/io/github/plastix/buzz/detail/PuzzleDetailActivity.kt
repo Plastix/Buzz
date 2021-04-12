@@ -30,7 +30,7 @@ class PuzzleDetailActivity : AppCompatActivity() {
     lateinit var viewModelFactory: PuzzleDetailViewModel.Factory
 
     private val viewModel: PuzzleDetailViewModel by viewModels {
-        PuzzleDetailViewModel.provideFactory(viewModelFactory, puzzleId)
+        PuzzleDetailViewModel.provideFactory(viewModelFactory, this, puzzleId)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

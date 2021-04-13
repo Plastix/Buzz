@@ -10,6 +10,7 @@ import io.github.plastix.buzz.PuzzleBoardState
 import io.github.plastix.buzz.Result
 import io.github.plastix.buzz.network.PuzzleFetcher
 import io.github.plastix.buzz.persistence.PuzzleRepository
+import io.github.plastix.buzz.util.minusNull
 import io.github.plastix.buzz.util.toDisplayString
 import kotlinx.coroutines.launch
 import java.util.*
@@ -42,6 +43,8 @@ class PuzzleListViewModel @AssistedInject constructor(
         }
 
         private const val ACTIVE_DIALOG_KEY = "active_dialog"
+        private const val HIDDEN_PUZZLES_KEY = "hidden_puzzles"
+        private const val ACTIVE_SNACKBAR_KEY = "active_snackbar"
     }
 
     private val _viewStates: MediatorLiveData<PuzzleListViewState> = MediatorLiveData()
@@ -51,8 +54,17 @@ class PuzzleListViewModel @AssistedInject constructor(
 
     private data class ScreenState(
         val puzzles: List<PuzzleBoardState>,
-        val activeDialog: Dialog? = null,
-    )
+        val activeDialog: Dialog?,
+        val activeSnackbar: Snackbar?,
+        // This is a little bit of a hack to work around Compose's LazyColumn failure to recycle
+        // SwipeToDismiss correctly. We put ids of puzzles that have been swiped away so we can
+        // filter from the list instead of deleting from the repository directly.
+        val hiddenPuzzles: Set<Long>
+    ) {
+        val pendingPuzzleDeletion: Long? =
+            (activeSnackbar as? Snackbar.UndoPuzzleDeletion)?.puzzleId
+        val puzzlesToDelete: Set<Long> = hiddenPuzzles.minusNull(pendingPuzzleDeletion)
+    }
 
     init {
         observeStateChanges()
@@ -75,14 +87,17 @@ class PuzzleListViewModel @AssistedInject constructor(
     private fun constructNewScreenState(puzzles: List<PuzzleBoardState>): ScreenState {
         return ScreenState(
             puzzles = puzzles,
-            activeDialog = savedStateHandle[ACTIVE_DIALOG_KEY]
+            activeDialog = savedStateHandle[ACTIVE_DIALOG_KEY],
+            hiddenPuzzles = savedStateHandle[HIDDEN_PUZZLES_KEY] ?: emptySet(),
+            activeSnackbar = savedStateHandle[ACTIVE_SNACKBAR_KEY]
         )
     }
 
     private fun ScreenState.toSuccessState(): PuzzleListViewState.Success {
         return PuzzleListViewState.Success(
-            puzzles = puzzles.map { it.toRowState() },
-            activeDialog = activeDialog
+            puzzles = puzzles.filterNot { it.puzzle.id in hiddenPuzzles }.map { it.toRowState() },
+            activeDialog = activeDialog,
+            activeSnackbar = activeSnackbar
         )
     }
 
@@ -125,15 +140,57 @@ class PuzzleListViewModel @AssistedInject constructor(
         }
     }
 
+    fun markPuzzleForDeletion(puzzleId: Long) {
+        updateScreenState {
+            copy(
+                hiddenPuzzles = hiddenPuzzles.plus(puzzleId),
+                activeSnackbar = Snackbar.UndoPuzzleDeletion(puzzleId)
+            )
+        }
+    }
+
+    fun undoPendingPuzzleDeletion(puzzleId: Long) {
+        updateScreenState {
+            copy(
+                hiddenPuzzles = hiddenPuzzles.minus(puzzleId),
+                activeSnackbar = null
+            )
+        }
+    }
+
     fun dismissActiveDialog() {
         updateScreenState {
             copy(activeDialog = null)
         }
     }
 
+    fun dismissActiveSnackbar() {
+        updateScreenState {
+            copy(activeSnackbar = null)
+        }
+    }
+
     fun saveState() {
         withScreenState {
             savedStateHandle[ACTIVE_DIALOG_KEY] = activeDialog
+            savedStateHandle[ACTIVE_SNACKBAR_KEY] = activeSnackbar
+
+            // When we save our screen state we can delete all puzzles marked for deletion except
+            // any pending deletion
+            savedStateHandle[HIDDEN_PUZZLES_KEY] = setOfNotNull(pendingPuzzleDeletion)
+            removeDeletedPuzzles()
+        }
+    }
+
+    private fun ScreenState.removeDeletedPuzzles() {
+        viewModelScope.launch {
+            puzzlesToDelete.forEach { id ->
+                try {
+                    puzzleRepository.deletePuzzleById(id)
+                } catch (e: Exception) {
+                    // No-op
+                }
+            }
         }
     }
 

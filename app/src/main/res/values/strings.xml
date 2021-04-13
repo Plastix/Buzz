@@ -4,6 +4,8 @@
     <string name="close">Close</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="undo">Undo</string>
+    <string name="delete">Delete</string>
 
     <string name="puzzle_list_title">Puzzles</string>
     <string name="puzzle_list_empty_state">No downloaded puzzles!</string>
@@ -12,6 +14,7 @@
     <string name="puzzle_downloaded_content_description">Official puzzle</string>
 
     <string name="puzzle_list_new_puzzle_confirm_title">Generate random puzzle?</string>
+    <string name="puzzle_list_undo_snackbar_description">Puzzle deleted</string>
 
     <string name="puzzle_detail_title">Puzzle</string>
     <string name="puzzle_detail_toolbar_reset">Reset</string>

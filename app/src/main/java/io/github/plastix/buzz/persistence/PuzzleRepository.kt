@@ -88,4 +88,10 @@ class PuzzleRepository @Inject constructor(
             dao.insertPuzzles(listOf(newPuzzle))
         }
     }
+
+    suspend fun deletePuzzleById(puzzleId: Long) {
+        withContext(Dispatchers.IO) {
+            dao.deleteByPuzzleId(puzzleId)
+        }
+    }
 }

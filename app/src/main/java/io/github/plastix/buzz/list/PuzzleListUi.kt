@@ -11,6 +11,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +29,8 @@ import io.github.plastix.buzz.PuzzleRanking
 import io.github.plastix.buzz.PuzzleType
 import io.github.plastix.buzz.R
 import io.github.plastix.buzz.theme.BuzzTheme
+import io.github.plastix.buzz.util.SwipeDismiss
+import kotlinx.coroutines.delay
 
 
 @Composable
@@ -77,13 +80,57 @@ fun PuzzleListScreen(
             if (viewState.puzzles.isEmpty()) {
                 PuzzleListEmptyState()
             } else {
-                PuzzleList(viewState.puzzles, onPuzzleClick)
+                PuzzleList(viewState.puzzles, onPuzzleClick, viewModel::markPuzzleForDeletion)
             }
 
             if (viewState.activeDialog != null) {
                 ShowDialog(viewModel, viewState.activeDialog)
             }
+
+            if (viewState.activeSnackbar != null) {
+                ShowSnackbar(viewModel, viewState.activeSnackbar)
+            }
         }
+    }
+}
+
+@Composable
+fun ShowSnackbar(viewModel: PuzzleListViewModel, activeSnackbar: Snackbar) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomCenter
+    ) {
+        when (activeSnackbar) {
+            is Snackbar.UndoPuzzleDeletion -> UndoDeleteSnackbar(viewModel, activeSnackbar)
+        }
+    }
+}
+
+@Composable
+fun UndoDeleteSnackbar(
+    viewModel: PuzzleListViewModel,
+    activeSnackbar: Snackbar.UndoPuzzleDeletion
+) {
+    Snackbar(
+        action = {
+            Button(
+                onClick = {
+                    viewModel.undoPendingPuzzleDeletion(activeSnackbar.puzzleId)
+                },
+                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colors.primarySurface),
+                elevation = null
+            ) {
+                Text(
+                    text = stringResource(R.string.undo),
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        },
+        modifier = Modifier.padding(8.dp)
+    ) { Text(stringResource(R.string.puzzle_list_undo_snackbar_description)) }
+    LaunchedEffect(activeSnackbar) {
+        delay(2750)
+        viewModel.dismissActiveSnackbar()
     }
 }
 
@@ -121,14 +168,47 @@ fun PuzzleListLoadingState() {
 }
 
 @Composable
-fun PuzzleList(puzzles: List<PuzzleRowState>, onPuzzleClick: (puzzleId: Long) -> Unit) {
+fun PuzzleList(
+    puzzles: List<PuzzleRowState>,
+    onPuzzleClick: (puzzleId: Long) -> Unit,
+    onPuzzleDelete: (puzzleId: Long) -> Unit
+) {
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(puzzles) { puzzle ->
-            PuzzleRow(puzzle, onPuzzleClick)
+            SwipeDismiss(
+                item = puzzle,
+                background = { DeletePuzzleRow() },
+                content = { PuzzleRow(puzzle, onPuzzleClick) },
+                onDismiss = { onPuzzleDelete.invoke(it.puzzleId) }
+            )
+        }
+    }
+}
+
+@Composable
+fun DeletePuzzleRow() {
+    Card {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colors.error)
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Filled.DeleteForever,
+                contentDescription = null,
+                tint = MaterialTheme.colors.onError
+            )
+            Spacer(Modifier.width(8.dp))
+            Text(
+                text = stringResource(R.string.delete),
+                color = MaterialTheme.colors.onError, fontWeight = FontWeight.Bold
+            )
         }
     }
 }
@@ -240,7 +320,8 @@ fun PreviewPuzzleList() {
                     PuzzleType.GENERATED
                 ),
             ),
-            onPuzzleClick = {}
+            onPuzzleClick = {},
+            onPuzzleDelete = {}
         )
     }
 }

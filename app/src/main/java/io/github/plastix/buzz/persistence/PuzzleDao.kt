@@ -1,10 +1,7 @@
 package io.github.plastix.buzz.persistence
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface PuzzleDao {
@@ -14,6 +11,9 @@ interface PuzzleDao {
 
     @Query("select * from puzzles where puzzleId == :puzzleId")
     fun getPuzzleById(puzzleId: Long): PuzzleEntity?
+
+    @Query("delete from puzzles where puzzleId == :puzzleId")
+    fun deleteByPuzzleId(puzzleId: Long)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertPuzzles(puzzles: List<PuzzleEntity>)

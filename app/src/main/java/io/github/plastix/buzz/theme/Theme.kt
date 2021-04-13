@@ -10,17 +10,19 @@ private val YELLOW = Color(0xfff8cd05)
 private val GRAY = Color(0xffe6e6e6)
 private val YELLOW_NIGHT = Color(0xFFE4CD05)
 private val GRAY_NIGHT = Color(0xFF6F6F6F)
-
+private val ERROR = Color(0xFFCF6679)
 
 private val DarkColors = darkColors(
     primary = YELLOW_NIGHT,
     secondary = GRAY_NIGHT,
+    error = ERROR
 )
 private val LightColors = lightColors(
     primary = YELLOW,
     secondary = GRAY,
     onSurface = Color.Black,
-    onPrimary = Color.Black
+    onPrimary = Color.Black,
+    error = ERROR
 )
 
 @Composable

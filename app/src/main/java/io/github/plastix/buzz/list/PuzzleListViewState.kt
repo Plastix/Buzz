@@ -9,7 +9,8 @@ sealed class PuzzleListViewState {
     object Loading : PuzzleListViewState()
     data class Success(
         val puzzles: List<PuzzleRowState>,
-        val activeDialog: Dialog?
+        val activeDialog: Dialog?,
+        val activeSnackbar: Snackbar?
     ) : PuzzleListViewState()
 }
 
@@ -25,4 +26,9 @@ data class PuzzleRowState(
 sealed class Dialog : Parcelable {
     @Parcelize
     object ConfirmGeneratePuzzle : Dialog()
+}
+
+sealed class Snackbar : Parcelable {
+    @Parcelize
+    data class UndoPuzzleDeletion(val puzzleId: Long) : Snackbar()
 }

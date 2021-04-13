@@ -357,7 +357,7 @@ fun ShowResetConfirmationDialog(viewModel: PuzzleDetailViewModel) {
         },
         dismissButton = {
             TextButton(onClick = viewModel::dismissActiveDialog) {
-                Text(stringResource(R.string.puzzle_detail_reset_confirm_cancel))
+                Text(stringResource(R.string.cancel))
             }
         }
     )

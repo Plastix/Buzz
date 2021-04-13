@@ -27,7 +27,6 @@
     <string name="puzzle_detail_reset_confirm_title">Reset Puzzle?</string>
     <string name="puzzle_detail_reset_confirm_body">You will lose all current progress. This cannot be undone!</string>
     <string name="puzzle_detail_reset_confirm_ok">Reset Puzzle</string>
-    <string name="puzzle_detail_reset_confirm_cancel">Cancel</string>
 
     <string name="puzzle_detail_word_error_too_short">Too short!</string>
     <string name="puzzle_detail_word_error_too_long">Too long!</string>

@@ -7,15 +7,28 @@ import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.plastix.buzz.detail.PuzzleDetailActivity
 import io.github.plastix.buzz.settings.SettingsActivity
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class PuzzleListActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var viewModelFactory: PuzzleListViewModel.Factory
+
+    private val viewModel: PuzzleListViewModel by viewModels {
+        PuzzleListViewModel.provideFactory(viewModelFactory, this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val viewModel: PuzzleListViewModel by viewModels()
         setContent {
             PuzzleListUi(viewModel, onPuzzleClick = this::openPuzzleDetail, this::openSettings)
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.saveState()
     }
 
     private fun openPuzzleDetail(puzzleId: Long) {

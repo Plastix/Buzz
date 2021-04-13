@@ -44,7 +44,7 @@ fun PuzzleListUi(
                         Text(stringResource(R.string.puzzle_list_title))
                     },
                     actions = {
-                        IconButton(onClick = viewModel::newPuzzle) {
+                        IconButton(onClick = viewModel::showNewPuzzleDialog) {
                             Icon(
                                 imageVector = Icons.Filled.AddCircleOutline,
                                 contentDescription = "New Puzzle"
@@ -78,6 +78,10 @@ fun PuzzleListScreen(
                 PuzzleListEmptyState()
             } else {
                 PuzzleList(viewState.puzzles, onPuzzleClick)
+            }
+
+            if (viewState.activeDialog != null) {
+                ShowDialog(viewModel, viewState.activeDialog)
             }
         }
     }
@@ -239,4 +243,31 @@ fun PreviewPuzzleList() {
             onPuzzleClick = {}
         )
     }
+}
+
+@Composable
+fun ShowDialog(viewModel: PuzzleListViewModel, activeDialog: Dialog) {
+    when (activeDialog) {
+        is Dialog.ConfirmGeneratePuzzle -> ShowGeneratePuzzleDialog(viewModel)
+    }
+}
+
+@Composable
+fun ShowGeneratePuzzleDialog(viewModel: PuzzleListViewModel) {
+    AlertDialog(onDismissRequest = viewModel::dismissActiveDialog,
+        title = { Text(stringResource(R.string.puzzle_list_new_puzzle_confirm_title)) },
+        confirmButton = {
+            TextButton(onClick = {
+                viewModel.dismissActiveDialog()
+                viewModel.generateNewPuzzle()
+            }) {
+                Text(stringResource(R.string.ok))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = viewModel::dismissActiveDialog) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    )
 }

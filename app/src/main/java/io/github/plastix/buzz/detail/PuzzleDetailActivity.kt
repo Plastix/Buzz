@@ -42,7 +42,7 @@ class PuzzleDetailActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        viewModel.saveBoardState()
+        viewModel.saveState()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {

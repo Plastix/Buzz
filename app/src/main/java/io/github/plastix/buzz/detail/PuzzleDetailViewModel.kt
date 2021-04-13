@@ -47,27 +47,26 @@ class PuzzleDetailViewModel @AssistedInject constructor(
     private val _viewStates: MediatorLiveData<PuzzleDetailViewState> = MediatorLiveData()
     val viewStates: LiveData<PuzzleDetailViewState> = _viewStates
 
-    private data class DetailState(
+    private data class ScreenState(
         val board: PuzzleBoardState,
         val activeDialog: Dialog?,
         val activeWordToast: WordToast?,
         val wordBoxExpanded: Boolean
     )
 
-    private val detailState: MutableLiveData<DetailState?> = MutableLiveData(null)
+    private val screenState: MutableLiveData<ScreenState?> = MutableLiveData(null)
 
     init {
         loadPuzzleData()
-        listenForBoardChanges()
+        observeStateChanges()
     }
 
-    private fun listenForBoardChanges() {
-        _viewStates.addSource(detailState) { puzzleData ->
+    private fun observeStateChanges() {
+        _viewStates.addSource(screenState) { puzzleData ->
             val newViewState = if (puzzleData == null) {
                 PuzzleDetailViewState.Loading
             } else {
-                val boardState = puzzleData.constructBoardState()
-                PuzzleDetailViewState.Success(boardState)
+                PuzzleDetailViewState.Success(puzzleData.toBoardState())
             }
             _viewStates.value = newViewState
         }
@@ -80,15 +79,15 @@ class PuzzleDetailViewModel @AssistedInject constructor(
                     repository.getPuzzle(puzzleId)
                         ?: error("Expecting puzzle in database for id $puzzleId")
                 val gameState = repository.getGameState(puzzleId) ?: puzzle.blankGameState()
-                detailState.value = constructDetailStateState(puzzle, gameState)
+                screenState.value = constructNewScreenState(puzzle, gameState)
             } catch (e: Exception) {
                 _viewStates.value = PuzzleDetailViewState.Error(e)
             }
         }
     }
 
-    private fun constructDetailStateState(puzzle: Puzzle, gameState: PuzzleGameState): DetailState {
-        return DetailState(
+    private fun constructNewScreenState(puzzle: Puzzle, gameState: PuzzleGameState): ScreenState {
+        return ScreenState(
             board = PuzzleBoardState(puzzle, gameState),
             activeDialog = savedStateHandle[ACTIVE_DIALOG_KEY],
             activeWordToast = savedStateHandle[ACTIVE_WORD_TOAST_KEY],
@@ -96,7 +95,7 @@ class PuzzleDetailViewModel @AssistedInject constructor(
         )
     }
 
-    private fun DetailState.constructBoardState(): BoardGameViewState {
+    private fun ScreenState.toBoardState(): BoardGameViewState {
         return BoardGameViewState(
             centerLetter = board.puzzle.centerLetter,
             outerLetters = board.gameState.outerLetters,
@@ -137,7 +136,7 @@ class PuzzleDetailViewModel @AssistedInject constructor(
     }
 
     fun enter() {
-        updateDetailsState {
+        updateScreenState {
             val gameState = board.gameState
             val enteredWord = gameState.currentWord
             if (enteredWord.isBlank()) {
@@ -172,38 +171,38 @@ class PuzzleDetailViewModel @AssistedInject constructor(
     }
 
     fun dismissActiveDialog() {
-        updateDetailsState {
+        updateScreenState {
             copy(activeDialog = null)
         }
     }
 
     fun dismissActiveToast() {
-        updateDetailsState {
+        updateScreenState {
             copy(activeWordToast = null)
         }
     }
 
     fun resetGame() {
-        updateDetailsState {
+        updateScreenState {
             copy(activeDialog = Dialog.ConfirmReset)
         }
     }
 
     fun infoIconClicked() {
-        updateDetailsState {
+        updateScreenState {
             copy(activeDialog = Dialog.InfoDialog)
         }
     }
 
     fun scoreBarClicked() {
-        updateDetailsState {
+        updateScreenState {
             copy(activeDialog = Dialog.RankingDialog(board.puzzle.maxScore))
         }
     }
 
     fun resetConfirmed() {
-        updateDetailsState {
-            DetailState(
+        updateScreenState {
+            ScreenState(
                 board.copy(
                     gameState = board.puzzle.blankGameState()
                 ),
@@ -215,13 +214,13 @@ class PuzzleDetailViewModel @AssistedInject constructor(
     }
 
     fun toggleWorldBox() {
-        updateDetailsState {
+        updateScreenState {
             copy(wordBoxExpanded = !wordBoxExpanded)
         }
     }
 
-    fun saveBoardState() {
-        withDetailsState {
+    fun saveState() {
+        withScreenState {
             GlobalScope.launch {
                 repository.insertGameState(board.gameState, puzzleId)
             }
@@ -233,7 +232,7 @@ class PuzzleDetailViewModel @AssistedInject constructor(
 
     fun keyboardEvent(event: KeyEvent): Boolean {
         var handled = false
-        withDetailsState {
+        withScreenState {
             when (val unicodeChar = event.unicodeChar) {
                 0 -> {
                     handled = when (event.keyCode) {
@@ -273,9 +272,9 @@ class PuzzleDetailViewModel @AssistedInject constructor(
     }
 
     private fun updateGameState(block: PuzzleBoardState.() -> PuzzleGameState) {
-        val puzzleDetails = detailState.value ?: return
+        val puzzleDetails = screenState.value ?: return
         val newModel = puzzleDetails.board.block()
-        detailState.value =
+        screenState.value =
             puzzleDetails.copy(
                 board = puzzleDetails.board.copy(
                     gameState = newModel
@@ -283,19 +282,19 @@ class PuzzleDetailViewModel @AssistedInject constructor(
             )
     }
 
-    private fun updateDetailsState(block: DetailState.() -> DetailState) {
-        val puzzleDetails = detailState.value ?: return
+    private fun updateScreenState(block: ScreenState.() -> ScreenState) {
+        val puzzleDetails = screenState.value ?: return
         val newModel = puzzleDetails.block()
-        detailState.value = newModel
+        screenState.value = newModel
     }
 
-    private fun withDetailsState(block: DetailState.() -> Unit) {
-        val puzzleDetails = detailState.value ?: return
+    private fun withScreenState(block: ScreenState.() -> Unit) {
+        val puzzleDetails = screenState.value ?: return
         puzzleDetails.block()
     }
 
     private fun withGameState(block: PuzzleBoardState.() -> Unit) {
-        val puzzleDetails = detailState.value ?: return
+        val puzzleDetails = screenState.value ?: return
         puzzleDetails.board.block()
     }
 }

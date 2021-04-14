@@ -1,13 +1,10 @@
 package io.github.plastix.buzz.util
 
-import androidx.compose.animation.*
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class)
 @Composable
@@ -19,13 +16,12 @@ fun <T> SwipeDismiss(
     directions: Set<DismissDirection> = setOf(DismissDirection.StartToEnd),
     onDismiss: (T) -> Unit
 ) {
-    val dismissState = rememberDismissState()
-    val isDismissed = directions.any { dismissState.isDismissed(it) }
+    val dismissState = remember(item) {
+        DismissState(DismissValue.Default)
+    }
+    val isDismissed = dismissState.isDismissed(DismissDirection.StartToEnd)
     if (isDismissed) {
-        LaunchedEffect(null) {
-            onDismiss.invoke(item)
-            dismissState.reset()
-        }
+        onDismiss.invoke(item)
     }
     SwipeToDismiss(
         modifier = modifier,

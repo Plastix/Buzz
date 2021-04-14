@@ -180,7 +180,10 @@ fun PuzzleList(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(puzzles) { puzzle ->
+        items(
+            puzzles,
+            key = { state -> state.puzzleId }
+        ) { puzzle ->
             SwipeDismiss(
                 item = puzzle,
                 background = { DeletePuzzleRow() },

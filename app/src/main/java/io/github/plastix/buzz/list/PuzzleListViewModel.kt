@@ -10,6 +10,7 @@ import io.github.plastix.buzz.PuzzleBoardState
 import io.github.plastix.buzz.Result
 import io.github.plastix.buzz.network.PuzzleFetcher
 import io.github.plastix.buzz.persistence.PuzzleRepository
+import io.github.plastix.buzz.settings.Preferences
 import io.github.plastix.buzz.util.minusNull
 import io.github.plastix.buzz.util.toDisplayString
 import kotlinx.coroutines.launch
@@ -19,7 +20,8 @@ import java.util.*
 class PuzzleListViewModel @AssistedInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle,
     private val fetcher: PuzzleFetcher,
-    private val puzzleRepository: PuzzleRepository
+    private val puzzleRepository: PuzzleRepository,
+    private val preferences: Preferences
 ) : ViewModel() {
 
     @AssistedFactory
@@ -113,11 +115,13 @@ class PuzzleListViewModel @AssistedInject constructor(
     }
 
     private fun refreshPuzzleData() {
-        viewModelScope.launch {
-            when (val result = fetcher.fetchLatestPuzzles()) {
-                is Result.Success -> puzzleRepository.insertPuzzles(result.data)
-                is Result.Error -> {
-                    // No-op
+        if(preferences.autoDownloadEnabled()) {
+            viewModelScope.launch {
+                when (val result = fetcher.fetchLatestPuzzles()) {
+                    is Result.Success -> puzzleRepository.insertPuzzles(result.data)
+                    is Result.Error -> {
+                        // No-op
+                    }
                 }
             }
         }

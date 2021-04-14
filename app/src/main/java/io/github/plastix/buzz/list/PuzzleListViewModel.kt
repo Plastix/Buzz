@@ -56,9 +56,8 @@ class PuzzleListViewModel @AssistedInject constructor(
         val puzzles: List<PuzzleBoardState>,
         val activeDialog: Dialog?,
         val activeSnackbar: Snackbar?,
-        // This is a little bit of a hack to work around Compose's LazyColumn failure to recycle
-        // SwipeToDismiss correctly. We put ids of puzzles that have been swiped away so we can
-        // filter from the list instead of deleting from the repository directly.
+        // To avoid UI flicker, we keep ids of puzzles that have been swiped away for deletion
+        // instead of removing from the repository directly.
         val hiddenPuzzles: Set<Long>
     ) {
         val pendingPuzzleDeletion: Long? =
@@ -171,14 +170,16 @@ class PuzzleListViewModel @AssistedInject constructor(
     }
 
     fun saveState() {
-        withScreenState {
+        updateScreenState {
             savedStateHandle[ACTIVE_DIALOG_KEY] = activeDialog
             savedStateHandle[ACTIVE_SNACKBAR_KEY] = activeSnackbar
 
             // When we save our screen state we can delete all puzzles marked for deletion except
             // any pending deletion
-            savedStateHandle[HIDDEN_PUZZLES_KEY] = setOfNotNull(pendingPuzzleDeletion)
+            val newHiddenPuzzles = setOfNotNull(pendingPuzzleDeletion)
+            savedStateHandle[HIDDEN_PUZZLES_KEY] = newHiddenPuzzles
             removeDeletedPuzzles()
+            copy(hiddenPuzzles = newHiddenPuzzles)
         }
     }
 

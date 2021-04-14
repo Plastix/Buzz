@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="io.github.plastix.buzz">
-
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".BuzzApplication"
@@ -15,7 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Buzz">
 
-        <activity android:name=".list.PuzzleListActivity"
+        <activity
+            android:name=".list.PuzzleListActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,17 +24,6 @@
         <activity android:name=".detail.PuzzleDetailActivity" />
 
         <activity android:name=".settings.SettingsActivity" />
-
-        <!-- Disable automatic work manager initialization because we configure it manually to
-        enable hilt support
-
-        See: https://developer.android.com/training/dependency-injection/hilt-jetpack#workmanager
-        -->
-        <provider
-            android:name="androidx.work.impl.WorkManagerInitializer"
-            android:authorities="${applicationId}.workmanager-init"
-            tools:ignore="Instantiatable"
-            tools:node="remove" />
 
     </application>
 

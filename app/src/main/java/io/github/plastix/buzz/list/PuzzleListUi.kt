@@ -1,5 +1,8 @@
 package io.github.plastix.buzz.list
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,7 +19,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.White
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -108,31 +110,40 @@ fun ShowSnackbar(viewModel: PuzzleListViewModel, activeSnackbar: Snackbar) {
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun UndoDeleteSnackbar(
     viewModel: PuzzleListViewModel,
     activeSnackbar: Snackbar.UndoPuzzleDeletion
 ) {
-    Snackbar(
-        action = {
-            Button(
-                onClick = {
-                    viewModel.undoPendingPuzzleDeletion(activeSnackbar.puzzleId)
-                },
-                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colors.primarySurface),
-                elevation = null
-            ) {
-                Text(
-                    text = stringResource(R.string.undo),
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        },
-        modifier = Modifier.padding(8.dp)
-    ) { Text(stringResource(R.string.puzzle_list_undo_snackbar_description)) }
-    LaunchedEffect(activeSnackbar) {
-        delay(2750)
-        viewModel.dismissActiveSnackbar()
+    AnimatedVisibility(
+        visible = true,
+        initiallyVisible = false,
+        enter = slideInVertically(
+            initialOffsetY = { it / 2 },
+        )
+    ) {
+        Snackbar(
+            action = {
+                Button(
+                    onClick = {
+                        viewModel.undoPendingPuzzleDeletion(activeSnackbar.puzzleId)
+                    },
+                    colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colors.primarySurface),
+                    elevation = null
+                ) {
+                    Text(
+                        text = stringResource(R.string.undo),
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            },
+            modifier = Modifier.padding(8.dp)
+        ) { Text(stringResource(R.string.puzzle_list_undo_snackbar_description)) }
+        LaunchedEffect(activeSnackbar) {
+            delay(2750)
+            viewModel.dismissActiveSnackbar()
+        }
     }
 }
 

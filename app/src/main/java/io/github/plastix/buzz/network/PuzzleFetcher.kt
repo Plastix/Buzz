@@ -1,6 +1,7 @@
 package io.github.plastix.buzz.network
 
 import com.squareup.moshi.Moshi
+import io.github.plastix.buzz.Features
 import io.github.plastix.buzz.Puzzle
 import io.github.plastix.buzz.Result
 import kotlinx.coroutines.Dispatchers
@@ -29,8 +30,12 @@ class PuzzleFetcher @Inject constructor(
      * Fetches the latest two puzzles from the NYTimes "API". This operates on an I/O scheduler
      */
     suspend fun fetchLatestPuzzles(): Result<List<Puzzle>> {
-        return withContext(Dispatchers.IO) {
-            fetchLatestPuzzlesInternal()
+        return if (!Features.PUZZLES_DOWNLOADS_ENABLED) {
+            Result.Success(emptyList())
+        } else {
+            withContext(Dispatchers.IO) {
+                fetchLatestPuzzlesInternal()
+            }
         }
     }
 

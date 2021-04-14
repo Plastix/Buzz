@@ -8,8 +8,8 @@
     <string name="delete">Delete</string>
 
     <string name="puzzle_list_title">Puzzles</string>
-    <string name="puzzle_list_empty_state">No downloaded puzzles!</string>
-    <string name="puzzle_list_empty_icon">Download failure icon</string>
+    <string name="puzzle_list_empty_state">No saved puzzles</string>
+    <string name="puzzle_list_empty_icon">Buzz logo</string>
     <string name="puzzle_generated_content_description">Generated puzzle</string>
     <string name="puzzle_downloaded_content_description">Official puzzle</string>
 

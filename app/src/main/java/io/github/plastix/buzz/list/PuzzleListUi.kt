@@ -16,6 +16,8 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -145,7 +147,7 @@ fun PuzzleListEmptyState() {
     ) {
         Icon(
             modifier = Modifier.size(100.dp),
-            imageVector = Icons.Filled.SyncProblem,
+            painter = painterResource(id = R.drawable.ic_bee_black),
             contentDescription = stringResource(R.string.puzzle_list_empty_icon),
         )
         Spacer(Modifier.size(16.dp))

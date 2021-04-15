@@ -1,4 +1,4 @@
-# Buzz
+# Buzz [![LICENSE](https://img.shields.io/badge/License-Mozilla-blue.svg?style=flat)](https://github.com/Plastix/Buzz/blob/4f77caf4d48ba260d303e4535037e222b6911a87/LICENSE) [![API](https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=21)
 Spelling Bee game for Android
 ![playstore_promo](https://user-images.githubusercontent.com/1526881/114287756-59218f00-9a1e-11eb-8e65-e94799d20772.png)
 

@@ -13,6 +13,7 @@
     <string name="puzzle_generated_content_description">Generated puzzle</string>
     <string name="puzzle_downloaded_content_description">Official puzzle</string>
 
+    <string name="puzzle_list_new_puzzle_content_description">New puzzle</string>
     <string name="puzzle_list_new_puzzle_confirm_title">Generate random puzzle?</string>
     <string name="puzzle_list_undo_snackbar_description">Puzzle deleted</string>
 

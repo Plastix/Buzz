@@ -1,8 +1,5 @@
 package io.github.plastix.buzz.list
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,8 +11,10 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.White
@@ -34,8 +33,9 @@ import io.github.plastix.buzz.PuzzleType
 import io.github.plastix.buzz.R
 import io.github.plastix.buzz.theme.BuzzTheme
 import io.github.plastix.buzz.util.SwipeDismiss
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
+val LocalScaffoldState = compositionLocalOf<ScaffoldState> { error("No scaffold state provided") }
 
 @Composable
 fun PuzzleListUi(
@@ -44,30 +44,47 @@ fun PuzzleListUi(
     onSettings: () -> Unit
 ) {
     BuzzTheme {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(stringResource(R.string.puzzle_list_title))
-                    },
-                    actions = {
-                        IconButton(onClick = viewModel::showNewPuzzleDialog) {
-                            Icon(
-                                imageVector = Icons.Filled.AddCircleOutline,
-                                contentDescription = "New Puzzle"
-                            )
+        val scaffoldState = rememberScaffoldState()
+        CompositionLocalProvider(LocalScaffoldState provides scaffoldState) {
+            Scaffold(
+                scaffoldState = scaffoldState,
+                topBar = {
+                    TopAppBar(
+                        title = {
+                            Text(stringResource(R.string.puzzle_list_title))
+                        },
+                        actions = {
+                            IconButton(onClick = onSettings) {
+                                Icon(
+                                    imageVector = Icons.Filled.Settings,
+                                    contentDescription = stringResource(R.string.settings_title)
+                                )
+                            }
                         }
-                        IconButton(onClick = onSettings) {
-                            Icon(
-                                imageVector = Icons.Filled.Settings,
-                                contentDescription = stringResource(R.string.settings_title)
-                            )
-                        }
+                    )
+                },
+                snackbarHost = { hostData ->
+                    SnackbarHost(hostData) { snackbarData ->
+                        Snackbar(
+                            snackbarData = snackbarData,
+                            actionColor = MaterialTheme.colors.primarySurface
+                        )
                     }
-                )
+                },
+                floatingActionButton = {
+                    FloatingActionButton(
+                        onClick = viewModel::showNewPuzzleDialog,
+                        backgroundColor = MaterialTheme.colors.primary
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = stringResource(R.string.puzzle_list_new_puzzle_content_description)
+                        )
+                    }
+                }
+            ) {
+                PuzzleListScreen(viewModel, onPuzzleClick)
             }
-        ) {
-            PuzzleListScreen(viewModel, onPuzzleClick)
         }
     }
 }
@@ -100,49 +117,30 @@ fun PuzzleListScreen(
 
 @Composable
 fun ShowSnackbar(viewModel: PuzzleListViewModel, activeSnackbar: Snackbar) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.BottomCenter
-    ) {
-        when (activeSnackbar) {
-            is Snackbar.UndoPuzzleDeletion -> UndoDeleteSnackbar(viewModel, activeSnackbar)
-        }
+    when (activeSnackbar) {
+        is Snackbar.UndoPuzzleDeletion -> UndoDeleteSnackbar(viewModel, activeSnackbar)
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun UndoDeleteSnackbar(
     viewModel: PuzzleListViewModel,
     activeSnackbar: Snackbar.UndoPuzzleDeletion
 ) {
-    AnimatedVisibility(
-        visible = true,
-        initiallyVisible = false,
-        enter = slideInVertically(
-            initialOffsetY = { it / 2 },
+    val scaffoldState: ScaffoldState = LocalScaffoldState.current
+    val scope = rememberCoroutineScope()
+    val text = stringResource(R.string.puzzle_list_undo_snackbar_description)
+    val action = stringResource(R.string.undo)
+    scope.launch {
+        val result = scaffoldState.snackbarHostState.showSnackbar(
+            message = text,
+            actionLabel = action,
+            duration = SnackbarDuration.Short
         )
-    ) {
-        Snackbar(
-            action = {
-                Button(
-                    onClick = {
-                        viewModel.undoPendingPuzzleDeletion(activeSnackbar.puzzleId)
-                    },
-                    colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colors.primarySurface),
-                    elevation = null
-                ) {
-                    Text(
-                        text = stringResource(R.string.undo),
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            },
-            modifier = Modifier.padding(8.dp)
-        ) { Text(stringResource(R.string.puzzle_list_undo_snackbar_description)) }
-        LaunchedEffect(activeSnackbar) {
-            delay(2750)
-            viewModel.dismissActiveSnackbar()
+
+        when (result) {
+            SnackbarResult.Dismissed -> viewModel.dismissActiveSnackbar()
+            SnackbarResult.ActionPerformed -> viewModel.undoPendingPuzzleDeletion(activeSnackbar.puzzleId)
         }
     }
 }

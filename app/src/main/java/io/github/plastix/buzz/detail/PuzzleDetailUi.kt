@@ -469,8 +469,7 @@ fun DiscoveredWordBox(
                     buildAnnotatedString {
                         words.reversed().forEachIndexed { index, word ->
                             val fontWeight =
-                                if (word in pangrams) FontWeight.ExtraBold else FontWeight.Medium
-
+                                if (word in pangrams) FontWeight.ExtraBold else FontWeight.Normal
                             withStyle(style = SpanStyle(fontWeight = fontWeight)) {
                                 append(word.capitalize(Locale.ENGLISH))
                             }
@@ -485,10 +484,12 @@ fun DiscoveredWordBox(
             } else {
                 Column(modifier = Modifier.fillMaxSize()) {
                     ChevronRow(
-                        AnnotatedString(stringResource(
-                            R.string.puzzle_detail_word_list_word_count,
-                            words.size
-                        )), true
+                        AnnotatedString(
+                            stringResource(
+                                R.string.puzzle_detail_word_list_word_count,
+                                words.size
+                            )
+                        ), true
                     )
                     if (words.isNotEmpty()) {
                         Spacer(Modifier.height(16.dp))
@@ -517,7 +518,7 @@ fun ColumnGridList(words: List<String>, pangrams: Set<String>, columnNum: Int = 
                         textAlign = TextAlign.Start,
                         modifier = Modifier.weight(1f),
                         overflow = TextOverflow.Ellipsis,
-                        fontWeight = if (word in pangrams) FontWeight.ExtraBold else FontWeight.Medium
+                        fontWeight = if (word in pangrams) FontWeight.ExtraBold else FontWeight.Normal
                     )
                 }
             }

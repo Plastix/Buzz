@@ -115,7 +115,7 @@ class PuzzleListViewModel @AssistedInject constructor(
     }
 
     private fun refreshPuzzleData() {
-        if(preferences.autoDownloadEnabled()) {
+        if (preferences.autoDownloadEnabled()) {
             viewModelScope.launch {
                 when (val result = fetcher.fetchLatestPuzzles()) {
                     is Result.Success -> puzzleRepository.insertPuzzles(result.data)

@@ -4,7 +4,6 @@ import androidx.room.TypeConverter
 import io.github.plastix.buzz.PuzzleType
 import io.github.plastix.buzz.util.parseDate
 import java.time.LocalDate
-import java.time.format.DateTimeParseException
 
 class Converters {
 

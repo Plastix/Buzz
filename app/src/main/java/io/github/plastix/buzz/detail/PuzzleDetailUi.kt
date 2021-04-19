@@ -89,6 +89,7 @@ fun PuzzleDetailUi(
     }
 }
 
+
 @Composable
 fun PuzzleDetailScreen(viewModel: PuzzleDetailViewModel) {
     when (val state =
@@ -96,6 +97,7 @@ fun PuzzleDetailScreen(viewModel: PuzzleDetailViewModel) {
         is PuzzleDetailViewState.Loading -> PuzzleDetailLoadingState()
         is PuzzleDetailViewState.Success -> {
             val gameState = state.boardGameState
+            ConfettiCanvas(gameState.activeWordToast != null)
             if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 PuzzleBoardLandscape(
                     gameState,

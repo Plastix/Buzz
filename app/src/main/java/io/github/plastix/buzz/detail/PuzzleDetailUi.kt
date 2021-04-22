@@ -14,9 +14,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,74 +47,66 @@ import kotlinx.coroutines.delay
 import java.util.*
 import kotlin.math.*
 
+private val LocalViewModel =
+    compositionLocalOf<DetailScreen> { error("No click handler set1") }
+
 @Composable
 fun PuzzleDetailUi(
     viewModel: PuzzleDetailViewModel,
     onBack: () -> Unit
 ) {
-    BuzzTheme {
-        Scaffold(topBar = {
-            TopAppBar(
-                title = {
-                    Text(stringResource(R.string.puzzle_detail_title))
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
-                        )
+    CompositionLocalProvider(LocalViewModel provides viewModel) {
+        BuzzTheme {
+            Scaffold(topBar = {
+                TopAppBar(
+                    title = {
+                        Text(stringResource(R.string.puzzle_detail_title))
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.back)
+                            )
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = viewModel::infoIconClicked) {
+                            Icon(
+                                imageVector = Icons.Outlined.Info,
+                                contentDescription = stringResource(R.string.puzzle_detail_toolbar_info)
+                            )
+                        }
+                        IconButton(onClick = viewModel::resetGame) {
+                            Icon(
+                                imageVector = Icons.Filled.Replay,
+                                contentDescription = stringResource(R.string.puzzle_detail_toolbar_reset)
+                            )
+                        }
                     }
-                },
-                actions = {
-                    IconButton(onClick = viewModel::infoIconClicked) {
-                        Icon(
-                            imageVector = Icons.Outlined.Info,
-                            contentDescription = stringResource(R.string.puzzle_detail_toolbar_info)
-                        )
-                    }
-                    IconButton(onClick = viewModel::resetGame) {
-                        Icon(
-                            imageVector = Icons.Filled.Replay,
-                            contentDescription = stringResource(R.string.puzzle_detail_toolbar_reset)
-                        )
-                    }
-                }
-            )
-        }) {
-            PuzzleDetailScreen(viewModel)
+                )
+            }) {
+                PuzzleDetailScreen()
+            }
         }
     }
 }
 
 @Composable
-fun PuzzleDetailScreen(viewModel: PuzzleDetailViewModel) {
+fun PuzzleDetailScreen() {
+    val viewModel = LocalViewModel.current
     when (val state =
         viewModel.viewStates.observeAsState(PuzzleDetailViewState.Loading).value) {
         is PuzzleDetailViewState.Loading -> PuzzleDetailLoadingState()
         is PuzzleDetailViewState.Success -> {
             val gameState = state.boardGameState
             if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                PuzzleBoardLandscape(
-                    gameState,
-                    viewModel,
-                    onShuffle = viewModel::shuffle,
-                    onKeyClick = viewModel::keypress,
-                    onDelete = viewModel::delete,
-                    onEnter = viewModel::enter
-                )
+                PuzzleBoardLandscape(gameState)
             } else {
-                PuzzleBoard(
-                    gameState,
-                    viewModel,
-                    onShuffle = viewModel::shuffle,
-                    onKeyClick = viewModel::keypress,
-                    onDelete = viewModel::delete,
-                    onEnter = viewModel::enter
-                )
+                PuzzleBoard(gameState)
             }
             if (gameState.activeDialog != null) {
-                ShowDialog(viewModel, gameState.activeDialog)
+                ShowDialog(gameState.activeDialog)
             }
         }
         is PuzzleDetailViewState.Error -> PuzzleErrorState()
@@ -149,11 +139,6 @@ fun PuzzleErrorState() {
 @Composable
 fun PuzzleBoard(
     state: BoardGameViewState,
-    viewModel: PuzzleDetailViewModel,
-    onShuffle: () -> Unit,
-    onKeyClick: (Char) -> Unit,
-    onDelete: () -> Unit,
-    onEnter: () -> Unit
 ) {
     Box {
         Column(
@@ -161,12 +146,11 @@ fun PuzzleBoard(
                 .fillMaxSize()
                 .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 16.dp)
         ) {
-            ScoreBox(viewModel, state.currentRank, state.currentScore)
+            ScoreBox(state.currentRank, state.currentScore)
             DiscoveredWordBox(
                 words = state.discoveredWords,
                 pangrams = state.discoveredPangrams,
                 state.wordBoxExpanded,
-                viewModel::toggleWorldBox
             )
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -176,28 +160,21 @@ fun PuzzleBoard(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    WordToastRow(state, viewModel)
+                    WordToastRow(state)
                     InputBox(centerLetter = state.centerLetter, word = state.currentWord)
                 }
                 PuzzleKeypad(
-                    state.centerLetter, state.outerLetters.toList(), onKeyClick,
+                    state.centerLetter, state.outerLetters.toList(),
                     modifier = Modifier.fillMaxHeight(0.75f)
                 )
-                ActionBar(onShuffle = onShuffle, onDelete = onDelete, onEnter = onEnter)
+                ActionBar()
             }
         }
     }
 }
 
 @Composable
-fun PuzzleBoardLandscape(
-    state: BoardGameViewState,
-    viewModel: PuzzleDetailViewModel,
-    onShuffle: () -> Unit,
-    onKeyClick: (Char) -> Unit,
-    onDelete: () -> Unit,
-    onEnter: () -> Unit
-) {
+fun PuzzleBoardLandscape(state: BoardGameViewState) {
     Row(
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
     ) {
@@ -207,8 +184,8 @@ fun PuzzleBoardLandscape(
                 .fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ScoreBox(viewModel, state.currentRank, state.currentScore)
-            PuzzleKeypad(state.centerLetter, state.outerLetters.toList(), onKeyClick)
+            ScoreBox(state.currentRank, state.currentScore)
+            PuzzleKeypad(state.centerLetter, state.outerLetters.toList())
         }
         Spacer(Modifier.width(16.dp))
         Column(
@@ -223,13 +200,12 @@ fun PuzzleBoardLandscape(
                 words = state.discoveredWords,
                 pangrams = state.discoveredPangrams,
                 expanded = state.wordBoxExpanded,
-                toggleExpand = viewModel::toggleWorldBox
             )
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                WordToastRow(state, viewModel)
+                WordToastRow(state)
                 InputBox(centerLetter = state.centerLetter, word = state.currentWord)
             }
-            ActionBar(onShuffle = onShuffle, onDelete = onDelete, onEnter = onEnter)
+            ActionBar()
         }
     }
 }
@@ -237,9 +213,9 @@ fun PuzzleBoardLandscape(
 @Composable
 fun WordToastRow(
     state: BoardGameViewState,
-    viewModel: PuzzleDetailViewModel,
     durationMs: Long = 1000
 ) {
+    val viewModel = LocalViewModel.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -260,17 +236,18 @@ fun WordToastRow(
 }
 
 @Composable
-fun ShowDialog(viewModel: PuzzleDetailViewModel, activeDialog: Dialog) {
+fun ShowDialog(activeDialog: Dialog) {
     when (activeDialog) {
-        is Dialog.ConfirmReset -> ShowResetConfirmationDialog(viewModel)
-        is Dialog.InfoDialog -> InfoDialog(viewModel)
-        is Dialog.RankingDialog -> RankingDialog(viewModel, activeDialog.maxPuzzleScore)
+        is Dialog.ConfirmReset -> ShowResetConfirmationDialog()
+        is Dialog.InfoDialog -> InfoDialog()
+        is Dialog.RankingDialog -> RankingDialog(activeDialog.maxPuzzleScore)
     }
 }
 
 
 @Composable
-fun InfoDialog(viewModel: PuzzleDetailViewModel) {
+fun InfoDialog() {
+    val viewModel = LocalViewModel.current
     CustomDialog(
         onDismiss = viewModel::dismissActiveDialog,
         title = stringResource(R.string.puzzle_rules_dialog_title)
@@ -294,7 +271,8 @@ fun InfoDialog(viewModel: PuzzleDetailViewModel) {
 }
 
 @Composable
-fun RankingDialog(viewModel: PuzzleDetailViewModel, maxPuzzleScore: Int) {
+fun RankingDialog(maxPuzzleScore: Int) {
+    val viewModel = LocalViewModel.current
     CustomDialog(
         onDismiss = viewModel::dismissActiveDialog,
         title = stringResource(R.string.puzzle_ranking_dialog_title)
@@ -343,7 +321,8 @@ fun PreviewBulletPointList() {
 }
 
 @Composable
-fun ShowResetConfirmationDialog(viewModel: PuzzleDetailViewModel) {
+fun ShowResetConfirmationDialog() {
+    val viewModel = LocalViewModel.current
     AlertDialog(onDismissRequest = viewModel::dismissActiveDialog,
         title = { Text(stringResource(R.string.puzzle_detail_reset_confirm_title)) },
         text = { Text(stringResource(R.string.puzzle_detail_reset_confirm_body)) },
@@ -364,7 +343,8 @@ fun ShowResetConfirmationDialog(viewModel: PuzzleDetailViewModel) {
 }
 
 @Composable
-fun ScoreBox(viewModel: PuzzleDetailViewModel, rank: PuzzleRanking, score: Int) {
+fun ScoreBox(rank: PuzzleRanking, score: Int) {
+    val viewModel = LocalViewModel.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -449,10 +429,10 @@ fun DiscoveredWordBox(
     words: Set<String>,
     pangrams: Set<String>,
     expanded: Boolean = false,
-    toggleExpand: () -> Unit = {}
 ) {
+    val viewModel = LocalViewModel.current
     OutlinedButton(
-        onClick = toggleExpand,
+        onClick = viewModel::toggleWorldBox,
         colors = ButtonDefaults.outlinedButtonColors(
             contentColor = MaterialTheme.colors.onSurface,
         )
@@ -629,14 +609,13 @@ fun InputBox(centerLetter: Char, word: String) {
 fun PuzzleKeypad(
     centerLetter: Char,
     outerLetters: List<Char>,
-    onClick: (Char) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Layout(
         content = {
-            KeypadButton(centerLetter, onClick, primary = true)
+            KeypadButton(centerLetter, primary = true)
             outerLetters.take(6).forEach {
-                KeypadButton(it, onClick, primary = false)
+                KeypadButton(it, primary = false)
             }
         },
         modifier = modifier
@@ -681,17 +660,18 @@ fun PuzzleKeypad(
 fun PreviewPuzzleKeypad() {
     PuzzleKeypad(
         centerLetter = 'x',
-        outerLetters = listOf('a', 'b', 'c', 'd', 'e', 'f'),
-        onClick = {})
+        outerLetters = listOf('a', 'b', 'c', 'd', 'e', 'f')
+    )
 }
 
 
 @Composable
-fun KeypadButton(letter: Char, onClick: (Char) -> Unit, primary: Boolean) {
+fun KeypadButton(letter: Char, primary: Boolean) {
+    val viewModel = LocalViewModel.current
     Button(
         modifier = Modifier.fillMaxSize(),
         shape = RegularHexagonalShape(),
-        onClick = { onClick.invoke(letter) },
+        onClick = { viewModel.keypress(letter) },
         colors = if (MaterialTheme.colors.isLight) {
             ButtonDefaults.buttonColors(
                 backgroundColor = if (primary) {
@@ -753,13 +733,14 @@ class RegularHexagonalShape : Shape {
 @Composable
 @Preview
 fun PreviewKeypadButton() {
-    KeypadButton(letter = 'x', onClick = {}, primary = true)
+    KeypadButton(letter = 'x', primary = true)
 }
 
 @Composable
-fun ActionBar(onShuffle: () -> Unit, onDelete: () -> Unit, onEnter: () -> Unit) {
+fun ActionBar() {
+    val viewModel = LocalViewModel.current
     Row(verticalAlignment = Alignment.CenterVertically) {
-        ActionButton(onClick = onDelete) {
+        ActionButton(onClick = viewModel::delete) {
             Text(
                 stringResource(R.string.puzzle_detail_actionbar_delete),
                 fontSize = 20.sp,
@@ -768,7 +749,7 @@ fun ActionBar(onShuffle: () -> Unit, onDelete: () -> Unit, onEnter: () -> Unit) 
         }
         Spacer(Modifier.size(16.dp))
         ActionButton(
-            onClick = onShuffle,
+            onClick = viewModel::shuffle,
             shape = CircleShape
         ) {
             Icon(
@@ -777,7 +758,7 @@ fun ActionBar(onShuffle: () -> Unit, onDelete: () -> Unit, onEnter: () -> Unit) 
             )
         }
         Spacer(Modifier.size(16.dp))
-        ActionButton(onClick = onEnter) {
+        ActionButton(onClick = viewModel::enter) {
             Text(
                 stringResource(R.string.puzzle_detail_actionbar_enter),
                 fontSize = 20.sp,

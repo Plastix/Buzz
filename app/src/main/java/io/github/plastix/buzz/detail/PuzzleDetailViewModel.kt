@@ -16,7 +16,7 @@ class PuzzleDetailViewModel @AssistedInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle,
     @Assisted private val puzzleId: Long,
     private val repository: PuzzleRepository
-) : ViewModel() {
+) : ViewModel(), DetailScreen {
 
     @AssistedFactory
     interface Factory {
@@ -45,7 +45,7 @@ class PuzzleDetailViewModel @AssistedInject constructor(
     }
 
     private val _viewStates: MediatorLiveData<PuzzleDetailViewState> = MediatorLiveData()
-    val viewStates: LiveData<PuzzleDetailViewState> = _viewStates
+    override val viewStates: LiveData<PuzzleDetailViewState> = _viewStates
 
     private data class ScreenState(
         val board: PuzzleBoardState,
@@ -111,13 +111,13 @@ class PuzzleDetailViewModel @AssistedInject constructor(
         )
     }
 
-    fun shuffle() {
+    override fun shuffle() {
         updateGameState {
             gameState.copy(outerLetters = gameState.outerLetters.shuffled())
         }
     }
 
-    fun keypress(char: Char) {
+    override fun keypress(char: Char) {
         updateGameState {
             gameState.copy(currentWord = gameState.currentWord.plus(char))
         }
@@ -129,13 +129,13 @@ class PuzzleDetailViewModel @AssistedInject constructor(
         }
     }
 
-    fun delete() {
+    override fun delete() {
         updateGameState {
             gameState.copy(currentWord = gameState.currentWord.dropLast(1))
         }
     }
 
-    fun enter() {
+    override fun enter() {
         updateScreenState {
             val gameState = board.gameState
             val enteredWord = gameState.currentWord
@@ -170,37 +170,37 @@ class PuzzleDetailViewModel @AssistedInject constructor(
         }
     }
 
-    fun dismissActiveDialog() {
+    override fun dismissActiveDialog() {
         updateScreenState {
             copy(activeDialog = null)
         }
     }
 
-    fun dismissActiveToast() {
+    override fun dismissActiveToast() {
         updateScreenState {
             copy(activeWordToast = null)
         }
     }
 
-    fun resetGame() {
+    override fun resetGame() {
         updateScreenState {
             copy(activeDialog = Dialog.ConfirmReset)
         }
     }
 
-    fun infoIconClicked() {
+    override fun infoIconClicked() {
         updateScreenState {
             copy(activeDialog = Dialog.InfoDialog)
         }
     }
 
-    fun scoreBarClicked() {
+    override fun scoreBarClicked() {
         updateScreenState {
             copy(activeDialog = Dialog.RankingDialog(board.puzzle.maxScore))
         }
     }
 
-    fun resetConfirmed() {
+    override fun resetConfirmed() {
         updateScreenState {
             ScreenState(
                 board.copy(
@@ -213,7 +213,7 @@ class PuzzleDetailViewModel @AssistedInject constructor(
         }
     }
 
-    fun toggleWorldBox() {
+    override fun toggleWorldBox() {
         updateScreenState {
             copy(wordBoxExpanded = !wordBoxExpanded)
         }

@@ -8,6 +8,7 @@ plugins {
 
 ext {
     publicRelease = project.hasProperty("public")
+    isRelease = project.hasProperty("release")
 }
 
 @SuppressWarnings('GrMethodMayBeStatic')
@@ -25,6 +26,9 @@ android {
 
     defaultConfig {
         applicationId "io.github.plastix.buzz"
+        if(!isRelease) {
+            applicationIdSuffix ".dev"
+        }
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 4

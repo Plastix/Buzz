@@ -756,7 +756,8 @@ fun ActionBar() {
             Text(
                 stringResource(R.string.puzzle_detail_actionbar_delete),
                 fontSize = 20.sp,
-                fontWeight = FontWeight.Light
+                fontWeight = FontWeight.Light,
+                maxLines = 1
             )
         }
         Spacer(Modifier.size(16.dp))
@@ -774,7 +775,8 @@ fun ActionBar() {
             Text(
                 stringResource(R.string.puzzle_detail_actionbar_enter),
                 fontSize = 20.sp,
-                fontWeight = FontWeight.Light
+                fontWeight = FontWeight.Light,
+                maxLines = 1
             )
         }
     }

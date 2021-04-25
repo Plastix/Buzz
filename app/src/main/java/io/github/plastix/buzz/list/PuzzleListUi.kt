@@ -193,49 +193,52 @@ fun PuzzleList(
             puzzles,
             key = { state -> state.puzzleId }
         ) { puzzle ->
-            SwipeDismiss(
-                item = puzzle,
-                background = { DeletePuzzleRow() },
-                content = { PuzzleRow(puzzle, onPuzzleClick) },
-                onDismiss = { onPuzzleDelete.invoke(it.puzzleId) }
-            )
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onPuzzleClick.invoke(puzzle.puzzleId) },
+                shape = RoundedCornerShape(4.dp),
+                elevation = 2.dp
+            ) {
+                SwipeDismiss(
+                    item = puzzle,
+                    background = { DeletePuzzleRow() },
+                    content = { PuzzleRow(puzzle) },
+                    onDismiss = { onPuzzleDelete.invoke(it.puzzleId) }
+                )
+            }
         }
     }
 }
 
 @Composable
 fun DeletePuzzleRow() {
-    Card {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colors.error)
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Filled.DeleteForever,
-                contentDescription = null,
-                tint = MaterialTheme.colors.onError
-            )
-            Spacer(Modifier.width(8.dp))
-            Text(
-                text = stringResource(R.string.delete),
-                color = MaterialTheme.colors.onError, fontWeight = FontWeight.Bold
-            )
-        }
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.error)
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = Icons.Filled.DeleteForever,
+            contentDescription = null,
+            tint = MaterialTheme.colors.onError
+        )
+        Spacer(Modifier.width(8.dp))
+        Text(
+            text = stringResource(R.string.delete),
+            color = MaterialTheme.colors.onError, fontWeight = FontWeight.Bold
+        )
     }
 }
 
 @Composable
-fun PuzzleRow(puzzleRow: PuzzleRowState, onPuzzleClick: (puzzleId: Long) -> Unit) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onPuzzleClick.invoke(puzzleRow.puzzleId) },
-        shape = RoundedCornerShape(4.dp)
-    ) {
-        Column(modifier = Modifier.padding(12.dp)) {
+fun PuzzleRow(puzzleRow: PuzzleRowState) {
+    Surface {
+        Column(
+            modifier = Modifier.padding(12.dp)
+        ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,

@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 import io.github.plastix.buzz.Puzzle
 import io.github.plastix.buzz.PuzzleType
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 /**
  * Database model for persisting a [Puzzle].
@@ -22,7 +23,7 @@ import java.time.LocalDate
 class PuzzleEntity(
     @PrimaryKey(autoGenerate = true)
     val puzzleId: Long,
-    val date: LocalDate,
+    val date: LocalDateTime,
     val centerLetter: Char,
     val outerLetters: Set<Char>,
     val pangrams: Set<String>,

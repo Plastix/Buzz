@@ -4,6 +4,7 @@ import androidx.room.TypeConverter
 import io.github.plastix.buzz.PuzzleType
 import io.github.plastix.buzz.util.parseDate
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 class Converters {
 
@@ -50,12 +51,12 @@ class Converters {
     }
 
     @TypeConverter
-    fun serializeDate(date: LocalDate): String {
+    fun serializeDate(date: LocalDateTime): String {
         return date.toString()
     }
 
     @TypeConverter
-    fun deserializeDate(string: String): LocalDate {
+    fun deserializeDate(string: String): LocalDateTime {
         return string.parseDate()
     }
 

@@ -1,17 +1,17 @@
 package io.github.plastix.buzz.util
 
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 
 private val DATE_FORMATTER: DateTimeFormatter = DateTimeFormatter.ofPattern("EEEE MMMM d, yyyy")
 
-fun LocalDate.toDisplayString(): String = format(DATE_FORMATTER)
+fun LocalDateTime.toDisplayString(): String = format(DATE_FORMATTER)
 
-fun String.parseDate(): LocalDate {
+fun String.parseDate(): LocalDateTime {
     return try {
-        LocalDate.parse(this)
+        LocalDateTime.parse(this)
     } catch (e: DateTimeParseException) {
-        LocalDate.now()
+        LocalDateTime.now()
     }
 }

@@ -9,6 +9,7 @@ import io.github.plastix.buzz.persistence.gen.DictionaryDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 /**
@@ -78,7 +79,7 @@ class PuzzleRepository @Inject constructor(
 
             val newPuzzle = PuzzleEntity(
                 puzzleId = Puzzle.AUTO_GENERATE_ID,
-                date = LocalDate.now(),
+                date = LocalDateTime.now(),
                 centerLetter = requiredCharSet.toCharArray().first(),
                 outerLetters = (requiredCharSet xor charSet).toCharArray().toSet(),
                 pangrams = pangrams.map { it.word }.toSet(),

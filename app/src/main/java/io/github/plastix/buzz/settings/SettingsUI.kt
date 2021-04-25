@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.plastix.buzz.BuildConfig
 import io.github.plastix.buzz.R
+import io.github.plastix.buzz.changelog.ChangeLogDialog
 import io.github.plastix.buzz.theme.BuzzTheme
 import io.github.plastix.buzz.util.CustomDialog
 import io.github.plastix.buzz.util.noRippleClickable
@@ -33,6 +34,7 @@ fun SettingsUi(
     BuzzTheme {
         // Because I'm too lazy to move this state out of the UI layer
         val showInfoDialog = remember { mutableStateOf(false) }
+        val showReleaseNotes = remember { mutableStateOf(false) }
         TopAppBar(
             title = {
                 Text(stringResource(R.string.settings_title))
@@ -78,6 +80,12 @@ fun SettingsUi(
                     )
                     Text("(${BuildConfig.VERSION_CODE})")
                     Spacer(Modifier.height(16.dp))
+                    OutlinedButton(onClick = {
+                        showReleaseNotes.value = true
+                    }) {
+                        Text("Release Notes")
+                    }
+                    Spacer(Modifier.height(8.dp))
                     OutlinedButton(
                         onClick = onGiveFeedback,
                         colors = ButtonDefaults.outlinedButtonColors(
@@ -87,6 +95,12 @@ fun SettingsUi(
                         Text(stringResource(R.string.about_dialog_give_feedback))
                     }
                 }
+            }
+        }
+
+        if (showReleaseNotes.value) {
+            ChangeLogDialog {
+                showReleaseNotes.value = false
             }
         }
     }

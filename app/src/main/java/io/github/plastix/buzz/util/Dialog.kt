@@ -20,6 +20,7 @@ import io.github.plastix.buzz.R
 fun CustomDialog(
     onDismiss: () -> Unit,
     title: String,
+    isScrolling: Boolean = true,
     content: @Composable () -> Unit
 ) {
     Dialog(onDismissRequest = onDismiss) {
@@ -51,10 +52,15 @@ fun CustomDialog(
                     }
                 }
                 Spacer(modifier = Modifier.size(16.dp))
-                Column(
-                    modifier = Modifier
+                val modifier = if (isScrolling) {
+                    Modifier
                         .wrapContentHeight()
                         .verticalScroll(rememberScrollState())
+                } else {
+                    Modifier.wrapContentHeight()
+                }
+                Column(
+                    modifier = modifier
                 ) {
                     content.invoke()
                 }

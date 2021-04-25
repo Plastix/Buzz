@@ -289,12 +289,15 @@ fun RankLabel(rank: PuzzleRanking, score: Int) {
         Surface(
             shape = CircleShape,
             color = MaterialTheme.colors.primary,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier
+                .wrapContentSize()
+                .defaultMinSize(minWidth = 24.dp, minHeight = 24.dp)
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Text(
                     text = score.toString(),
                     fontSize = 12.sp,
+                    maxLines = 1
                 )
             }
         }

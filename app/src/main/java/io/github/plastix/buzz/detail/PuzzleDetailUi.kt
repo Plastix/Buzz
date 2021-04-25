@@ -383,7 +383,8 @@ fun ScoreBox(rank: PuzzleRanking, score: Int) {
                     val color =
                         if (index <= indexOfRank) MaterialTheme.colors.primary else MaterialTheme.colors.secondary
                     Surface(
-                        modifier = Modifier.size(bubbleSize),
+                        modifier = Modifier.wrapContentSize()
+                            .defaultMinSize(minWidth = bubbleSize, minHeight = bubbleSize),
                         shape = CircleShape,
                         color = color,
                     ) {
@@ -391,7 +392,8 @@ fun ScoreBox(rank: PuzzleRanking, score: Int) {
                             if (puzzleRanking == rank) {
                                 Text(
                                     text = score.toString(),
-                                    fontSize = 12.sp
+                                    fontSize = 12.sp,
+                                    maxLines = 1
                                 )
                             }
                         }

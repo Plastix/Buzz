@@ -13,6 +13,7 @@
 
     <string name="preferences_download">download</string>
     <string name="preferences_download_enabled">download.enabled</string>
+    <string name="preferences_debug_tools_enabled">debug_tools.enabled</string>
 
     <string name="developer_feedback_email">pieper.developer@gmail.com</string>
 </resources>

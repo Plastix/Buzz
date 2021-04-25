@@ -9,13 +9,15 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import io.github.plastix.buzz.*
 import io.github.plastix.buzz.persistence.PuzzleRepository
+import io.github.plastix.buzz.settings.Preferences
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class PuzzleDetailViewModel @AssistedInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle,
     @Assisted private val puzzleId: Long,
-    private val repository: PuzzleRepository
+    private val repository: PuzzleRepository,
+    private val preferences: Preferences
 ) : ViewModel(), DetailScreen {
 
     @AssistedFactory
@@ -46,6 +48,9 @@ class PuzzleDetailViewModel @AssistedInject constructor(
 
     private val _viewStates: MediatorLiveData<PuzzleDetailViewState> = MediatorLiveData()
     override val viewStates: LiveData<PuzzleDetailViewState> = _viewStates
+    val showDebugMenu: Boolean by lazy {
+        preferences.debugToolsEnabled()
+    }
 
     private data class ScreenState(
         val board: PuzzleBoardState,
@@ -216,6 +221,12 @@ class PuzzleDetailViewModel @AssistedInject constructor(
     override fun toggleWorldBox() {
         updateScreenState {
             copy(wordBoxExpanded = !wordBoxExpanded)
+        }
+    }
+
+    override fun solvePuzzle() {
+        updateGameState {
+            gameState.copy(discoveredWords = puzzle.answers)
         }
     }
 

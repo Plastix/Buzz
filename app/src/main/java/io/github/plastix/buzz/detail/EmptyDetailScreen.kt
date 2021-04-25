@@ -31,4 +31,6 @@ class EmptyDetailScreen : DetailScreen {
     override fun resetConfirmed() {}
 
     override fun toggleWorldBox() {}
+
+    override fun solvePuzzle() {}
 }

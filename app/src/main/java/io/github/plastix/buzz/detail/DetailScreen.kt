@@ -16,4 +16,5 @@ interface DetailScreen {
     fun scoreBarClicked()
     fun resetConfirmed()
     fun toggleWorldBox()
+    fun solvePuzzle()
 }

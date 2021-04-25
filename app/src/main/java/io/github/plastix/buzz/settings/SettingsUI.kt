@@ -1,8 +1,10 @@
 package io.github.plastix.buzz.settings
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -13,21 +15,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.plastix.buzz.BuildConfig
 import io.github.plastix.buzz.R
 import io.github.plastix.buzz.theme.BuzzTheme
 import io.github.plastix.buzz.util.CustomDialog
+import io.github.plastix.buzz.util.noRippleClickable
 
 @Composable
 fun SettingsUi(
     onBack: () -> Unit,
-    onGiveFeedback: () -> Unit
+    onGiveFeedback: () -> Unit,
+    devMenuToggled: () -> Unit
 ) {
     BuzzTheme {
         // Because I'm too lazy to move this state out of the UI layer
-        var showInfoDialog = remember { mutableStateOf(false) }
+        val showInfoDialog = remember { mutableStateOf(false) }
         TopAppBar(
             title = {
                 Text(stringResource(R.string.settings_title))
@@ -60,7 +65,17 @@ fun SettingsUi(
                         textAlign = TextAlign.Center
                     )
                     Spacer(Modifier.height(16.dp))
-                    Text("v ${BuildConfig.VERSION_NAME}")
+                    val clickCounter = remember { mutableStateOf(0) }
+                    Text(text = "v ${BuildConfig.VERSION_NAME}",
+                        modifier = Modifier.noRippleClickable {
+                            if (clickCounter.value >= 4) {
+                                devMenuToggled.invoke()
+                                clickCounter.value = 0
+                            } else {
+                                clickCounter.value++
+                            }
+                        }
+                    )
                     Text("(${BuildConfig.VERSION_CODE})")
                     Spacer(Modifier.height(16.dp))
                     OutlinedButton(

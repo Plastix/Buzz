@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -57,6 +58,7 @@ fun PuzzleDetailUi(
 ) {
     CompositionLocalProvider(LocalViewModel provides viewModel) {
         BuzzTheme {
+            val debugDialog = rememberSaveable { mutableStateOf(false) }
             Scaffold(topBar = {
                 TopAppBar(
                     title = {
@@ -83,11 +85,43 @@ fun PuzzleDetailUi(
                                 contentDescription = stringResource(R.string.puzzle_detail_toolbar_reset)
                             )
                         }
+                        if (viewModel.showDebugMenu) {
+                            IconButton(onClick = {
+                                debugDialog.value = true
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Filled.BugReport,
+                                    contentDescription = stringResource(R.string.puzzle_detail_debug_tool_title)
+                                )
+                            }
+                        }
                     }
                 )
             }) {
                 PuzzleDetailScreen()
+
+                if (debugDialog.value) {
+                    PuzzleDebugMenu(debugDialog)
+                }
             }
+        }
+    }
+}
+
+@Composable
+fun PuzzleDebugMenu(debugDialog: MutableState<Boolean>) {
+    CustomDialog(
+        onDismiss = { debugDialog.value = false },
+        title = stringResource(R.string.puzzle_detail_debug_tool_title)
+    ) {
+        val viewModel: DetailScreen = LocalViewModel.current
+
+        Button(onClick = viewModel::solvePuzzle) {
+            Text(
+                stringResource(
+                    R.string.puzzle_detail_debug_tool_solve_puzzle
+                )
+            )
         }
     }
 }
@@ -383,7 +417,8 @@ fun ScoreBox(rank: PuzzleRanking, score: Int) {
                     val color =
                         if (index <= indexOfRank) MaterialTheme.colors.primary else MaterialTheme.colors.secondary
                     Surface(
-                        modifier = Modifier.wrapContentSize()
+                        modifier = Modifier
+                            .wrapContentSize()
                             .defaultMinSize(minWidth = bubbleSize, minHeight = bubbleSize),
                         shape = CircleShape,
                         color = color,

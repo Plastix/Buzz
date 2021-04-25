@@ -315,8 +315,10 @@ fun BulletPointList(strings: Array<String>) {
 @Preview
 @Composable
 fun PreviewBulletPointList() {
-    Box(modifier = Modifier.background(Color.White)) {
-        BulletPointList(stringArrayResource(id = R.array.puzzle_rules))
+    ProvideFakeViewModel {
+        Box(modifier = Modifier.background(Color.White)) {
+            BulletPointList(stringArrayResource(id = R.array.puzzle_rules))
+        }
     }
 }
 
@@ -538,30 +540,36 @@ fun ChevronRow(
 @Preview
 @Composable
 fun PreviewDiscoveredWordBoxEmpty() {
-    DiscoveredWordBox(words = emptySet(), pangrams = emptySet(), false)
+    ProvideFakeViewModel {
+        DiscoveredWordBox(words = emptySet(), pangrams = emptySet(), false)
+    }
 }
 
 @Preview
 @Composable
 fun PreviewDiscoveredWordBoxFull() {
-    DiscoveredWordBox(
-        words = setOf(
-            "handle", "story", "rabbit", "cloud", "couch", "towel", "anger", "greeting"
-        ),
-        pangrams = emptySet()
-    )
+    ProvideFakeViewModel {
+        DiscoveredWordBox(
+            words = setOf(
+                "handle", "story", "rabbit", "cloud", "couch", "towel", "anger", "greeting"
+            ),
+            pangrams = emptySet()
+        )
+    }
 }
 
 @Preview
 @Composable
 fun PreviewDiscoveredWordBoxFullExpanded() {
-    DiscoveredWordBox(
-        words = setOf(
-            "handle", "story", "rabbit", "cloud"
-        ),
-        pangrams = emptySet(),
-        expanded = true
-    )
+    ProvideFakeViewModel {
+        DiscoveredWordBox(
+            words = setOf(
+                "handle", "story", "rabbit", "cloud"
+            ),
+            pangrams = emptySet(),
+            expanded = true
+        )
+    }
 }
 
 
@@ -658,10 +666,12 @@ fun PuzzleKeypad(
 @Composable
 @Preview
 fun PreviewPuzzleKeypad() {
-    PuzzleKeypad(
-        centerLetter = 'x',
-        outerLetters = listOf('a', 'b', 'c', 'd', 'e', 'f')
-    )
+    ProvideFakeViewModel {
+        PuzzleKeypad(
+            centerLetter = 'x',
+            outerLetters = listOf('a', 'b', 'c', 'd', 'e', 'f')
+        )
+    }
 }
 
 
@@ -733,7 +743,9 @@ class RegularHexagonalShape : Shape {
 @Composable
 @Preview
 fun PreviewKeypadButton() {
-    KeypadButton(letter = 'x', primary = true)
+    ProvideFakeViewModel {
+        KeypadButton(letter = 'x', primary = true)
+    }
 }
 
 @Composable
@@ -792,6 +804,13 @@ fun PuzzleDetailLoadingState() {
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator(modifier = Modifier.size(100.dp))
+    }
+}
+
+@Composable
+private fun ProvideFakeViewModel(block: @Composable () -> Unit) {
+    CompositionLocalProvider(LocalViewModel provides EmptyDetailScreen()) {
+        block.invoke()
     }
 }
 

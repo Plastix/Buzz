@@ -30,4 +30,25 @@
             android:title="@string/settings_puzzle_download_title"
             app:iconSpaceReserved="false" />
     </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:key="@string/preferences_action_confirmations"
+        app:title="@string/settings_action_confirmations">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/preferences_action_confirmations_new_puzzle"
+            android:summary="@string/settings_action_confirmation_new_puzzle_summary"
+            android:title="@string/settings_action_confirmation_new_puzzle_title"
+            app:iconSpaceReserved="false" />
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/preferences_action_confirmations_reset_puzzle"
+            android:summary="@string/settings_action_confirmation_resett_puzzle_summary"
+            android:title="@string/settings_action_confirmation_resett_puzzle_title"
+            app:iconSpaceReserved="false" />
+    </PreferenceCategory>
+
 </androidx.preference.PreferenceScreen>

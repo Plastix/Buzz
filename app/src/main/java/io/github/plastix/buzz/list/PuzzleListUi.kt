@@ -72,8 +72,12 @@ fun PuzzleListUi(
                     }
                 },
                 floatingActionButton = {
+                    val confirmationDialogEnabled =
+                        viewModel.newPuzzleConfirmationEnabled.observeAsState(false).value
+                    val clickHandler: () -> Unit =
+                        if (confirmationDialogEnabled) viewModel::showNewPuzzleDialog else viewModel::generateNewPuzzle
                     FloatingActionButton(
-                        onClick = viewModel::showNewPuzzleDialog,
+                        onClick = clickHandler,
                         backgroundColor = MaterialTheme.colors.primary
                     ) {
                         Icon(

@@ -15,5 +15,9 @@
     <string name="preferences_download_enabled">download.enabled</string>
     <string name="preferences_debug_tools_enabled">debug_tools.enabled</string>
 
+    <string name="preferences_action_confirmations">action_confirmations</string>
+    <string name="preferences_action_confirmations_new_puzzle">action_confirmations.new_puzzle</string>
+    <string name="preferences_action_confirmations_reset_puzzle">action_confirmations.reset_puzzle</string>
+
     <string name="developer_feedback_email">pieper.developer@gmail.com</string>
 </resources>

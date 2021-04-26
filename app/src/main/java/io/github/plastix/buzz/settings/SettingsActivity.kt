@@ -46,8 +46,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun toggleDevMenu() {
-        val newValue = !preferences.debugToolsEnabled()
-        preferences.setDevMenuEnabled(newValue)
+        val newValue = preferences.toggleDevMenuEnabled()
 
         val message = if (newValue) {
             R.string.puzzle_detail_debug_tool_enabled

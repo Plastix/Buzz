@@ -2,6 +2,7 @@ package io.github.plastix.buzz.settings
 
 import android.app.Application
 import androidx.core.content.edit
+import androidx.lifecycle.LiveData
 import androidx.preference.PreferenceManager
 import io.github.plastix.buzz.R
 import io.github.plastix.buzz.theme.ThemeMode
@@ -26,16 +27,38 @@ class Preferences @Inject constructor(
         )
     }
 
-    fun debugToolsEnabled(): Boolean {
-        return preferenceManager.getBoolean(
-            resources.getString(R.string.preferences_debug_tools_enabled),
-            false
+    val debugToolsEnabled: LiveData<Boolean> by lazy {
+        BooleanSharedPreferenceLiveData(
+            preferenceManager,
+            resources.getString(R.string.preferences_debug_tools_enabled)
         )
     }
 
-    fun setDevMenuEnabled(boolean: Boolean) {
+    fun toggleDevMenuEnabled(): Boolean {
+        val oldValue = preferenceManager.getBoolean(
+            resources.getString(R.string.preferences_debug_tools_enabled),
+            false
+        )
+        val newValue = !oldValue
         preferenceManager.edit {
-            putBoolean(resources.getString(R.string.preferences_debug_tools_enabled), boolean)
+            putBoolean(resources.getString(R.string.preferences_debug_tools_enabled), newValue)
         }
+
+        return newValue
+    }
+
+    val newPuzzleConfirmationEnabled: LiveData<Boolean> by lazy {
+        BooleanSharedPreferenceLiveData(
+            preferenceManager,
+            resources.getString(R.string.preferences_action_confirmations_new_puzzle)
+        )
+    }
+
+    val resetPuzzleConfirmationEnabled: LiveData<Boolean> by lazy {
+        BooleanSharedPreferenceLiveData(
+            preferenceManager,
+            resources.getString(R.string.preferences_action_confirmations_reset_puzzle),
+            true
+        )
     }
 }

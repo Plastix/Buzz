@@ -85,6 +85,11 @@
     <string name="settings_puzzle_data">Puzzle Data</string>
     <string name="settings_puzzle_download_title">Auto Download</string>
     <string name="settings_puzzle_download_summary">Automatically downloads the daily puzzle</string>
+    <string name="settings_action_confirmations">Action Confirmations</string>
+    <string name="settings_action_confirmation_new_puzzle_title">New Puzzle</string>
+    <string name="settings_action_confirmation_new_puzzle_summary">Confirm before generating a new puzzle</string>
+    <string name="settings_action_confirmation_resett_puzzle_title">Reset puzzle</string>
+    <string name="settings_action_confirmation_resett_puzzle_summary">Confirm before resetting puzzle state</string>
 
     <string name="about_dialog_title">About Buzz</string>
     <string name="about_dialog_body">A shameless spelling bee clone. Made with ❤️ in SF!</string>

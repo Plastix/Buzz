@@ -79,13 +79,20 @@ fun PuzzleDetailUi(
                                 contentDescription = stringResource(R.string.puzzle_detail_toolbar_info)
                             )
                         }
-                        IconButton(onClick = viewModel::resetGame) {
+
+                        val resetClickHandler: () -> Unit =
+                            if (viewModel.puzzleResetConfirmationEnabled.observeAsState(true).value)
+                                viewModel::resetGame
+                            else
+                                viewModel::resetConfirmed
+
+                        IconButton(onClick = resetClickHandler) {
                             Icon(
                                 imageVector = Icons.Filled.Replay,
                                 contentDescription = stringResource(R.string.puzzle_detail_toolbar_reset)
                             )
                         }
-                        if (viewModel.showDebugMenu) {
+                        if (viewModel.showDebugMenu.observeAsState(false).value) {
                             IconButton(onClick = {
                                 debugDialog.value = true
                             }) {

@@ -48,9 +48,8 @@ class PuzzleDetailViewModel @AssistedInject constructor(
 
     private val _viewStates: MediatorLiveData<PuzzleDetailViewState> = MediatorLiveData()
     override val viewStates: LiveData<PuzzleDetailViewState> = _viewStates
-    val showDebugMenu: Boolean by lazy {
-        preferences.debugToolsEnabled()
-    }
+    val showDebugMenu: LiveData<Boolean> = preferences.debugToolsEnabled
+    val puzzleResetConfirmationEnabled: LiveData<Boolean> = preferences.resetPuzzleConfirmationEnabled
 
     private data class ScreenState(
         val board: PuzzleBoardState,

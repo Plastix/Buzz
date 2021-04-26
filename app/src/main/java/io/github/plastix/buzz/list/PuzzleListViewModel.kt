@@ -52,6 +52,8 @@ class PuzzleListViewModel @AssistedInject constructor(
     private val _viewStates: MediatorLiveData<PuzzleListViewState> = MediatorLiveData()
     val viewStates: LiveData<PuzzleListViewState> = _viewStates
 
+    val newPuzzleConfirmationEnabled: LiveData<Boolean> = preferences.newPuzzleConfirmationEnabled
+
     private val screenState: MutableLiveData<ScreenState?> = MutableLiveData(null)
 
     private data class ScreenState(

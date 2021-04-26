@@ -1,10 +1,8 @@
 package io.github.plastix.buzz.settings
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -12,10 +10,10 @@ import androidx.compose.material.icons.outlined.Help
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.plastix.buzz.BuildConfig
@@ -32,7 +30,7 @@ fun SettingsUi(
 ) {
     BuzzTheme {
         // Because I'm too lazy to move this state out of the UI layer
-        val showInfoDialog = remember { mutableStateOf(false) }
+        val showInfoDialog = rememberSaveable { mutableStateOf(false) }
         TopAppBar(
             title = {
                 Text(stringResource(R.string.settings_title))

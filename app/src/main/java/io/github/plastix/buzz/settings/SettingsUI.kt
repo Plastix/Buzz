@@ -97,7 +97,7 @@ fun InfoDialog(
                     }
                 }
             )
-            Text("(${BuildConfig.VERSION_CODE})")
+            Text(stringResource(R.string.about_dialog_build_number, BuildConfig.VERSION_CODE))
             Spacer(Modifier.height(16.dp))
             OutlinedButton(
                 onClick = onGiveFeedback,

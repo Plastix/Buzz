@@ -1,14 +1,12 @@
 package io.github.plastix.buzz.persistence
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface PuzzleDao {
 
+    @Transaction
     @Query("select * from puzzles order by date desc")
     fun getPuzzles(): LiveData<List<PuzzleEntityWithGameState>>
 

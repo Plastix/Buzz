@@ -323,7 +323,7 @@ fun RankingDialog(maxPuzzleScore: Int) {
             modifier = Modifier.fillMaxWidth(),
         )
         Spacer(modifier = Modifier.size(16.dp))
-        PuzzleRanking.sortedValues.forEach { ranking ->
+        PuzzleRanking.sortedValues.minus(PuzzleRanking.QueenBee).forEach { ranking ->
             val rankName = stringResource(ranking.displayString)
             val rankScore = (maxPuzzleScore * (ranking.percentCutoff / 100.0)).roundToInt()
             Text(text = "$rankName ($rankScore)")

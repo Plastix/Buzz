@@ -42,6 +42,10 @@ enum class PuzzleRanking(
     Genius(
         percentCutoff = 70,
         displayString = R.string.puzzle_rank_genius
+    ),
+    QueenBee(
+        percentCutoff = 100,
+        displayString = R.string.puzzle_rank_queen_bee
     );
 
     companion object {

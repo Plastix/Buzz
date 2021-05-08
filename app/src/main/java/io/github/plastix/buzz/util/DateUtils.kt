@@ -1,5 +1,6 @@
 package io.github.plastix.buzz.util
 
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -12,6 +13,10 @@ fun String.parseDate(): LocalDateTime {
     return try {
         LocalDateTime.parse(this)
     } catch (e: DateTimeParseException) {
-        LocalDateTime.now()
+        try {
+            LocalDate.parse(this).atTime(0, 0)
+        } catch (e: DateTimeParseException) {
+            LocalDateTime.now()
+        }
     }
 }

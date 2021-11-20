@@ -39,26 +39,28 @@ fun main() {
 
         val dictionaryPath = Paths.get("${RESOURCES_PATH}words").toAbsolutePath().toString()
         val reader = File(dictionaryPath).bufferedReader()
-        reader.lines().forEach { word ->
-            if (word.isValid()) {
-                if (word !in denyList) {
-                    val charSet = word.toCharacterSet()
-                    queries.addWord(charSet.toLong(), word)
+        queries.transaction {
+            reader.lines().forEach { word ->
+                val trimmedWord = word.trim()
+                if (trimmedWord.isValid()) {
+                    if (trimmedWord !in denyList) {
+                        val charSet = trimmedWord.toCharacterSet()
+                        queries.addWord(charSet.toLong(), trimmedWord)
 
-                    if (charSet.size == Constants.LETTER_COUNT) {
-                        val seed = charSet.toLong()
-                        queries.addPuzzleSeed(seed)
-                        puzzleSeeds.add(seed)
+                        if (charSet.size == Constants.LETTER_COUNT) {
+                            val seed = charSet.toLong()
+                            queries.addPuzzleSeed(seed)
+                            puzzleSeeds.add(seed)
+                        }
+                        processedCount++
+
+                    } else {
+                        profaneWords.add(trimmedWord)
                     }
-                    processedCount++
-
-                } else {
-                    profaneWords.add(word)
                 }
+                totalWords++
             }
-            totalWords++
         }
-
     }
 
     val seconds = TimeUnit.MILLISECONDS.toSeconds(durationMs)

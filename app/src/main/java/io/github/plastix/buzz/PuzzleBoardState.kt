@@ -10,7 +10,7 @@ data class PuzzleBoardState(
     val puzzle: Puzzle,
     val gameState: PuzzleGameState
 ) {
-    val currentScore: Int = gameState.discoveredWords.sumBy { word -> puzzle.scoreWord(word) }
+    val currentScore: Int = gameState.discoveredWords.sumOf { word -> puzzle.scoreWord(word) }
     private val currentPercent: Int =
         ((currentScore / puzzle.maxScore.toDouble()) * 100).roundToInt()
     val currentRank: PuzzleRanking = PuzzleRanking.values()

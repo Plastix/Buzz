@@ -497,7 +497,11 @@ fun DiscoveredWordBox(
                             val fontWeight =
                                 if (word in pangrams) FontWeight.ExtraBold else FontWeight.Normal
                             withStyle(style = SpanStyle(fontWeight = fontWeight)) {
-                                append(word.capitalize(Locale.ENGLISH))
+                                append(word.replaceFirstChar {
+                                    if (it.isLowerCase()) it.titlecase(
+                                        Locale.ENGLISH
+                                    ) else it.toString()
+                                })
                             }
 
                             if (index < words.size - 1) {
@@ -539,7 +543,7 @@ fun ColumnGridList(words: List<String>, pangrams: Set<String>, columnNum: Int = 
                 for (i in 0 until columnNum) {
                     val word = rowWords.getOrNull(i) ?: ""
                     Text(
-                        text = word.capitalize(Locale.ENGLISH),
+                        text = word.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ENGLISH) else it.toString() },
                         maxLines = 1,
                         textAlign = TextAlign.Start,
                         modifier = Modifier.weight(1f),
@@ -627,10 +631,10 @@ fun InputBox(centerLetter: Char, word: String) {
                 word.forEach { c ->
                     if (c == centerLetter) {
                         withStyle(style = SpanStyle(color = highlightColor)) {
-                            append(c.toUpperCase())
+                            append(c.uppercaseChar())
                         }
                     } else {
-                        append(c.toUpperCase())
+                        append(c.uppercaseChar())
                     }
                 }
             },
@@ -750,7 +754,7 @@ fun KeypadButton(letter: Char, primary: Boolean) {
                 (maxWidth * 0.15f).toPx().sp
             }
             Text(
-                text = letter.toUpperCase().toString(),
+                text = letter.uppercaseChar().toString(),
                 fontSize = fontSize,
                 fontWeight = FontWeight.ExtraBold
             )

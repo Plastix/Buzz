@@ -21,7 +21,7 @@ data class Puzzle(
         const val AUTO_GENERATE_ID = 0L
     }
 
-    val maxScore: Int = answers.sumBy(::scoreWord)
+    val maxScore: Int = answers.sumOf(::scoreWord)
 
     fun eligibleLetter(char: Char): Boolean {
         return centerLetter == char || char in outerLetters

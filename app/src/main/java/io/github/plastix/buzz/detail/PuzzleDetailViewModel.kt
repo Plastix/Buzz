@@ -10,6 +10,8 @@ import dagger.assisted.AssistedInject
 import io.github.plastix.buzz.*
 import io.github.plastix.buzz.persistence.PuzzleRepository
 import io.github.plastix.buzz.settings.Preferences
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -17,7 +19,7 @@ class PuzzleDetailViewModel @AssistedInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle,
     @Assisted private val puzzleId: Long,
     private val repository: PuzzleRepository,
-    private val preferences: Preferences
+    preferences: Preferences,
 ) : ViewModel(), DetailScreen {
 
     @AssistedFactory
@@ -229,8 +231,11 @@ class PuzzleDetailViewModel @AssistedInject constructor(
         }
     }
 
+    @DelicateCoroutinesApi
     fun saveState() {
         withScreenState {
+            // We want to run this background database save in a unrestricted coroutine scope to
+            // ensure this always happens
             GlobalScope.launch {
                 repository.insertGameState(board.gameState, puzzleId)
             }

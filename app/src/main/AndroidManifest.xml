@@ -15,7 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Buzz">
 
-        <activity android:name=".list.PuzzleListActivity"
+        <activity
+            android:name=".list.PuzzleListActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,9 +25,13 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".detail.PuzzleDetailActivity" />
+        <activity
+            android:name=".detail.PuzzleDetailActivity"
+            android:exported="false" />
 
-        <activity android:name=".settings.SettingsActivity" />
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:exported="false" />
 
         <!-- Disable automatic work manager initialization because we configure it manually to
         enable hilt support

@@ -1,4 +1,4 @@
 rootProject.name = "Buzz"
-include ':app'
-include ':dataset'
-include ':core'
+include ":app"
+include ":dataset"
+include ":core"

@@ -10,10 +10,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.*
 import io.github.plastix.buzz.PuzzleRanking
 import io.github.plastix.buzz.R
 import io.github.plastix.buzz.theme.BuzzTheme
+import io.github.plastix.buzz.theme.LocalUiThemeMode
 import io.github.plastix.buzz.util.CustomDialog
 import kotlinx.coroutines.delay
 import java.util.*
@@ -51,6 +52,7 @@ import kotlin.math.*
 private val LocalViewModel =
     compositionLocalOf<DetailScreen> { error("No click handler set1") }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PuzzleDetailUi(
     viewModel: PuzzleDetailViewModel,
@@ -60,7 +62,7 @@ fun PuzzleDetailUi(
         BuzzTheme {
             val debugDialog = rememberSaveable { mutableStateOf(false) }
             Scaffold(topBar = {
-                TopAppBar(
+                SmallTopAppBar(
                     title = {
                         Text(stringResource(R.string.puzzle_detail_title))
                     },
@@ -410,7 +412,7 @@ fun ScoreBox(rank: PuzzleRanking, score: Int) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(2.dp)
-                    .background(MaterialTheme.colors.secondary)
+                    .background(MaterialTheme.colorScheme.secondary)
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -422,7 +424,7 @@ fun ScoreBox(rank: PuzzleRanking, score: Int) {
                 sortedRanks.forEachIndexed { index, puzzleRanking ->
                     val bubbleSize = if (puzzleRanking == rank) 24.dp else 8.dp
                     val color =
-                        if (index <= indexOfRank) MaterialTheme.colors.primary else MaterialTheme.colors.secondary
+                        if (index <= indexOfRank) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
                     Surface(
                         modifier = Modifier
                             .wrapContentSize()
@@ -480,7 +482,7 @@ fun DiscoveredWordBox(
     OutlinedButton(
         onClick = viewModel::toggleWorldBox,
         colors = ButtonDefaults.outlinedButtonColors(
-            contentColor = MaterialTheme.colors.onSurface,
+            contentColor = MaterialTheme.colorScheme.onSurface,
         )
     ) {
         Box(
@@ -561,7 +563,7 @@ fun ColumnGridList(words: List<String>, pangrams: Set<String>, columnNum: Int = 
 fun ChevronRow(
     text: AnnotatedString,
     expanded: Boolean,
-    textColor: Color = MaterialTheme.colors.onSurface
+    textColor: Color = MaterialTheme.colorScheme.onSurface
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -624,7 +626,7 @@ fun PreviewDiscoveredWordBoxFullExpanded() {
 @Composable
 fun InputBox(centerLetter: Char, word: String) {
     val textSize = 30.sp
-    val highlightColor = MaterialTheme.colors.primary
+    val highlightColor = MaterialTheme.colorScheme.primary
     Row {
         Text(
             text = buildAnnotatedString {
@@ -730,24 +732,24 @@ fun KeypadButton(letter: Char, primary: Boolean) {
         modifier = Modifier.fillMaxSize(),
         shape = RegularHexagonalShape(),
         onClick = { viewModel.keypress(letter) },
-        colors = if (MaterialTheme.colors.isLight) {
+        colors = if (LocalUiThemeMode.current.isDarkMode().not()) {
             ButtonDefaults.buttonColors(
-                backgroundColor = if (primary) {
-                    MaterialTheme.colors.primary
+                containerColor = if (primary) {
+                    MaterialTheme.colorScheme.primary
                 } else {
-                    MaterialTheme.colors.secondary
+                    MaterialTheme.colorScheme.secondary
                 }
             )
         } else {
             ButtonDefaults.outlinedButtonColors(
                 contentColor = if (primary) {
-                    MaterialTheme.colors.primary
+                    MaterialTheme.colorScheme.primary
                 } else {
-                    MaterialTheme.colors.onSurface
+                    MaterialTheme.colorScheme.onSurface
                 }
             )
         },
-        border = if (MaterialTheme.colors.isLight) null else ButtonDefaults.outlinedBorder
+        border = if (LocalUiThemeMode.current.isDarkMode().not()) null else ButtonDefaults.outlinedButtonBorder
     ) {
         BoxWithConstraints(contentAlignment = Alignment.Center) {
             val fontSize = with(LocalDensity.current) {
@@ -839,7 +841,7 @@ fun ActionButton(
     OutlinedButton(
         onClick = onClick,
         colors = ButtonDefaults.outlinedButtonColors(
-            contentColor = MaterialTheme.colors.onSurface,
+            contentColor = MaterialTheme.colorScheme.onSurface,
         ),
         shape = shape,
     ) {
@@ -853,7 +855,7 @@ fun PuzzleDetailLoadingState() {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator(modifier = Modifier.size(100.dp))
+//        CircularProgressIndicator(modifier = Modifier.size(100.dp))
     }
 }
 

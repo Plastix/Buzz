@@ -7,9 +7,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
@@ -32,11 +32,12 @@ import io.github.plastix.buzz.PuzzleRanking
 import io.github.plastix.buzz.PuzzleType
 import io.github.plastix.buzz.R
 import io.github.plastix.buzz.theme.BuzzTheme
-import io.github.plastix.buzz.util.SwipeDismiss
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 val LocalScaffoldState = compositionLocalOf<ScaffoldState> { error("No scaffold state provided") }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PuzzleListUi(
     viewModel: PuzzleListViewModel,
@@ -49,7 +50,7 @@ fun PuzzleListUi(
             Scaffold(
                 scaffoldState = scaffoldState,
                 topBar = {
-                    TopAppBar(
+                    SmallTopAppBar(
                         title = {
                             Text(stringResource(R.string.puzzle_list_title))
                         },
@@ -63,14 +64,14 @@ fun PuzzleListUi(
                         }
                     )
                 },
-                snackbarHost = { hostData ->
-                    SnackbarHost(hostData) { snackbarData ->
-                        Snackbar(
-                            snackbarData = snackbarData,
-                            actionColor = MaterialTheme.colors.primarySurface
-                        )
-                    }
-                },
+//                snackbarHost = { hostData ->
+//                    SnackbarHost(hostData) { snackbarData ->
+//                        Snackbar(
+//                            snackbarData = snackbarData,
+//                            actionColor = MaterialTheme.colors.primarySurface
+//                        )
+//                    }
+//                },
                 floatingActionButton = {
                     val confirmationDialogEnabled =
                         viewModel.newPuzzleConfirmationEnabled.observeAsState(false).value
@@ -78,7 +79,7 @@ fun PuzzleListUi(
                         if (confirmationDialogEnabled) viewModel::showNewPuzzleDialog else viewModel::generateNewPuzzle
                     FloatingActionButton(
                         onClick = clickHandler,
-                        backgroundColor = MaterialTheme.colors.primary
+                        containerColor = MaterialTheme.colorScheme.primary
                     ) {
                         Icon(
                             imageVector = Icons.Default.Add,
@@ -126,6 +127,7 @@ fun ShowSnackbar(viewModel: PuzzleListViewModel, activeSnackbar: Snackbar) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UndoDeleteSnackbar(
     viewModel: PuzzleListViewModel,
@@ -135,18 +137,18 @@ fun UndoDeleteSnackbar(
     val scope = rememberCoroutineScope()
     val text = stringResource(R.string.puzzle_list_undo_snackbar_description)
     val action = stringResource(R.string.undo)
-    scope.launch {
-        val result = scaffoldState.snackbarHostState.showSnackbar(
-            message = text,
-            actionLabel = action,
-            duration = SnackbarDuration.Short
-        )
-
-        when (result) {
-            SnackbarResult.Dismissed -> viewModel.dismissActiveSnackbar()
-            SnackbarResult.ActionPerformed -> viewModel.undoPendingPuzzleDeletion(activeSnackbar.puzzleId)
-        }
-    }
+//    scope.launch {
+//        val result = scaffoldState.snackbarHostState.showSnackbar(
+//            message = text,
+//            actionLabel = action,
+//            duration = SnackbarDuration.Short
+//        )
+//
+//        when (result) {
+//            SnackbarResult.Dismissed -> viewModel.dismissActiveSnackbar()
+//            SnackbarResult.ActionPerformed -> viewModel.undoPendingPuzzleDeletion(activeSnackbar.puzzleId)
+//        }
+//    }
 }
 
 @Composable
@@ -178,7 +180,7 @@ fun PuzzleListLoadingState() {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator(modifier = Modifier.size(100.dp))
+//        CircularProgressIndicator(modifier = Modifier.size(100.dp))
     }
 }
 
@@ -197,19 +199,21 @@ fun PuzzleList(
             puzzles,
             key = { state -> state.puzzleId }
         ) { puzzle ->
-            Card(
+            // TODO replace with card again
+            Surface(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onPuzzleClick.invoke(puzzle.puzzleId) },
                 shape = RoundedCornerShape(4.dp),
-                elevation = 2.dp
+//                elevation = 2.dp
             ) {
-                SwipeDismiss(
-                    item = puzzle,
-                    background = { DeletePuzzleRow() },
-                    content = { PuzzleRow(puzzle) },
-                    onDismiss = { onPuzzleDelete.invoke(it.puzzleId) }
-                )
+                PuzzleRow(puzzle)
+//                SwipeDismiss(
+//                    item = puzzle,
+//                    background = { DeletePuzzleRow() },
+//                    content = { PuzzleRow(puzzle) },
+//                    onDismiss = { onPuzzleDelete.invoke(it.puzzleId) }
+//                )
             }
         }
     }
@@ -220,19 +224,19 @@ fun DeletePuzzleRow() {
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.error)
+            .background(MaterialTheme.colorScheme.error)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             imageVector = Icons.Filled.DeleteForever,
             contentDescription = null,
-            tint = MaterialTheme.colors.onError
+            tint = MaterialTheme.colorScheme.onError
         )
         Spacer(Modifier.width(8.dp))
         Text(
             text = stringResource(R.string.delete),
-            color = MaterialTheme.colors.onError, fontWeight = FontWeight.Bold
+            color = MaterialTheme.colorScheme.onError, fontWeight = FontWeight.Bold
         )
     }
 }
@@ -250,7 +254,7 @@ fun PuzzleRow(puzzleRow: PuzzleRowState) {
             ) {
                 Text(
                     text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = MaterialTheme.colors.primary)) {
+                        withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {
                             append(puzzleRow.puzzleString.firstOrNull() ?: ' ')
                         }
                         append(puzzleRow.puzzleString.drop(1))
@@ -292,7 +296,7 @@ fun RankLabel(rank: PuzzleRanking, score: Int) {
 
         Surface(
             shape = CircleShape,
-            color = MaterialTheme.colors.primary,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier
                 .wrapContentSize()
                 .defaultMinSize(minWidth = 24.dp, minHeight = 24.dp)

@@ -4,9 +4,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,7 +26,7 @@ fun CustomDialog(
         Surface(
             modifier = Modifier.constrainHeight(fraction = 0.9f),
             shape = RoundedCornerShape(4.dp),
-            color = MaterialTheme.colors.surface
+            color = MaterialTheme.colorScheme.surface
         ) {
             Column(
                 modifier = Modifier

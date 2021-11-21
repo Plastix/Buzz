@@ -4,10 +4,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Help
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,7 +33,7 @@ fun SettingsUi(
     BuzzTheme {
         // Because I'm too lazy to move this state out of the UI layer
         val showInfoDialog = rememberSaveable { mutableStateOf(false) }
-        TopAppBar(
+        SmallTopAppBar(
             title = {
                 Text(stringResource(R.string.settings_title))
             },
@@ -102,7 +102,7 @@ fun InfoDialog(
             OutlinedButton(
                 onClick = onGiveFeedback,
                 colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = MaterialTheme.colors.onSurface,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
                 )
             ) {
                 Text(stringResource(R.string.about_dialog_give_feedback))

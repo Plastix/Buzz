@@ -24,6 +24,7 @@ import io.github.plastix.buzz.theme.BuzzTheme
 import io.github.plastix.buzz.util.CustomDialog
 import io.github.plastix.buzz.util.noRippleClickable
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsUi(
     onBack: () -> Unit,
@@ -33,34 +34,40 @@ fun SettingsUi(
     BuzzTheme {
         // Because I'm too lazy to move this state out of the UI layer
         val showInfoDialog = rememberSaveable { mutableStateOf(false) }
-        SmallTopAppBar(
-            title = {
-                Text(stringResource(R.string.settings_title))
-            },
-            navigationIcon = {
-                IconButton(onClick = onBack) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.back)
+        Scaffold(
+            topBar = {
+                SmallTopAppBar(
+                    title = {
+                        Text(stringResource(R.string.settings_title))
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.back)
+                            )
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = { showInfoDialog.value = true }) {
+                            Icon(
+                                imageVector = Icons.Outlined.Help,
+                                contentDescription = stringResource(R.string.puzzle_detail_toolbar_info)
+                            )
+                        }
+                    }
+                )
+                if (showInfoDialog.value) {
+                    InfoDialog(
+                        onDismiss = { showInfoDialog.value = false },
+                        onGiveFeedback = onGiveFeedback,
+                        devMenuToggled = devMenuToggled
                     )
                 }
+
             },
-            actions = {
-                IconButton(onClick = { showInfoDialog.value = true }) {
-                    Icon(
-                        imageVector = Icons.Outlined.Help,
-                        contentDescription = stringResource(R.string.puzzle_detail_toolbar_info)
-                    )
-                }
-            }
+            content = {}
         )
-        if (showInfoDialog.value) {
-            InfoDialog(
-                onDismiss = { showInfoDialog.value = false },
-                onGiveFeedback = onGiveFeedback,
-                devMenuToggled = devMenuToggled
-            )
-        }
     }
 }
 

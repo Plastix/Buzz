@@ -133,6 +133,7 @@ fun PuzzleDebugMenu(debugDialog: MutableState<Boolean>) {
     }
 }
 
+
 @Composable
 fun PuzzleDetailScreen() {
     val viewModel = LocalViewModel.current
@@ -141,6 +142,8 @@ fun PuzzleDetailScreen() {
         is PuzzleDetailViewState.Loading -> PuzzleDetailLoadingState()
         is PuzzleDetailViewState.Success -> {
             val gameState = state.boardGameState
+//            ConfettiCanvas(gameState.activeWordToast != null)
+            FireworksCanvas(gameState.activeWordToast != null)
             if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 PuzzleBoardLandscape(gameState)
             } else {

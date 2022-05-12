@@ -83,7 +83,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion "1.1.0-beta03"
+        kotlinCompilerExtensionVersion "1.2.0-beta01"
     }
 
     defaultConfig {
@@ -111,8 +111,8 @@ dependencies {
     implementation "androidx.core:core-ktx:1.7.0"
     implementation "androidx.appcompat:appcompat:1.4.0"
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
-    implementation("com.squareup.moshi:moshi:1.12.0")
-    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.12.0")
+    implementation("com.squareup.moshi:moshi:1.13.0")
+    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.13.0")
     implementation "com.google.android.material:material:1.4.0"
     implementation "androidx.constraintlayout:constraintlayout:2.1.2"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2"
@@ -138,7 +138,7 @@ dependencies {
     // Integration with observables
     implementation "androidx.compose.runtime:runtime-livedata:1.1.0-beta03"
 
-    def room_version = "2.3.0"
+    def room_version = "2.4.0"
 
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"

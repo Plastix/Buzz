@@ -5,9 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
+import io.github.plastix.buzz.util.viewModels
 import javax.inject.Inject
 
 
@@ -29,8 +29,8 @@ class PuzzleDetailActivity : AppCompatActivity() {
     @Inject
     lateinit var viewModelFactory: PuzzleDetailViewModel.Factory
 
-    private val viewModel: PuzzleDetailViewModel by viewModels {
-        PuzzleDetailViewModel.provideFactory(viewModelFactory, this, puzzleId)
+    private val viewModel: PuzzleDetailViewModel by viewModels { savedStateHandle ->
+        viewModelFactory.create(savedStateHandle, puzzleId)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

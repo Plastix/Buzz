@@ -1,8 +1,11 @@
 package io.github.plastix.buzz.list
 
-import android.os.Bundle
-import androidx.lifecycle.*
-import androidx.savedstate.SavedStateRegistryOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -14,7 +17,7 @@ import io.github.plastix.buzz.settings.Preferences
 import io.github.plastix.buzz.util.minusNull
 import io.github.plastix.buzz.util.toDisplayString
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.Locale
 
 
 class PuzzleListViewModel @AssistedInject constructor(
@@ -30,20 +33,6 @@ class PuzzleListViewModel @AssistedInject constructor(
     }
 
     companion object {
-        fun provideFactory(
-            assistedFactory: Factory,
-            registryOwner: SavedStateRegistryOwner,
-        ) = object : AbstractSavedStateViewModelFactory(registryOwner, Bundle()) {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel?> create(
-                key: String,
-                modelClass: Class<T>,
-                handle: SavedStateHandle
-            ): T {
-                return assistedFactory.create(handle) as T
-            }
-        }
-
         private const val ACTIVE_DIALOG_KEY = "active_dialog"
         private const val HIDDEN_PUZZLES_KEY = "hidden_puzzles"
         private const val ACTIVE_SNACKBAR_KEY = "active_snackbar"

@@ -1,16 +1,22 @@
 package io.github.plastix.buzz.detail
 
-import android.os.Bundle
 import android.view.KeyEvent
-import androidx.lifecycle.*
-import androidx.savedstate.SavedStateRegistryOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import io.github.plastix.buzz.*
+import io.github.plastix.buzz.Puzzle
+import io.github.plastix.buzz.PuzzleBoardState
+import io.github.plastix.buzz.PuzzleGameState
+import io.github.plastix.buzz.WordResult
+import io.github.plastix.buzz.blankGameState
 import io.github.plastix.buzz.persistence.PuzzleRepository
 import io.github.plastix.buzz.settings.Preferences
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -28,21 +34,6 @@ class PuzzleDetailViewModel @AssistedInject constructor(
     }
 
     companion object {
-        fun provideFactory(
-            assistedFactory: Factory,
-            registryOwner: SavedStateRegistryOwner,
-            puzzleId: Long
-        ) = object : AbstractSavedStateViewModelFactory(registryOwner, Bundle()) {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel?> create(
-                key: String,
-                modelClass: Class<T>,
-                handle: SavedStateHandle
-            ): T {
-                return assistedFactory.create(handle, puzzleId) as T
-            }
-        }
-
         private const val ACTIVE_DIALOG_KEY = "active_dialog"
         private const val ACTIVE_WORD_TOAST_KEY = "active_word_toast"
         private const val WORD_BOX_EXPANDED_KEY = "word_box_expanded"

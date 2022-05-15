@@ -24,7 +24,6 @@ fun CustomDialog(
 ) {
     Dialog(onDismissRequest = onDismiss) {
         Surface(
-            modifier = Modifier.constrainHeight(fraction = 0.9f),
             shape = RoundedCornerShape(4.dp),
             color = MaterialTheme.colors.surface
         ) {

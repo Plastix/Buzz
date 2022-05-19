@@ -1,21 +1,69 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package io.github.plastix.buzz.detail
 
 import android.content.res.Configuration
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Autorenew
+import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material.icons.filled.ErrorOutline
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallTopAppBar
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,14 +87,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import io.github.plastix.buzz.PuzzleRanking
 import io.github.plastix.buzz.R
 import io.github.plastix.buzz.theme.BuzzTheme
+import io.github.plastix.buzz.theme.LocalUiThemeMode
 import io.github.plastix.buzz.util.CustomDialog
 import kotlinx.coroutines.delay
-import java.util.*
-import kotlin.math.*
+import java.util.Locale
+import kotlin.math.cos
+import kotlin.math.min
+import kotlin.math.pow
+import kotlin.math.roundToInt
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 private val LocalViewModel =
     compositionLocalOf<DetailScreen> { error("No click handler set1") }
@@ -60,7 +118,7 @@ fun PuzzleDetailUi(
         BuzzTheme {
             val debugDialog = rememberSaveable { mutableStateOf(false) }
             Scaffold(topBar = {
-                TopAppBar(
+                SmallTopAppBar(
                     title = {
                         Text(stringResource(R.string.puzzle_detail_title))
                     },
@@ -104,11 +162,13 @@ fun PuzzleDetailUi(
                         }
                     }
                 )
-            }) {
-                PuzzleDetailScreen()
+            }) { paddingValues ->
+                Box(modifier = Modifier.padding(paddingValues)) {
+                    PuzzleDetailScreen()
 
-                if (debugDialog.value) {
-                    PuzzleDebugMenu(debugDialog)
+                    if (debugDialog.value) {
+                        PuzzleDebugMenu(debugDialog)
+                    }
                 }
             }
         }
@@ -410,7 +470,7 @@ fun ScoreBox(rank: PuzzleRanking, score: Int) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(2.dp)
-                    .background(MaterialTheme.colors.secondary)
+                    .background(MaterialTheme.colorScheme.secondary)
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -422,7 +482,7 @@ fun ScoreBox(rank: PuzzleRanking, score: Int) {
                 sortedRanks.forEachIndexed { index, puzzleRanking ->
                     val bubbleSize = if (puzzleRanking == rank) 24.dp else 8.dp
                     val color =
-                        if (index <= indexOfRank) MaterialTheme.colors.primary else MaterialTheme.colors.secondary
+                        if (index <= indexOfRank) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
                     Surface(
                         modifier = Modifier
                             .wrapContentSize()
@@ -480,7 +540,7 @@ fun DiscoveredWordBox(
     OutlinedButton(
         onClick = viewModel::toggleWorldBox,
         colors = ButtonDefaults.outlinedButtonColors(
-            contentColor = MaterialTheme.colors.onSurface,
+            contentColor = MaterialTheme.colorScheme.onSurface,
         )
     ) {
         Box(
@@ -561,7 +621,7 @@ fun ColumnGridList(words: List<String>, pangrams: Set<String>, columnNum: Int = 
 fun ChevronRow(
     text: AnnotatedString,
     expanded: Boolean,
-    textColor: Color = MaterialTheme.colors.onSurface
+    textColor: Color = MaterialTheme.colorScheme.onSurface
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -624,7 +684,7 @@ fun PreviewDiscoveredWordBoxFullExpanded() {
 @Composable
 fun InputBox(centerLetter: Char, word: String) {
     val textSize = 30.sp
-    val highlightColor = MaterialTheme.colors.primary
+    val highlightColor = MaterialTheme.colorScheme.primary
     Row {
         Text(
             text = buildAnnotatedString {
@@ -730,24 +790,24 @@ fun KeypadButton(letter: Char, primary: Boolean) {
         modifier = Modifier.fillMaxSize(),
         shape = RegularHexagonalShape(),
         onClick = { viewModel.keypress(letter) },
-        colors = if (MaterialTheme.colors.isLight) {
+        colors = if (!LocalUiThemeMode.current.isDarkMode()) {
             ButtonDefaults.buttonColors(
-                backgroundColor = if (primary) {
-                    MaterialTheme.colors.primary
+                containerColor = if (primary) {
+                    MaterialTheme.colorScheme.primary
                 } else {
-                    MaterialTheme.colors.secondary
+                    MaterialTheme.colorScheme.secondary
                 }
             )
         } else {
             ButtonDefaults.outlinedButtonColors(
                 contentColor = if (primary) {
-                    MaterialTheme.colors.primary
+                    MaterialTheme.colorScheme.primary
                 } else {
-                    MaterialTheme.colors.onSurface
+                    MaterialTheme.colorScheme.onSurface
                 }
             )
         },
-        border = if (MaterialTheme.colors.isLight) null else ButtonDefaults.outlinedBorder
+        border = if (!LocalUiThemeMode.current.isDarkMode()) null else ButtonDefaults.outlinedButtonBorder
     ) {
         BoxWithConstraints(contentAlignment = Alignment.Center) {
             val fontSize = with(LocalDensity.current) {
@@ -839,7 +899,7 @@ fun ActionButton(
     OutlinedButton(
         onClick = onClick,
         colors = ButtonDefaults.outlinedButtonColors(
-            contentColor = MaterialTheme.colors.onSurface,
+            contentColor = MaterialTheme.colorScheme.onSurface,
         ),
         shape = shape,
     ) {

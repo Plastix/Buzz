@@ -20,6 +20,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.FocusRequester.Companion.createRefs
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
@@ -40,6 +41,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
+import androidx.constraintlayout.compose.ConstraintLayout
 import io.github.plastix.buzz.PuzzleRanking
 import io.github.plastix.buzz.R
 import io.github.plastix.buzz.theme.BuzzTheme
@@ -799,8 +801,15 @@ fun PreviewKeypadButton() {
 @Composable
 fun ActionBar() {
     val viewModel = LocalViewModel.current
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        ActionButton(onClick = viewModel::delete) {
+    ConstraintLayout {
+        val (delete, shuffle, enter) = createRefs()
+
+        ActionButton(
+            modifier = Modifier.constrainAs(delete) {
+                end.linkTo(shuffle.start, margin = 16.dp)
+            },
+            onClick = viewModel::delete
+        ) {
             Text(
                 stringResource(R.string.puzzle_detail_actionbar_delete),
                 fontSize = 20.sp,
@@ -808,8 +817,12 @@ fun ActionBar() {
                 maxLines = 1
             )
         }
-        Spacer(Modifier.size(16.dp))
+
         ActionButton(
+            modifier = Modifier.constrainAs(shuffle) {
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            },
             onClick = viewModel::shuffle,
             shape = CircleShape
         ) {
@@ -818,8 +831,13 @@ fun ActionBar() {
                 stringResource(R.string.puzzle_detail_actionbar_shuffle)
             )
         }
-        Spacer(Modifier.size(16.dp))
-        ActionButton(onClick = viewModel::enter) {
+
+        ActionButton(
+            modifier = Modifier.constrainAs(enter) {
+                start.linkTo(shuffle.end, margin = 16.dp)
+            },
+            onClick = viewModel::enter
+        ) {
             Text(
                 stringResource(R.string.puzzle_detail_actionbar_enter),
                 fontSize = 20.sp,
@@ -832,11 +850,13 @@ fun ActionBar() {
 
 @Composable
 fun ActionButton(
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
     shape: Shape = RoundedCornerShape(50),
     content: @Composable RowScope.() -> Unit
 ) {
     OutlinedButton(
+        modifier = modifier,
         onClick = onClick,
         colors = ButtonDefaults.outlinedButtonColors(
             contentColor = MaterialTheme.colors.onSurface,

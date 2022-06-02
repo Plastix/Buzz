@@ -17,4 +17,5 @@ interface DetailScreen {
     fun resetConfirmed()
     fun toggleWorldBox()
     fun solvePuzzle()
+    fun showAnswersDialog()
 }

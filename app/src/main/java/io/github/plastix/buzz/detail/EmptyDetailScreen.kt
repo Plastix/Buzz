@@ -33,4 +33,6 @@ class EmptyDetailScreen : DetailScreen {
     override fun toggleWorldBox() {}
 
     override fun solvePuzzle() {}
+
+    override fun showAnswersDialog() {}
 }

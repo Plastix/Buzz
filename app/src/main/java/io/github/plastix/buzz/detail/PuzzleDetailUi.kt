@@ -20,7 +20,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.focus.FocusRequester.Companion.createRefs
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
@@ -44,6 +43,7 @@ import androidx.compose.ui.unit.*
 import androidx.constraintlayout.compose.ConstraintLayout
 import io.github.plastix.buzz.PuzzleRanking
 import io.github.plastix.buzz.R
+import io.github.plastix.buzz.theme.ANSWER_FOUND
 import io.github.plastix.buzz.theme.BuzzTheme
 import io.github.plastix.buzz.util.CustomDialog
 import kotlinx.coroutines.delay
@@ -94,6 +94,14 @@ fun PuzzleDetailUi(
                                 contentDescription = stringResource(R.string.puzzle_detail_toolbar_reset)
                             )
                         }
+
+                        IconButton(onClick = viewModel::showAnswersDialog) {
+                            Icon(
+                                imageVector = Icons.Filled.Extension,
+                                contentDescription = stringResource(R.string.puzzle_detail_toolbar_answers)
+                            )
+                        }
+
                         if (viewModel.showDebugMenu.observeAsState(false).value) {
                             IconButton(onClick = {
                                 debugDialog.value = true
@@ -284,6 +292,7 @@ fun ShowDialog(activeDialog: Dialog) {
         is Dialog.ConfirmReset -> ShowResetConfirmationDialog()
         is Dialog.InfoDialog -> InfoDialog()
         is Dialog.RankingDialog -> RankingDialog(activeDialog.maxPuzzleScore)
+        is Dialog.AnswersDialog -> AnswerDialog(activeDialog.answers, activeDialog.found, activeDialog.pangrams)
     }
 }
 
@@ -385,6 +394,37 @@ fun ShowResetConfirmationDialog() {
             }
         }
     )
+}
+
+@Composable
+fun AnswerDialog(answers: List<String>, found: Set<String>, pangrams: Set<String>) {
+    val viewModel = LocalViewModel.current
+    CustomDialog(
+        onDismiss = viewModel::dismissActiveDialog,
+        title = stringResource(R.string.puzzle_rules_dialog_answers)
+    ) {
+        for (word in answers) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp)
+            ) {
+                val isDiscovered = word.lowercase(Locale.ENGLISH) in found
+                val isPangram = word in pangrams
+                Icon(
+                    imageVector = if (isDiscovered) Icons.Filled.Check else Icons.Filled.Close,
+                    tint = if (isDiscovered) ANSWER_FOUND else MaterialTheme.colors.error,
+                    contentDescription = null
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = word,
+                    fontSize = 16.sp,
+                    fontWeight = if (isPangram) FontWeight.ExtraBold else FontWeight.Normal
+                )
+            }
+        }
+    }
 }
 
 @Composable

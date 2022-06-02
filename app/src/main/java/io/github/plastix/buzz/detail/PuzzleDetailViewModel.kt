@@ -1,6 +1,7 @@
 package io.github.plastix.buzz.detail
 
 import android.view.KeyEvent
+import androidx.compose.ui.text.capitalize
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -20,6 +21,7 @@ import io.github.plastix.buzz.settings.Preferences
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class PuzzleDetailViewModel @AssistedInject constructor(
     @Assisted private val savedStateHandle: SavedStateHandle,
@@ -219,6 +221,22 @@ class PuzzleDetailViewModel @AssistedInject constructor(
     override fun solvePuzzle() {
         updateGameState {
             gameState.copy(discoveredWords = puzzle.answers)
+        }
+    }
+
+    override fun showAnswersDialog() {
+        updateScreenState {
+            copy(
+                activeDialog = Dialog.AnswersDialog(
+                    answers = board.puzzle.answers.map { word ->
+                        word.replaceFirstChar {
+                            if (it.isLowerCase()) it.titlecase(Locale.ENGLISH) else it.toString()
+                        }
+                    }.sorted(),
+                    found = board.gameState.discoveredWords,
+                    pangrams = board.puzzle.pangrams
+                )
+            )
         }
     }
 

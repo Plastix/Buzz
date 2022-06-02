@@ -19,6 +19,7 @@
 
     <string name="puzzle_detail_title">Puzzle</string>
     <string name="puzzle_detail_toolbar_reset">Reset</string>
+    <string name="puzzle_detail_toolbar_answers">Answers</string>
     <string name="puzzle_detail_toolbar_info">Rules</string>
     <string name="puzzle_detail_actionbar_delete">Delete</string>
     <string name="puzzle_detail_actionbar_enter">Enter</string>
@@ -55,6 +56,7 @@
     <string name="puzzle_rank_queen_bee">Queen Bee</string>
 
     <string name="puzzle_rules_dialog_title">How To Play</string>
+    <string name="puzzle_rules_dialog_answers">Puzzle Answers</string>
     <string name="puzzle_rules_title">Create words using letters from the hive.</string>
     <string-array name="puzzle_rules">
         <item>Words must contain at least 4 letters.</item>

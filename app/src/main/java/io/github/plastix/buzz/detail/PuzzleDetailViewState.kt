@@ -33,6 +33,13 @@ sealed class Dialog : Parcelable {
 
     @Parcelize
     data class RankingDialog(val maxPuzzleScore: Int) : Dialog()
+
+    @Parcelize
+    data class AnswersDialog(
+        val answers: List<String>,
+        val found: Set<String>,
+        val pangrams: Set<String>
+    ) : Dialog()
 }
 
 sealed class WordToast : Parcelable {

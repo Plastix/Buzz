@@ -82,7 +82,7 @@ fun InfoDialog(
             Spacer(Modifier.height(16.dp))
             Icon(
                 modifier = Modifier.size(50.dp),
-                painter = painterResource(id = R.drawable.ic_bee_black),
+                painter = painterResource(id = R.drawable.ic_dictionary_black),
                 contentDescription = stringResource(R.string.puzzle_list_empty_icon),
             )
             Spacer(Modifier.height(16.dp))

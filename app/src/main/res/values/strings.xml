@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Buzz</string>
+    <string name="app_name">Spelling Game</string>
     <string name="back">Back</string>
     <string name="close">Close</string>
     <string name="ok">OK</string>
@@ -9,7 +9,7 @@
 
     <string name="puzzle_list_title">Puzzles</string>
     <string name="puzzle_list_empty_state">No saved puzzles</string>
-    <string name="puzzle_list_empty_icon">Buzz logo</string>
+    <string name="puzzle_list_empty_icon">Spelling Game logo</string>
     <string name="puzzle_generated_content_description">Generated puzzle</string>
     <string name="puzzle_downloaded_content_description">Official puzzle</string>
 
@@ -53,11 +53,11 @@
     <string name="puzzle_rank_great">Great</string>
     <string name="puzzle_rank_amazing">Amazing</string>
     <string name="puzzle_rank_genius">Genius</string>
-    <string name="puzzle_rank_queen_bee">Queen Bee</string>
+    <string name="puzzle_rank_queen_bee">Wizard</string>
 
     <string name="puzzle_rules_dialog_title">How To Play</string>
     <string name="puzzle_rules_dialog_answers">Puzzle Answers</string>
-    <string name="puzzle_rules_title">Create words using letters from the hive.</string>
+    <string name="puzzle_rules_title">Create words from the letters.</string>
     <string-array name="puzzle_rules">
         <item>Words must contain at least 4 letters.</item>
         <item>Words must include the center letter.</item>
@@ -94,10 +94,10 @@
     <string name="settings_action_confirmation_resett_puzzle_title">Reset puzzle</string>
     <string name="settings_action_confirmation_resett_puzzle_summary">Confirm before resetting puzzle state</string>
 
-    <string name="about_dialog_title">About Buzz</string>
-    <string name="about_dialog_body">A shameless spelling bee clone. Made with ❤️ in SF!</string>
+    <string name="about_dialog_title">About Spelling Game</string>
+    <string name="about_dialog_body">A classic spelling game. Made with ❤️ in SF!</string>
     <string name="about_dialog_give_feedback">Give App Feedback</string>
     <string name="about_dialog_build_number">(Build #%d)</string>
-    <string name="feedback_email_subject">Buzz app feedback</string>
+    <string name="feedback_email_subject">Spelling Game app feedback</string>
 
 </resources>

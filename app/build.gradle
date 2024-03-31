@@ -85,6 +85,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion "1.2.0-beta01"
     }
+    namespace 'io.github.plastix.buzz'
 
     defaultConfig {
         javaCompileOptions {

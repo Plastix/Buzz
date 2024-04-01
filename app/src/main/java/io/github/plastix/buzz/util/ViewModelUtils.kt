@@ -13,8 +13,12 @@ import androidx.lifecycle.ViewModel
  */
 inline fun <reified T : ViewModel> ComponentActivity.viewModels(crossinline viewModelBlock: (SavedStateHandle) -> T) =
     viewModels<T> {
-        object : AbstractSavedStateViewModelFactory(this, Bundle()) {
-            override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T {
+        object : AbstractSavedStateViewModelFactory(this@viewModels, Bundle()) {
+            override fun <T : ViewModel> create(
+                key: String,
+                modelClass: Class<T>,
+                handle: SavedStateHandle
+            ): T {
                 @Suppress("UNCHECKED_CAST")
                 return viewModelBlock.invoke(handle) as T
             }

@@ -22,11 +22,10 @@ class BuzzApplication : Application(), Configuration.Provider {
     lateinit var preferences: Preferences
 
     // Wire up Dagger Hilt injection for Work Manager
-    override fun getWorkManagerConfiguration(): Configuration {
-        return Configuration.Builder()
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
             .setWorkerFactory(workerFactory)
             .build()
-    }
 
     override fun onCreate() {
         super.onCreate()

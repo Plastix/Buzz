@@ -1,14 +1,21 @@
 package io.github.plastix.buzz.persistence
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations.map
-import io.github.plastix.buzz.*
-import io.github.plastix.buzz.core.*
+import androidx.lifecycle.map
+import io.github.plastix.buzz.Puzzle
+import io.github.plastix.buzz.PuzzleBoardState
+import io.github.plastix.buzz.PuzzleGameState
+import io.github.plastix.buzz.PuzzleType
+import io.github.plastix.buzz.blankGameState
+import io.github.plastix.buzz.core.Constants
+import io.github.plastix.buzz.core.powerSet
+import io.github.plastix.buzz.core.size
+import io.github.plastix.buzz.core.toCharArray
+import io.github.plastix.buzz.core.toCharacterSet
 import io.github.plastix.buzz.persistence.gen.DictionaryDao
 import io.github.plastix.buzz.persistence.gen.DictionaryDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -24,7 +31,7 @@ class PuzzleRepository @Inject constructor(
     private val dictionary: DictionaryDao by lazy { dictionaryDatabase.dictionaryDao() }
 
     fun getPuzzles(): LiveData<List<PuzzleBoardState>> {
-        return map(dao.getPuzzles()) { states ->
+        return dao.getPuzzles().map { states ->
             states.map { entity ->
                 val puzzle = entity.puzzle.toPuzzle()
                 PuzzleBoardState(

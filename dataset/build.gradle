@@ -4,20 +4,28 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.squareup.sqldelight:gradle-plugin:1.4.4'
+        classpath 'app.cash.sqldelight:gradle-plugin:2.0.1'
     }
 }
 
 apply plugin: 'kotlin'
-apply plugin: 'com.squareup.sqldelight'
+apply plugin: 'app.cash.sqldelight'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
 
 sqldelight {
-    Database { // This will be the name of the generated database class.
-        packageName = "io.plastix.github.buzz.dataset"
+    databases {
+        Database { // This will be the name of the generated database class.
+            packageName = "io.plastix.github.buzz.dataset"
+        }
     }
 }
 
 dependencies {
-    implementation "com.squareup.sqldelight:sqlite-driver:1.4.4"
+    implementation "app.cash.sqldelight:sqlite-driver:2.0.1"
     implementation(project(":core"))
 }
+

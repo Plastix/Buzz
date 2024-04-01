@@ -1,7 +1,7 @@
 package io.github.plastix.buzz.dataset
 
-import com.squareup.sqldelight.db.SqlDriver
-import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import io.github.plastix.buzz.core.Constants
 import io.github.plastix.buzz.core.size
 import io.github.plastix.buzz.core.toCharacterSet

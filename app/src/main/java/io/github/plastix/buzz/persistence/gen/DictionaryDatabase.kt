@@ -15,7 +15,7 @@ import javax.inject.Singleton
         DictionaryWordEntity::class,
         PuzzleSeedEntity::class
     ],
-    version = 1
+    version = 2
 )
 abstract class DictionaryDatabase : RoomDatabase() {
     abstract fun dictionaryDao(): DictionaryDao
@@ -31,6 +31,9 @@ internal object DatabaseModule {
     fun provideDatabase(app: Application): DictionaryDatabase {
         return Room.databaseBuilder(app, DictionaryDatabase::class.java, "buzz-dictionary-database")
             .createFromAsset("database/dictionary.db")
+            // Allows us to bump the dictionary database schema version to have the app repopulate
+            // the database wit new words.
+            .fallbackToDestructiveMigration()
             .build()
     }
 }

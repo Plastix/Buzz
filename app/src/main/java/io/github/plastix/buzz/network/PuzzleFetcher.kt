@@ -4,16 +4,18 @@ import com.squareup.moshi.Moshi
 import io.github.plastix.buzz.Features
 import io.github.plastix.buzz.Puzzle
 import io.github.plastix.buzz.Result
-import kotlinx.coroutines.Dispatchers
+import io.github.plastix.buzz.thread.IO
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okio.IOException
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 class PuzzleFetcher @Inject constructor(
     private val client: OkHttpClient,
-    private val json: Moshi
+    private val json: Moshi,
+    @IO private val ioContext: CoroutineContext
 ) {
 
     companion object {
@@ -33,7 +35,7 @@ class PuzzleFetcher @Inject constructor(
         return if (!Features.PUZZLES_DOWNLOADS_ENABLED) {
             Result.Success(emptyList())
         } else {
-            withContext(Dispatchers.IO) {
+            withContext(ioContext) {
                 fetchLatestPuzzlesInternal()
             }
         }

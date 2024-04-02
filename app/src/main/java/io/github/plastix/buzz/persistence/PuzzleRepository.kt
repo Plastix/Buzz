@@ -14,17 +14,19 @@ import io.github.plastix.buzz.core.toCharArray
 import io.github.plastix.buzz.core.toCharacterSet
 import io.github.plastix.buzz.persistence.gen.DictionaryDao
 import io.github.plastix.buzz.persistence.gen.DictionaryDatabase
-import kotlinx.coroutines.Dispatchers
+import io.github.plastix.buzz.thread.IO
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Encapsulates all operations for storing Puzzle data locally.
  */
 class PuzzleRepository @Inject constructor(
     private val database: PuzzleDatabase,
-    private val dictionaryDatabase: DictionaryDatabase
+    private val dictionaryDatabase: DictionaryDatabase,
+    @IO private val ioContext: CoroutineContext
 ) {
 
     private val dao: PuzzleDao by lazy { database.puzzleDao() }
@@ -43,32 +45,31 @@ class PuzzleRepository @Inject constructor(
     }
 
     suspend fun getPuzzle(puzzleId: Long): Puzzle? {
-        return withContext(Dispatchers.IO) {
+        return withContext(ioContext) {
             dao.getPuzzleById(puzzleId)?.toPuzzle()
         }
     }
 
     suspend fun insertPuzzles(puzzles: List<Puzzle>) {
-        withContext(Dispatchers.IO) {
+        withContext(ioContext) {
             dao.insertPuzzles(puzzles.map(Puzzle::toEntity))
         }
     }
 
     suspend fun insertGameState(puzzleGameState: PuzzleGameState, puzzleId: Long) {
-        withContext(Dispatchers.IO) {
+        withContext(ioContext) {
             dao.insertGameState(puzzleGameState.toEntity(puzzleId))
         }
     }
 
     suspend fun getGameState(puzzleId: Long): PuzzleGameState? {
-        return withContext(Dispatchers.IO) {
+        return withContext(ioContext) {
             dao.getGameState(puzzleId)?.toGameState()
-
         }
     }
 
     suspend fun generateRandomPuzzle() {
-        return withContext(Dispatchers.IO) {
+        return withContext(ioContext) {
             val charSet = dictionary.getRandomPuzzlePuzzleSeed()?.characterSet
                 ?: error("Failed to find valid puzzle character set!")
             val requiredCharSet = charSet.toCharArray().random().toCharacterSet()
@@ -98,7 +99,7 @@ class PuzzleRepository @Inject constructor(
     }
 
     suspend fun deletePuzzleById(puzzleId: Long) {
-        withContext(Dispatchers.IO) {
+        withContext(ioContext) {
             dao.deleteByPuzzleId(puzzleId)
         }
     }

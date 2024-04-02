@@ -49,6 +49,6 @@ enum class PuzzleRanking(
     );
 
     companion object {
-        val sortedValues: List<PuzzleRanking> = values().sortedBy(PuzzleRanking::percentCutoff)
+        val sortedValues: List<PuzzleRanking> = entries.sortedBy(PuzzleRanking::percentCutoff)
     }
 }

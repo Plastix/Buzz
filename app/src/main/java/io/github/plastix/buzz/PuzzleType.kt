@@ -6,7 +6,7 @@ enum class PuzzleType(val stringKey: String) {
 
     companion object {
         fun fromStringKey(key: String?): PuzzleType {
-            return values().firstOrNull { it.stringKey == key } ?: DOWNLOADED
+            return entries.firstOrNull { it.stringKey == key } ?: DOWNLOADED
         }
     }
 }

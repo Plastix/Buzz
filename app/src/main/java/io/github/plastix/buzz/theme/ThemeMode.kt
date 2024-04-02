@@ -23,7 +23,7 @@ enum class ThemeMode(val persistenceKey: Int) {
 
     companion object {
         fun fromPersistenceKey(context: Context, string: String?): ThemeMode {
-            return values().firstOrNull { context.getString(it.persistenceKey) == string } ?: AUTO
+            return entries.firstOrNull { context.getString(it.persistenceKey) == string } ?: AUTO
         }
     }
 }

@@ -13,7 +13,7 @@ data class PuzzleBoardState(
     val currentScore: Int = gameState.discoveredWords.sumOf { word -> puzzle.scoreWord(word) }
     private val currentPercent: Int =
         ((currentScore / puzzle.maxScore.toDouble()) * 100).roundToInt()
-    val currentRank: PuzzleRanking = PuzzleRanking.values()
+    val currentRank: PuzzleRanking = PuzzleRanking.entries
         .filter { rank -> rank.percentCutoff <= currentPercent }
         .maxByOrNull { rank -> rank.percentCutoff } ?: PuzzleRanking.Beginner
 

@@ -3,7 +3,6 @@ package io.github.plastix.buzz.persistence
 import androidx.room.TypeConverter
 import io.github.plastix.buzz.PuzzleType
 import io.github.plastix.buzz.util.parseDate
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 class Converters {

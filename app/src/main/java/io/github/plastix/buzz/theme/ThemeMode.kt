@@ -41,4 +41,4 @@ fun setAppThemeMode(themeMode: ThemeMode) {
 }
 
 val LocalUiThemeMode =
-    staticCompositionLocalOf<ThemeMode> { ThemeMode.AUTO }
+    staticCompositionLocalOf { ThemeMode.AUTO }

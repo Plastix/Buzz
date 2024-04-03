@@ -6,7 +6,7 @@ import io.github.plastix.buzz.WordError
 import kotlinx.parcelize.Parcelize
 
 sealed class PuzzleDetailViewState {
-    object Loading : PuzzleDetailViewState()
+    data object Loading : PuzzleDetailViewState()
     data class Error(val error: Exception) : PuzzleDetailViewState()
     data class Success(val boardGameState: BoardGameViewState) : PuzzleDetailViewState()
 }
@@ -26,10 +26,10 @@ class BoardGameViewState(
 
 sealed class Dialog : Parcelable {
     @Parcelize
-    object ConfirmReset : Dialog()
+    data object ConfirmReset : Dialog()
 
     @Parcelize
-    object InfoDialog : Dialog()
+    data object InfoDialog : Dialog()
 
     @Parcelize
     data class RankingDialog(val maxPuzzleScore: Int) : Dialog()

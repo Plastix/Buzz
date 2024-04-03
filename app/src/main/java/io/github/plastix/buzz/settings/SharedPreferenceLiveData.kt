@@ -3,7 +3,7 @@ package io.github.plastix.buzz.settings
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 
-abstract class SharedPreferenceLiveData<T> constructor(
+abstract class SharedPreferenceLiveData<T>(
     protected val sharedPreferences: SharedPreferences,
     private val key: String,
     private val defaultValue: T

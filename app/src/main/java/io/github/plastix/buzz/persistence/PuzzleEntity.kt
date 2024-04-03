@@ -5,7 +5,6 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import io.github.plastix.buzz.Puzzle
 import io.github.plastix.buzz.PuzzleType
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 /**

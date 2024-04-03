@@ -3,7 +3,7 @@ package io.github.plastix.buzz
 import androidx.annotation.StringRes
 
 sealed class WordResult {
-    object Valid : WordResult()
+    data object Valid : WordResult()
     data class Error(val errorType: WordError) : WordResult()
 }
 

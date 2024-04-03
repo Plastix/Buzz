@@ -6,7 +6,7 @@ import io.github.plastix.buzz.PuzzleType
 import kotlinx.parcelize.Parcelize
 
 sealed class PuzzleListViewState {
-    object Loading : PuzzleListViewState()
+    data object Loading : PuzzleListViewState()
     data class Success(
         val puzzles: List<PuzzleRowState>,
         val activeDialog: Dialog?,
@@ -25,7 +25,7 @@ data class PuzzleRowState(
 
 sealed class Dialog : Parcelable {
     @Parcelize
-    object ConfirmGeneratePuzzle : Dialog()
+    data object ConfirmGeneratePuzzle : Dialog()
 }
 
 sealed class Snackbar : Parcelable {

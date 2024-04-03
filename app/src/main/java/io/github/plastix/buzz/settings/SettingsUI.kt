@@ -6,9 +6,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.outlined.Help
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.Help
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -40,7 +41,7 @@ fun SettingsUi(
             navigationIcon = {
                 IconButton(onClick = onBack) {
                     Icon(
-                        imageVector = Icons.Filled.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(R.string.back)
                     )
                 }
@@ -48,7 +49,7 @@ fun SettingsUi(
             actions = {
                 IconButton(onClick = { showInfoDialog.value = true }) {
                     Icon(
-                        imageVector = Icons.Outlined.Help,
+                        imageVector = Icons.AutoMirrored.Outlined.Help,
                         contentDescription = stringResource(R.string.puzzle_detail_toolbar_info)
                     )
                 }
@@ -86,14 +87,14 @@ fun InfoDialog(
                 contentDescription = stringResource(R.string.puzzle_list_empty_icon),
             )
             Spacer(Modifier.height(16.dp))
-            val clickCounter = remember { mutableStateOf(0) }
+            val clickCounter = remember { mutableIntStateOf(0) }
             Text(text = "v ${BuildConfig.VERSION_NAME}",
                 modifier = Modifier.noRippleClickable {
-                    if (clickCounter.value >= 4) {
+                    if (clickCounter.intValue >= 4) {
                         devMenuToggled.invoke()
-                        clickCounter.value = 0
+                        clickCounter.intValue = 0
                     } else {
-                        clickCounter.value++
+                        clickCounter.intValue++
                     }
                 }
             )

@@ -1,7 +1,6 @@
 package io.github.plastix.buzz.detail
 
 import android.view.KeyEvent
-import androidx.compose.ui.text.capitalize
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -44,7 +43,8 @@ class PuzzleDetailViewModel @AssistedInject constructor(
     private val _viewStates: MediatorLiveData<PuzzleDetailViewState> = MediatorLiveData()
     override val viewStates: LiveData<PuzzleDetailViewState> = _viewStates
     val showDebugMenu: LiveData<Boolean> = preferences.debugToolsEnabled
-    val puzzleResetConfirmationEnabled: LiveData<Boolean> = preferences.resetPuzzleConfirmationEnabled
+    val puzzleResetConfirmationEnabled: LiveData<Boolean> =
+        preferences.resetPuzzleConfirmationEnabled
 
     private data class ScreenState(
         val board: PuzzleBoardState,
@@ -240,11 +240,11 @@ class PuzzleDetailViewModel @AssistedInject constructor(
         }
     }
 
-    @DelicateCoroutinesApi
     fun saveState() {
         withScreenState {
             // We want to run this background database save in a unrestricted coroutine scope to
             // ensure this always happens
+            @OptIn(DelicateCoroutinesApi::class)
             GlobalScope.launch {
                 repository.insertGameState(board.gameState, puzzleId)
             }
@@ -264,6 +264,7 @@ class PuzzleDetailViewModel @AssistedInject constructor(
                             delete()
                             true
                         }
+
                         KeyCodes.BACK -> {
                             if (wordBoxExpanded) {
                                 toggleWorldBox()
@@ -272,17 +273,21 @@ class PuzzleDetailViewModel @AssistedInject constructor(
                                 false
                             }
                         }
+
                         else -> false
                     }
                 }
+
                 KeyCodes.ENTER -> {
                     enter()
                     handled = true
                 }
+
                 KeyCodes.SPACE -> {
                     shuffle()
                     handled = true
                 }
+
                 else -> {
                     val char = unicodeChar.toChar()
                     if (board.puzzle.eligibleLetter(char)) {

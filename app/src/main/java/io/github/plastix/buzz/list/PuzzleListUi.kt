@@ -119,8 +119,10 @@ fun PuzzleListUi(
                         )
                     }
                 }
-            ) {
-                PuzzleListScreen(viewModel, onPuzzleClick)
+            ) { contentPadding ->
+                Box(Modifier.padding(contentPadding)) {
+                    PuzzleListScreen(viewModel, onPuzzleClick)
+                }
             }
         }
     }

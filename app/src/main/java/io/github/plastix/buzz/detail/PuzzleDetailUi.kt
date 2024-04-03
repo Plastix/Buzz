@@ -2,21 +2,68 @@ package io.github.plastix.buzz.detail
 
 import android.content.res.Configuration
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Autorenew
+import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ErrorOutline
+import androidx.compose.material.icons.filled.Extension
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,7 +87,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import io.github.plastix.buzz.PuzzleRanking
 import io.github.plastix.buzz.R
@@ -48,8 +99,13 @@ import io.github.plastix.buzz.theme.ANSWER_FOUND
 import io.github.plastix.buzz.theme.BuzzTheme
 import io.github.plastix.buzz.util.CustomDialog
 import kotlinx.coroutines.delay
-import java.util.*
-import kotlin.math.*
+import java.util.Locale
+import kotlin.math.cos
+import kotlin.math.min
+import kotlin.math.pow
+import kotlin.math.roundToInt
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 private val LocalViewModel =
     compositionLocalOf<DetailScreen> { error("No click handler set1") }
@@ -115,11 +171,13 @@ fun PuzzleDetailUi(
                         }
                     }
                 )
-            }) {
-                PuzzleDetailScreen()
+            }) { contentPadding ->
+                Box(Modifier.padding(contentPadding)) {
+                    PuzzleDetailScreen()
 
-                if (debugDialog.value) {
-                    PuzzleDebugMenu(debugDialog)
+                    if (debugDialog.value) {
+                        PuzzleDebugMenu(debugDialog)
+                    }
                 }
             }
         }
@@ -161,6 +219,7 @@ fun PuzzleDetailScreen() {
                 ShowDialog(gameState.activeDialog)
             }
         }
+
         is PuzzleDetailViewState.Error -> PuzzleErrorState()
     }
 }
@@ -293,7 +352,11 @@ fun ShowDialog(activeDialog: Dialog) {
         is Dialog.ConfirmReset -> ShowResetConfirmationDialog()
         is Dialog.InfoDialog -> InfoDialog()
         is Dialog.RankingDialog -> RankingDialog(activeDialog.maxPuzzleScore)
-        is Dialog.AnswersDialog -> AnswerDialog(activeDialog.answers, activeDialog.found, activeDialog.pangrams)
+        is Dialog.AnswersDialog -> AnswerDialog(
+            activeDialog.answers,
+            activeDialog.found,
+            activeDialog.pangrams
+        )
     }
 }
 

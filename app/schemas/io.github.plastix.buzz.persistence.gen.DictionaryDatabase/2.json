@@ -1,0 +1,76 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "67f2daadfccff57bc13695a66e10afab",
+    "entities": [
+      {
+        "tableName": "dictionary_words",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `character_set` INTEGER NOT NULL, `word` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "characterSet",
+            "columnName": "character_set",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "word",
+            "columnName": "word",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "character_set_index",
+            "unique": false,
+            "columnNames": [
+              "character_set"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `character_set_index` ON `${TABLE_NAME}` (`character_set`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "puzzle_seeds",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`character_set` INTEGER NOT NULL, PRIMARY KEY(`character_set`))",
+        "fields": [
+          {
+            "fieldPath": "characterSet",
+            "columnName": "character_set",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "character_set"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '67f2daadfccff57bc13695a66e10afab')"
+    ]
+  }
+}

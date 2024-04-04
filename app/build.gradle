@@ -34,8 +34,8 @@ android {
         }
         minSdkVersion 21
         targetSdkVersion 34
-        versionCode 15
-        versionName "1.0-alpha07"
+        versionCode 17
+        versionName "1.0-alpha08"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -91,6 +91,10 @@ android {
 
 hilt {
     enableAggregatingTask = true
+}
+
+ksp {
+    arg('room.schemaLocation', "$projectDir/schemas")
 }
 
 dependencies {

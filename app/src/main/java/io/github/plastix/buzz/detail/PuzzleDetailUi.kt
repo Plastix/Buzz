@@ -184,6 +184,7 @@ fun PuzzleDetailUi(
     }
 }
 
+
 @Composable
 fun PuzzleDebugMenu(debugDialog: MutableState<Boolean>) {
     CustomDialog(
@@ -210,6 +211,8 @@ fun PuzzleDetailScreen() {
         is PuzzleDetailViewState.Loading -> PuzzleDetailLoadingState()
         is PuzzleDetailViewState.Success -> {
             val gameState = state.boardGameState
+//            ConfettiCanvas(gameState.activeWordToast != null)
+            FireworksCanvas(gameState.activeWordToast != null)
             if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 PuzzleBoardLandscape(gameState)
             } else {
